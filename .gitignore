@@ -1,0 +1,3 @@
+# tyto složky git ignoruje
+script/
+node_modules/

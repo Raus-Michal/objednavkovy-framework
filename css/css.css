@@ -1,0 +1,230 @@
+﻿html{-webkit-text-size-adjust:100%;-moz-text-size-adjust:100%;text-size-adjust:100%;}
+main{display:block;}
+a{background-color:transparent;}
+abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted;}
+strong{font-weight:bolder;}
+small{font-size:80%;}
+img{border-style:none;}
+button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0;}
+button,input{overflow:visible;}
+button,select{text-transform:none;}
+button,[type="button"],[type="reset"],[type="submit"]{-webkit-appearance:button;appearance:textfield;}
+button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner{border-style:none;padding:0;}
+button:-moz-focusring,[type="button"]:-moz-focusring,[type="reset"]:-moz-focusring,[type="submit"]:-moz-focusring{outline:1px dotted ButtonText;}
+[hidden]{display:none;}
+p,ul,ol,dl,table,blockquote,pre,figure{padding-top:0;padding-bottom:0;margin-top:0;margin-bottom:1rem;}
+ul ul,ul ol,ol ul,ol ol{margin-bottom:0;}
+ul,ol,dd{padding-left:1.75rem;}
+dd{margin-left:0;}
+
+/* KONEC OPTIMALIZACE */
+
+:root
+{
+--b1:rgb(168,110,87); /* hnědá */
+/* přechodové barvy */
+--b2:rgb(168,151,87); /* hnědá - do béžova */
+--b2_9:rgba(168,151,87,.95); /* hnědá - do béžova 95% krytí */
+--b2_6:rgba(168,151,87,.6); /* hnědá - do béžova 60% krytí */
+--b3:rgb(168,87,104); /* hnědá - do růžova */
+--b4:rgb(87,168,110); /* zelená */
+--b5:rgb(110,87,168); /* fialová */
+
+/* dobrý kontrast: b2 a černá , b4 a černá */
+/* dobrý kontrast: b5 a bílá */
+}
+
+
+@font-face{
+font-display:fallback; /* vlastnost fontu, která zobrazí font se zpožděním 0.3s, kdy už by měl být načten - sníží se performace webu */
+font-family:"nadpis"; /* vlastní název fontu, který se posléze bude dále používat v CSS */
+src:url("../font/nadpis.woff2") format("woff2 supports variations"),url("../font/nadpis.woff2") format("woff2-variations"),url("../font/nadpis.woff2") format("woff2"),url("../font/nadpis.woff") format("woff"); /* cesta k fontu se určuje vzhledem k umístění CSS souboru */
+font-weight:100 900; /* určuje rozsah šířky písma použitého v CSSku (v projektu) */
+font-style:normal;
+}
+
+@font-face{
+font-display:fallback; /* vlastnost fontu, která zobrazí font se zpožděním 0.3s, kdy už by měl být načten - sníží se performace webu */
+font-family:"text"; /* vlastní název fontu, který se posléze bude dále používat v CSS */
+src:url("../font/text.woff2") format("woff2 supports variations"),url("../font/text.woff2") format("woff2-variations"),url("../font/text.woff2") format("woff2"),url("../font/text.woff") format("woff"); /* cesta k fontu se určuje vzhledem k umístění CSS souboru */
+font-weight:100 700; /* určuje rozsah šířky písma použitého v CSSku (v projektu) */
+font-style:normal;
+}
+
+
+*{-webkit-box-sizing:border-box;box-sizing:border-box;}
+
+body
+{
+color:black;
+background:white;
+font-family:"text",sans-serif;
+width:100%;
+font-size:100%;
+line-height:1;
+margin:0;
+}
+
+article
+{
+contain:content;  /* prohlížeči dá instrukci, že prvky, které uživatel nevidí může vynechat z počítání stránky */
+}
+
+a,button
+{
+cursor:pointer;
+}
+
+button
+{
+font-weight:normal;
+}
+
+a,a:link,a:visited,a:active
+{
+color:black;
+text-decoration:none;
+}
+
+p
+{
+font-size:1rem;
+line-height:1.5;
+}
+
+h1,h2,h3,h4
+{
+margin-top:0;
+margin-bottom:.5rem;
+font-family:"nadpis",sans-serif;
+-webkit-font-variant-ligatures:common-ligatures;
+font-variant-ligatures:common-ligatures;
+font-weight:normal;
+letter-spacing:.01rem;
+padding-top:2rem;
+line-height:1.2;
+}
+
+.h-kon
+{
+width:100%;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:1rem;
+overflow:auto;
+}
+
+.f-kon
+{
+display:flex;
+flex-direction:column;
+gap:1.5rem;
+width:100%;
+max-width:22.5rem;
+}
+
+
+.p-n
+{
+font-family:"nadpis",sans-serif;
+font-size:2rem;
+text-align:center;
+font-weight:600;
+}
+
+.f-kon fieldset
+{
+border:none;
+}
+
+.b-mesic
+{
+display:flex;
+justify-content:center;
+}
+
+
+.b-dny
+{
+display:grid;
+grid-template-columns:repeat(7,1fr); 
+gap:.5rem;
+justify-content:center;
+justify-items:center;
+}
+
+.b-dny p
+{
+margin-bottom:0;
+}
+
+.b-dny button
+{
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:50%;
+width:2rem;
+height:2rem;
+max-width:2rem;
+max-height:2rem;
+min-width:2rem;
+min-height:2rem;
+padding:.5rem;
+font-size:1rem;
+line-height:normal;
+}
+
+.b-hod
+{
+display:grid;
+grid-template-columns:1fr;
+gap:1rem;
+margin:0;
+padding:0;
+list-style-type:none;
+}
+
+/* > 368 px */
+@media only screen and (min-width:23em)
+{
+.b-hod
+{
+grid-template-columns:1fr 1fr;
+}
+}
+
+.b-hod li
+{
+display:flex;
+gap:.5rem;
+padding:.5rem;
+border:1px solid var(--b4);
+cursor:pointer;
+white-space:nowrap;
+}
+
+.b-chec
+{
+display:flex;
+gap:.5rem;
+align-items:center;
+margin-bottom:2rem;
+}
+
+
+.b-chec p
+{
+margin-bottom:0;
+}
+
+.b-chec input
+{
+width:2rem;
+min-width:2rem;
+height:2rem;
+min-height:2rem;
+border-radius:2px;
+cursor:pointer;
+}
