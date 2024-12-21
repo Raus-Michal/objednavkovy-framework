@@ -111,7 +111,6 @@ width:100%;
 display:flex;
 align-items:center;
 justify-content:center;
-padding:1rem;
 overflow:auto;
 }
 
@@ -152,6 +151,7 @@ grid-template-columns:repeat(7,1fr);
 gap:.5rem;
 justify-content:center;
 justify-items:center;
+background-color:white;
 }
 
 .b-dny p
@@ -174,6 +174,22 @@ min-height:2rem;
 padding:.5rem;
 font-size:1rem;
 line-height:normal;
+}
+
+.fake-kon
+{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-1;
+}
+
+.fake-kon input
+{
+width:100%;
+height:100%;
 }
 
 .b-hod

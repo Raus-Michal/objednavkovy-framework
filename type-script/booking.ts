@@ -197,9 +197,9 @@ if(p_e)
 
 
 
-const mesic_a_rok={
-id_posun:["m_minus","m_plus"], // id šipek s posunem měsíce 0===vzad, 1===vpřed
-id_text:"mesic_a_rok", // id inputu s textem měsíc a rok
+class Mesic_a_rok{
+readonly id_posun=["m_minus","m_plus"]; // id šipek s posunem měsíce 0===vzad, 1===vpřed
+readonly id_text="mesic_a_rok"; // id inputu s textem měsíc a rok
 aktivace(){
 // funkce aktivuje posluchače šipek měsíc vzad a vpřed
 
@@ -218,7 +218,7 @@ if(butt_2)
 butt_2.addEventListener("click",this); // posluchač click pro šipku vpřed
 }
 
-},
+};
 handleEvent(e:any){
 const k=e.target.id; // id buttonu na který bylo kliknuto
 
@@ -299,6 +299,7 @@ event.preventDefault(); // Zabrání výchozímu chování (odeslání formulá�
 
 const datum=new Datum(); // vytvoření objektu datum
 const kalendar= new Kalendar(); // pomocí class Kalendar vytvoří objekt kalendar
+const mesic_a_rok= new Mesic_a_rok(); // pomocí class Mesic_a_rok vytvoří objekt mesic_a_rok
 
 kalendar.vytvorit(); // vytvoří čísla na buttonu kalendáře
 kalendar.nazev_mesice(); // funkce přepíše název měsíce a roku v input měsíc a rok
