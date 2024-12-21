@@ -1,9 +1,13 @@
 ﻿
 class Kalendar {
-p_id:string="b"; // počáteční id každého buttonu ke kterému je přiřazeno v HTML číslo 1-31 ... b1.b2->b31
-m_a_r_id:string="mesic_a_rok"; // id inputu s měsícem a rokem
-den_id:string="d"; // počáteční id každého dne v týdnu v kalendáři <p> Po,Út,St,Čt,Pá,So,Ne
+readonly p_id:string="b"; // počáteční id každého buttonu ke kterému je přiřazeno v HTML číslo 1-31 ... b1.b2->b31
+readonly m_a_r_id:string="mesic_a_rok"; // id inputu s měsícem a rokem
+readonly den_id:string="d"; // počáteční id každého dne v týdnu v kalendáři <p> Po,Út,St,Čt,Pá,So,Ne
 private poloha:number=0; // proměnná určuje polohu kalendáře 0===default, 1-krok o měsíc dále , 2-krok o dva měsíce dále
+private book_den=[0,0,0]; // zápis booklého dne uživatelem : rok, měsíc, den
+readonly facke_checked_id:string="fake-checked"; // id input type chacked - fake chacked, který nedošle formulář, dokud není od uživatele označený konkrétní den
+readonly color_oznacen:string="rgb(87,168,110)"; // barva označeného buttonu s dnem v měsíci zvoleným uživatelem
+readonly color_NEoznacen:string="white"; // barva neoznačeného buttonu s dny v měsíci
 
 set posun(kam:number){
 // setter bude nastavovat maximální a minimální hodnotu this.poloha
@@ -64,7 +68,16 @@ upravit(){
 
 const a_d=datum.den_v_mesici; // aktuální den v měsíci 1-31,1-30,1-28 ...
 
-
+for(let i=1;i<32;i++)
+{
+// smyčka povolí posluchače všem buttonům od 1-31
+const button_i=document.getElementById(`${this.p_id}${i}`); // konkrétní button s číslem dne v měsíci
+if(button_i)
+{
+// pokud HTML objekt pod Id existuje
+(button_i as HTMLButtonElement).addEventListener("click",this); // přidělí posluchač událostí buttonu
+}
+}
 
 if(this.poloha===0)
 {
@@ -72,7 +85,6 @@ if(this.poloha===0)
 if(a_d!==1)
 {
 // pokud se právě aktuální den v měsíci !== 1 (tedy to není první den v měsící), budou se odebírat buttony pro objenání
-
 for(let i=1;i<a_d+1;i++)
 {
 const button_i=document.getElementById(`${this.p_id}${i}`); // konkrétní button s číslem dne v měsíci
@@ -80,6 +92,7 @@ if(button_i)
 {
 // pokud HTML objekt pod Id existuje
 (button_i as HTMLButtonElement).disabled=true; // udělá disabled na buttonu na dny, které už v měsíci uplynuly včetně dnešního
+(button_i as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonům, které ho nepotřebují
 }}
 }
 else
@@ -89,7 +102,8 @@ const button_i=document.getElementById(`${this.p_id}${a_d}`); // konkrétní but
 if(button_i)
 {
 (button_i as HTMLButtonElement).disabled=true; // udělá disabled na buttonu 1. v měsíci
-}}
+}
+}
 }
 else
 {
@@ -140,6 +154,17 @@ if(button_i){
 // pokud HTML objekt pod Id existuje
 (button_i as HTMLButtonElement).style.visibility="visible"; // zviditelní button s dnem v měsíci
 }}
+
+for(let i=pdva+1;i<32;i++)
+{
+// smyška odebere posluchače všem odebraným buttonům
+const button_i=document.getElementById(`${this.p_id}${i}`); // konkrétní button s číslem dne v měsíci
+if(button_i){
+// pokud HTML objekt pod Id existuje
+(button_i as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač konkrétnímu buttonu
+}
+}
+
 };
 
 nazev_mesice(){
@@ -190,9 +215,67 @@ if(p_e)
 {
 // pokud HTML element existuje
 (p_e as HTMLElement).innerText=datum.dny[dayIndex]; // změní popisky Po,Út, St, Čt , Pá , So , Ne podle počátku dne v měsíci
-}}}
+}}};
+handleEvent(e:any){
+const k:string=e.target.id;
+const cislo_dne:number=parseInt(`${k[1]}${k[2]}`);
+
+let a_m=datum.mesic_v_roce+this.poloha; // datum.mesic_v_roce je gettter, kde návratová hodnota je aktuální měsíc v roce, kde leden je 0 a prosinec 11 + this.poloha určuje aktuální polohu uživatele v kalendáři
+let a_r=datum.aktualni_rok; // datum.aktualni_rok je getter, kde návratová hodnota je aktuální rok: 2024,2025 ...
+
+if(a_m>11)
+{
+// pokud bude měsíc prosinec, začnou měsíce od ledna a přičte se rok
+a_m=datum.mesic_v_roce+this.poloha-datum.mesice.length; // upraví číslo měsíce tak, aby vycházel na následující měsíc v novém roce
+a_r++; // rok se zvětší o 1
+}
+
+this.book_den[0]=a_r; // zapíše do pole book_den - rok
+this.book_den[1]=a_m; // zapíše do pole book_den - měsíc
+this.book_den[2]=cislo_dne; // zapíše do pole book_den - den
+
+const fake_check=document.getElementById(this.facke_checked_id); // HTML input type checked, který se zatrhne, aby se formuzlář mohl odeslat
+if(fake_check)
+{
+// pokud HTML element existuje
+(fake_check as HTMLInputElement).checked=true; // zatrhne checked u input type checked - fake checked
+}
+
+this.oznacit_den(); // funkce zajišťuje označení konkrétního dne
 
 
+};
+oznacit_den(){
+// funkce zajistí označení konkrétního dne uživatelem
+
+let a_m=datum.mesic_v_roce+this.poloha; // datum.mesic_v_roce je gettter, kde návratová hodnota je aktuální měsíc v roce, kde leden je 0 a prosinec 11 + this.poloha určuje aktuální polohu uživatele v kalendáři
+let a_r=datum.aktualni_rok; // datum.aktualni_rok je getter, kde návratová hodnota je aktuální rok: 2024,2025 ...
+
+if(a_m>11)
+{
+// pokud bude měsíc prosinec, začnou měsíce od ledna a přičte se rok
+a_m=datum.mesic_v_roce+this.poloha-datum.mesice.length; // upraví číslo měsíce tak, aby vycházel na následující měsíc v novém roce
+a_r++; // rok se zvětší o 1
+}
+
+for(let i=1;i<32;i++)
+{
+// smyčka všechny buttony přebarví na default barvu
+const button_i=document.getElementById(`${this.p_id}${i}`); // konkrétní button s číslem dne v měsíci
+if(button_i){
+// pokud HTML objekt pod Id existuje
+button_i.style.backgroundColor=this.color_NEoznacen; // přidá buttonu barvu NEoznačeného buttonu
+}}
+
+if(a_r===this.book_den[0]&&a_m===this.book_den[1])
+{
+const button_i=document.getElementById(`${this.p_id}${this.book_den[2]}`); // konkrétní button s číslem dne v měsíci
+if(button_i){
+// pokud HTML objekt pod Id existuje
+button_i.style.backgroundColor=this.color_oznacen; // přidá buttonu barvu označeného buttonu
+}
+}
+}
 };
 
 
@@ -220,7 +303,7 @@ butt_2.addEventListener("click",this); // posluchač click pro šipku vpřed
 
 };
 handleEvent(e:any){
-const k=e.target.id; // id buttonu na který bylo kliknuto
+const k:string=e.target.id; // id buttonu na který bylo kliknuto
 
 if(k===this.id_posun[0])
 {
