@@ -167,107 +167,31 @@ if(text)
 
 };
 poradi_dnu(){
-// funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
+// funkce upraví v kalendáři pořadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
 
-const dni_v_tydnu=7; // počet dní v týdnu
+let a_m=datum.mesic_v_roce+this.poloha; // datum.mesic_v_roce je gettter, kde návratová hodnota je aktuální měsíc v roce, kde leden je 0 a prosinec 11 + this.poloha určuje aktuální polohu uživatele v kalendáři
+let a_r=datum.aktualni_rok; // datum.aktualni_rok je getter, kde návratová hodnota je aktuální rok: 2024,2025 ...
 
-const a_d=datum.den_v_tydnu; // den v týdnu, kde 0 je neděle a 1 je pondělí
-const a_d_m=datum.den_v_mesici; // den v měsíci 1-31,1-30,1-28 ...
-const modulo_a_d_m=a_d_m%dni_v_tydnu; // modulo den v měsíci (zbytek po dělení 7)
-
-
-if(modulo_a_d_m!==a_d)
+if(a_m>11)
 {
-// pokud se modulo dne v měsíci !== dnu v týdnu - musí se posunout dny uvedené v kalendáři
-
-const suma_posun=a_d-modulo_a_d_m; // hodnota posunu
-
-
-console.log("suma: "+suma_posun);
-
-const d=datum.dny.length; // délka pole
-for(let i=0;i<d;i++)
-{
-
-let zacatek_v_poli=i+suma_posun;
-
-console.log("zacatek_v_poli: "+zacatek_v_poli);
-
-if(suma_posun>0)
-{
-// pokud je suma posunu kladné číslo
-if(zacatek_v_poli===7)
-{
-zacatek_v_poli=0;
-}
-else if(zacatek_v_poli===8)
-{
-zacatek_v_poli=1;
-}
-else if(zacatek_v_poli===9)
-{
-zacatek_v_poli=2;
-}
-else if(zacatek_v_poli===10)
-{
-zacatek_v_poli=3;
-}
-else if(zacatek_v_poli===11)
-{
-zacatek_v_poli=4;
-}
-else if(zacatek_v_poli===12)
-{
-zacatek_v_poli=5;
-}
-else if(zacatek_v_poli===13)
-{
-zacatek_v_poli=6;
-}
-}
-else
-{
-// pokud je suma posunu záporné číslo
-if(zacatek_v_poli===-1)
-{
-zacatek_v_poli=6;
-}
-else if(zacatek_v_poli===-2)
-{
-zacatek_v_poli=5;
-}
-else if(zacatek_v_poli===-3)
-{
-zacatek_v_poli=4;
-}
-else if(zacatek_v_poli===-4)
-{
-zacatek_v_poli=3;
-}
-else if(zacatek_v_poli===-5)
-{
-zacatek_v_poli=2;
-}
-else if(zacatek_v_poli===-6)
-{
-zacatek_v_poli=1;
-}
+// pokud bude měsíc prosinec, začnou měsíce od ledna a přičte se rok
+a_m=datum.mesic_v_roce+this.poloha-datum.mesice.length; // upraví číslo měsíce tak, aby vycházel na následující měsíc v novém roce
+a_r++; // rok se zvětší o 1
 }
 
+const dni_v_tydnu=datum.dny.length; // počet dní v týdnu
+const a_d_m=new Date(a_r,a_m,1).getDay(); // první den v měsíci (1. den)
+
+for(let i=0;i<dni_v_tydnu;i++)
+{
+const dayIndex=(a_d_m+i)%dni_v_tydnu; // modulo
 const p_e=document.getElementById(`${this.den_id}${i+1}`); // HTML P elementy zastupující dny v týdnu Po-Ne
 if(p_e)
 {
 // pokud HTML element existuje
-p_e.innerText=datum.dny[zacatek_v_poli]; // změní popisky Po,Út, St, Čt , Pá , So , Ne podle počátku dne v měsíci
-}
+(p_e as HTMLElement).innerText=datum.dny[dayIndex]; // změní popisky Po,Út, St, Čt , Pá , So , Ne podle počátku dne v měsíci
+}}}
 
-
-}}
-
-console.log("den v týdnu "+a_d);
-console.log("modulo den v měsíci: "+a_d_m%7);
-
-}
 
 };
 
@@ -307,6 +231,7 @@ kalendar.posun=-1; // přičte +1 poloze uživatele v kalendáři
 kalendar.nazev_mesice(); // upraví název měsíce vzhledem k aktuální poloze uživatele v kalendáři
 kalendar.upravit(); // upraví kalendář, tak. aby zobrazoval pouze dny v aktuálním měsíci
 kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
+kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
 }
 else if(k===this.id_posun[1])
 {
@@ -318,6 +243,7 @@ kalendar.posun=+1; // přičte +1 poloze uživatele v kalendáři, řešeno sett
 kalendar.nazev_mesice(); // upraví název měsíce vzhledem k aktuální poloze uživatele v kalendáři
 kalendar.upravit(); // upraví kalendář, tak. aby zobrazoval pouze dny v aktuálním měsíci
 kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
+kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
 }
 
 }
@@ -329,7 +255,7 @@ kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
 
 class Datum {
 readonly mesice:string[]=["leden","únor","březen","duben","květen","červen","červenec","srpen","září","říjen","listopad","prosinec"]; // měsíce v roce
-readonly dny:string[]=["Po","Út","St","Čt","Pá","So","Ne"]; // dny v týdnu
+readonly dny=["Ne","Po","Út","St","Čt","Pá","So"]; // dny v týdnu
 
 get den_v_tydnu(){
 const o_d=new Date(); // načte objekt Date do proměné
