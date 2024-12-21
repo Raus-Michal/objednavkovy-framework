@@ -8,6 +8,7 @@ private book_den=[0,0,0]; // zápis booklého dne uživatelem : rok, měsíc, de
 readonly facke_checked_id:string="fake-checked"; // id input type chacked - fake chacked, který nedošle formulář, dokud není od uživatele označený konkrétní den
 readonly color_oznacen:string="rgb(87,168,110)"; // barva označeného buttonu s dnem v měsíci zvoleným uživatelem
 readonly color_NEoznacen:string="white"; // barva neoznačeného buttonu s dny v měsíci
+readonly z_posun_id:string="pb"; // začátek id vyplňovacích bloků pro posun buttonu s čísly dnů v kalendáři (id="pb1" až id="pb6")
 
 set posun(kam:number){
 // setter bude nastavovat maximální a minimální hodnotu this.poloha
@@ -122,6 +123,7 @@ if (button_i){
 
 
 odebrat_dny(){
+// funkce odebre nadbytečné dny v měsíci
 let cmp=datum.mesic_v_roce+this.poloha; // aktuální číslo měsíce vzhledem k poloze uživatele v kalendáři
     
 let a_r=datum.aktualni_rok; // datum.aktualni_rok je getter, kde návratová hodnota je aktuální rok: 2024,2025 ...
@@ -204,18 +206,42 @@ a_m=datum.mesic_v_roce+this.poloha-datum.mesice.length; // upraví číslo měs�
 a_r++; // rok se zvětší o 1
 }
 
-const dni_v_tydnu=datum.dny.length; // počet dní v týdnu
-const a_d_m=new Date(a_r,a_m,1).getDay(); // první den v měsíci (1. den)
-
-for(let i=0;i<dni_v_tydnu;i++)
+for(let i=0;i<6;i++)
 {
-const dayIndex=(a_d_m+i)%dni_v_tydnu; // modulo
-const p_e=document.getElementById(`${this.den_id}${i+1}`); // HTML P elementy zastupující dny v týdnu Po-Ne
-if(p_e)
+// smyčka zruší všechny posouvací bloky: 6 === počet posouvacích bloků (ib1-pb6)
+const p_b=document.getElementById(`${this.z_posun_id}${i+1}`); // HTML P element zastupující posun dny v týdnu Po-Ne: id je číslováno od 1 proto i+1
+if(p_b)
 {
 // pokud HTML element existuje
-(p_e as HTMLElement).innerText=datum.dny[dayIndex]; // změní popisky Po,Út, St, Čt , Pá , So , Ne podle počátku dne v měsíci
-}}};
+(p_b as HTMLElement).style.display="none"; // schová HTML P element
+}
+}
+
+const a_d_m = new Date(a_r,a_m,1).getDay(); // první den v měsíci (1. den) - kde 0 je neděle
+
+let posunovaci_bloky=a_d_m-1; // určí celkový počet bloků - jelikož máme v kalendáří Po-Ne a v Javascriptu je Ne-Po je tam -1
+
+if(posunovaci_bloky===-1)
+{
+// pokud výjde záporné číslo - jedná se o neděli a musí být posun 6
+posunovaci_bloky=6; // posun o 6
+}
+
+for(let i=0;i<posunovaci_bloky;i++)
+{
+console.log("posun"+i);
+console.log("posun bloku= "+posunovaci_bloky);
+const p_b=document.getElementById(`${this.z_posun_id}${i+1}`); // HTML P element zastupující posun dny v týdnu Po-Ne
+if(p_b)
+{
+// pokud HTML Element existuje
+(p_b as HTMLElement).style.display="block"; // zobrazí vyplňovací HTML P element
+}
+}
+};
+
+
+
 handleEvent(e:any){
 const k:string=e.target.id;
 const cislo_dne:number=parseInt(`${k[1]}${k[2]}`);
@@ -338,7 +364,6 @@ kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,�
 
 class Datum {
 readonly mesice:string[]=["leden","únor","březen","duben","květen","červen","červenec","srpen","září","říjen","listopad","prosinec"]; // měsíce v roce
-readonly dny=["Ne","Po","Út","St","Čt","Pá","So"]; // dny v týdnu
 
 get den_v_tydnu(){
 const o_d=new Date(); // načte objekt Date do proměné
