@@ -4,7 +4,7 @@ readonly p_id:string="b"; // počáteční id každého buttonu ke kterému je p
 readonly m_a_r_id:string="mesic_a_rok"; // id inputu s měsícem a rokem
 readonly den_id:string="d"; // počáteční id každého dne v týdnu v kalendáři <p> Po,Út,St,Čt,Pá,So,Ne
 private poloha:number=0; // proměnná určuje polohu kalendáře 0===default, 1-krok o měsíc dále , 2-krok o dva měsíce dále
-private book_den=[0,0,0]; // zápis booklého dne uživatelem : rok, měsíc, den
+private book_den:number[]=[0,0,0]; // zápis booklého dne uživatelem : rok, měsíc, den
 readonly facke_checked_id:string="fake-checked"; // id input type chacked - fake chacked, který nedošle formulář, dokud není od uživatele označený konkrétní den
 readonly color_oznacen:string="rgb(87,168,110)"; // barva označeného buttonu s dnem v měsíci zvoleným uživatelem
 readonly color_NEoznacen:string="white"; // barva neoznačeného buttonu s dny v měsíci
@@ -341,6 +341,7 @@ kalendar.nazev_mesice(); // upraví název měsíce vzhledem k aktuální poloze
 kalendar.upravit(); // upraví kalendář, tak. aby zobrazoval pouze dny v aktuálním měsíci
 kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
 kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
+kalendar.oznacit_den(); // funkce zajistí, že bude vždy oznacen den a pouze den, který zadal uživatel
 }
 else if(k===this.id_posun[1])
 {
@@ -353,6 +354,7 @@ kalendar.nazev_mesice(); // upraví název měsíce vzhledem k aktuální poloze
 kalendar.upravit(); // upraví kalendář, tak. aby zobrazoval pouze dny v aktuálním měsíci
 kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
 kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
+kalendar.oznacit_den(); // funkce zajistí, že bude vždy oznacen den a pouze den, který zadal uživatel
 }
 
 }
