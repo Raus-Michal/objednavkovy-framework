@@ -309,6 +309,9 @@ button_i.style.backgroundColor=this.color_oznacen; // přidá buttonu barvu ozna
 class Mesic_a_rok{
 readonly id_posun=["m_minus","m_plus"]; // id šipek s posunem měsíce 0===vzad, 1===vpřed
 readonly id_text="mesic_a_rok"; // id inputu s textem měsíc a rok
+readonly id_kalendar="plocha_kalendar"; // ide Fielsetu kalendáře, kde jsou dny Po-Pá, dny v měsící 1-31, výplně 1-6
+private touchStartX:number=0; // zachycení začátku pohybu uživatele prstem na obrazovce
+private touchEndX:number=0; // zachycení konce pohybu uživatele prstem na obrazovce
 aktivace(){
 // funkce aktivuje posluchače šipek měsíc vzad a vpřed
 
@@ -326,15 +329,47 @@ if(butt_2)
 // pokud existuhe HTML objekt button šipka vpřed
 butt_2.addEventListener("click",this); // posluchač click pro šipku vpřed
 }
+const plocha_dny=document.getElementById(this.id_kalendar); // Fielset - plocha kalendáře
 
-};
-handleEvent(e:any){
-const k:string=e.target.id; // id buttonu na který bylo kliknuto
-
-if(k===this.id_posun[0])
+if(plocha_dny)
 {
-// kliknuto na button VZAD
+// Posluchač pro začátek dotyku
+(plocha_dny as HTMLFieldSetElement).addEventListener("touchstart",(e)=>{
+this.touchStartX=e.touches[0].clientX; // počáteční souřadnice pohybu po ose X
+});
 
+// Posluchač pro pohyb prstu
+(plocha_dny as HTMLFieldSetElement).addEventListener("touchmove",(e)=>{
+this.touchEndX=e.touches[0].clientX;  // konečné souřadnice pohybu po ose X
+});
+
+// Posluchač pro konec dotyku
+(plocha_dny as HTMLFieldSetElement).addEventListener("touchend",(e)=>{
+this.handleGesture(e); // funkce vyhodnotí zda uživatel udělal pohyb prstem na obrazovce vpravo nebo vlevo
+});}
+};
+handleGesture(e:any){
+ // funkce vyhodnotí zda uživatel udělal pohyb prstem na obrazovce vpravo nebo vlevo
+const diffX=this.touchEndX-this.touchStartX; // rozdíl hodnoty počátečního dotku uživatele plochy a konečného ukončení pohybu 
+if(Math.abs(diffX)>125){ // Práh pohybu (125px)
+if(diffX>0){
+console.log("Tah doprava");
+this.handleEvent(e,1); // tah doprava
+}else{
+console.log("Tah doleva");
+this.handleEvent(e,2); // tah doleva
+}}
+else
+{
+console.log("Pohyb nebyl dostatečný");
+}
+};
+handleEvent(e:any,pohyb:number=0){
+const k:string=e.currentTarget.id; // id odkazuje na prvek, na který je navázán posluchač události
+
+if(k===this.id_posun[0]||(pohyb===1&&k===this.id_kalendar))
+{
+// kliknuto na button VZAD, nebo tah uživatele prstem po kalendáři doprava
 console.log("VZAD");
 kalendar.posun=-1; // přičte +1 poloze uživatele v kalendáři
 kalendar.nazev_mesice(); // upraví název měsíce vzhledem k aktuální poloze uživatele v kalendáři
@@ -343,11 +378,9 @@ kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
 kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
 kalendar.oznacit_den(); // funkce zajistí, že bude vždy oznacen den a pouze den, který zadal uživatel
 }
-else if(k===this.id_posun[1])
+else if(k===this.id_posun[1]||(pohyb===2&&k===this.id_kalendar))
 {
-// kliknuto na button VPŘED
-
-
+// kliknuto na button VPŘED, nebo tah uživatele prstem po kalendáři doleva
 console.log("VPŘED");
 kalendar.posun=+1; // přičte +1 poloze uživatele v kalendáři, řešeno setterem
 kalendar.nazev_mesice(); // upraví název měsíce vzhledem k aktuální poloze uživatele v kalendáři
@@ -408,8 +441,8 @@ event.preventDefault(); // Zabrání výchozímu chování (odeslání formulá�
 }
 
 const datum=new Datum(); // vytvoření objektu datum
-const kalendar= new Kalendar(); // pomocí class Kalendar vytvoří objekt kalendar
-const mesic_a_rok= new Mesic_a_rok(); // pomocí class Mesic_a_rok vytvoří objekt mesic_a_rok
+const kalendar=new Kalendar(); // pomocí class Kalendar vytvoří objekt kalendar
+const mesic_a_rok=new Mesic_a_rok(); // pomocí class Mesic_a_rok vytvoří objekt mesic_a_rok
 
 kalendar.vytvorit(); // vytvoří čísla na buttonu kalendáře
 kalendar.nazev_mesice(); // funkce přepíše název měsíce a roku v input měsíc a rok
