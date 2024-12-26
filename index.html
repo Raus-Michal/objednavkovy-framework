@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 
 
-<link rel="stylesheet" href="css/css.css">
+<link rel="stylesheet" href="css/css.css?v=1">
 
 <!-- popis vebové stránky
 <meta name="description" content = " Popis o čem je www stránka ">
@@ -32,20 +32,20 @@
 
 <fieldset id="plocha_kalendar" class="b-dny" style="position: relative;">
 
-<p id="d1">Po</p>
-<p id="d2">Út</p>
-<p id="d3">St</p>
-<p id="d4">Čt</p>
-<p id="d5">Pá</p>
-<p id="d6">So</p>
-<p id="d7">Ne</p>
+<p class="bw">Po</p>
+<p class="bw">Út</p>
+<p class="bw">St</p>
+<p class="bw">Čt</p>
+<p class="bw">Pá</p>
+<p class="bw">So</p>
+<p class="bw">Ne</p>
 
-<p id="pb1" class="d-n ma">X</p>
-<p id="pb2" class="d-n ma">X</p>
-<p id="pb3" class="d-n ma">X</p>
-<p id="pb4" class="d-n ma">X</p>
-<p id="pb5" class="d-n ma">X</p>
-<p id="pb6" class="d-n ma">X</p>
+<p id="pb1" class="p-v d-n ma">X</p>
+<p id="pb2" class="p-v d-n ma">X</p>
+<p id="pb3" class="p-v d-n ma">X</p>
+<p id="pb4" class="p-v d-n ma">X</p>
+<p id="pb5" class="p-v d-n ma">X</p>
+<p id="pb6" class="p-v d-n ma">X</p>
 
 <button id="b1" type="button" title=""> </button>
 <button id="b2" type="button" title=""> </button>
@@ -87,20 +87,20 @@
 <fieldset>
 
 <ol class="b-hod">
-<li><input type="radio" name="cas" id="cas1" required>9:00-9:30&#8239;h</li>
-<li><input type="radio" name="cas" id="cas2">9:30-10:00&#8239;h</li>
-<li><input type="radio" name="cas" id="cas3">10:00-10:30&#8239;h</li>
-<li><input type="radio" name="cas" id="cas4">10:30-11:00&#8239;h</li>
-<li><input type="radio" name="cas" id="cas5">11:30-12:00&#8239;h</li>
-<li><input type="radio" name="cas" id="cas6">12:00-12:30&#8239;h</li>
-<li><input type="radio" name="cas" id="cas7">12:30-13:00&#8239;h</li>
-<li><input type="radio" name="cas" id="cas8">13:00-13:30&#8239;h</li>
-<li><input type="radio" name="cas" id="cas9">13:30-14:00&#8239;h</li>
-<li><input type="radio" name="cas" id="cas10">14:00-14:30&#8239;h</li>
-<li><input type="radio" name="cas" id="cas11">14:30-15:00&#8239;h</li>
-<li><input type="radio" name="cas" id="cas12">15:00-15:30&#8239;h</li>
-<li><input type="radio" name="cas" id="cas13">15:30-16:00&#8239;h</li>
-<li><input type="radio" name="cas" id="cas14">16:00-16:30&#8239;h</li>
+<li id="lic1"><input id="cas1" type="radio" name="cas" title="v čase 9:00-9:30hod" required>9:00-9:30&#8239;h</li>
+<li id="lic2"><input id="cas2" type="radio" name="cas" title="v čase 9:30-10:00hod">9:30-10:00&#8239;h</li>
+<li id="lic3"><input id="cas3" type="radio" name="cas" title="v čase 10:00-10:30hod">10:00-10:30&#8239;h</li>
+<li id="lic4"><input id="cas4" type="radio" name="cas" title="v čase 10:30-11:00hod">10:30-11:00&#8239;h</li>
+<li id="lic5"><input id="cas5" type="radio" name="cas" title="v čase 11:30-12:00hod">11:30-12:00&#8239;h</li>
+<li id="lic6"><input id="cas6" type="radio" name="cas" title="v čase 12:00-12:30hod">12:00-12:30&#8239;h</li>
+<li id="lic7"><input id="cas7" type="radio" name="cas" title="v čase 12:30-13:00hod">12:30-13:00&#8239;h</li>
+<li id="lic8"><input id="cas8" type="radio" name="cas" title="v čase 13:00-13:30hod">13:00-13:30&#8239;h</li>
+<li id="lic9"><input id="cas9" type="radio" name="cas" title="v čase 13:30-14:00hod">13:30-14:00&#8239;h</li>
+<li id="lic10"><input id="cas10" type="radio" name="cas" title="v čase 14:00-14:30hod">14:00-14:30&#8239;h</li>
+<li id="lic11"><input id="cas11" type="radio" name="cas" title="v čase 14:30-15:00hod">14:30-15:00&#8239;h</li>
+<li id="lic12"><input id="cas12" type="radio" name="cas" title="v čase 15:00-15:30hod">15:00-15:30&#8239;h</li>
+<li id="lic13"><input id="cas13" type="radio" name="cas" title="v čase 15:30-16:00hod">15:30-16:00&#8239;h</li>
+<li id="lic14"><input id="cas14" type="radio" name="cas" title="v čase 16:00-16:30hod">16:00-16:30&#8239;h</li>
 </ol>
 
 
@@ -109,8 +109,7 @@
 
 </fieldset>
 
-<fieldset>
-<div class="b-chec"><input type="checkbox" title="Zatržením souhlasíte s licenčními podmínkami" required><p>Souhlasím se zpracováním OU</p></div>
+<fieldset class="potvrzeni">
 <button id="rezervovat" type="submit">Rezervovat</button>
 </fieldset>
 

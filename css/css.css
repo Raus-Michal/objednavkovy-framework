@@ -63,6 +63,8 @@ width:100%;
 font-size:100%;
 line-height:1;
 margin:0;
+padding:0;
+background-color:var(--b5);
 }
 
 article
@@ -112,6 +114,8 @@ display:flex;
 align-items:center;
 justify-content:center;
 overflow:auto;
+background-color:var(--b5);
+padding:1rem;
 }
 
 .f-kon
@@ -127,22 +131,79 @@ max-width:22.5rem;
 .p-n
 {
 font-family:"nadpis",sans-serif;
+color:white;
 font-size:2rem;
 text-align:center;
-font-weight:600;
+font-weight:900;
+line-height:1;
+margin-top:.5rem;
+margin-bottom:0;
+letter-spacing:.12rem;
+word-spacing:.2rem;
 }
+
+
+
 
 .f-kon fieldset
 {
 border:none;
+padding:0;
+margin:0;
 }
 
 .b-mesic
 {
-display:flex;
-justify-content:center;
+display:grid;
+grid-template-columns:auto 1fr auto;
 }
 
+.b-mesic button
+{
+width:2rem;
+height:2rem;
+max-width:2rem;
+max-height:2rem;
+min-width:2rem;
+min-height:2rem;
+line-height:1.9;
+font-weight:bold;
+color:black;
+background-color:white;
+border:1px solid black;
+}
+
+.b-mesic button:first-child
+{
+border-radius:10px 0 0 10px;
+}
+
+.b-mesic button:last-child
+{
+border-radius:0 10px 10px 0;
+}
+
+.b-mesic input
+{
+height:2rem;
+max-height:2rem;
+padding:.5rem .5rem .25rem .15rem;
+text-align:center;
+font-weight:bold;
+border:none;
+border-top:1px solid black;
+border-bottom:1px solid black;
+border-radius:0px;
+box-shadow:none;
+background-color:var(--b4);
+cursor:default;
+}
+
+.b-mesic input:focus
+{outline: none;
+box-shadow:none;
+border-color:initial;
+}
 
 .b-dny
 {
@@ -151,7 +212,6 @@ grid-template-columns:repeat(7,1fr);
 gap:.5rem;
 justify-content:center;
 justify-items:center;
-background-color:white;
 min-height:18rem; /* zajistí, že roržení nebude poskakovat při posunech buttonu a jejich počtu */
 }
 
@@ -160,22 +220,46 @@ min-height:18rem; /* zajistí, že roržení nebude poskakovat při posunech but
 margin-bottom:0;
 }
 
-.b-dny button
+.bw
+{
+color:white;
+font-weight:bold;
+}
+
+.b-dny button,.p-v
 {
 display:flex;
 align-items:center;
 justify-content:center;
 border-radius:50%;
+border:1px solid var(--b4);
 width:2rem;
 height:2rem;
 max-width:2rem;
 max-height:2rem;
 min-width:2rem;
 min-height:2rem;
-padding:.5rem;
+padding:.7rem .5rem .5rem .5rem;
 font-size:1rem;
-line-height:normal;
+font-weight:bold;
+line-height:1;
 background-color:white;
+}
+
+.b-dny button:disabled,.p-v
+{
+border:1px dotted grey;
+font-weight:normal;
+color:grey;
+opacity:.7;
+cursor:no-drop;
+}
+
+.p-v
+{
+line-height:.8;
+padding-left:.58rem;
+cursor:no-drop;
 }
 
 .fake-kon
@@ -204,8 +288,8 @@ padding:0;
 list-style-type:none;
 }
 
-/* > 368 px */
-@media only screen and (min-width:23em)
+/* > 320 px */
+@media only screen and (min-width:20em)
 {
 .b-hod
 {
@@ -221,30 +305,62 @@ padding:.5rem;
 border:1px solid var(--b4);
 cursor:pointer;
 white-space:nowrap;
-}
-
-.b-chec
-{
-display:flex;
-gap:.5rem;
-align-items:center;
-margin-bottom:2rem;
+border-radius:10px;
+background-color:white;
 }
 
 
-.b-chec p
-{
-margin-bottom:0;
-}
-
-.b-chec input
-{
-width:2rem;
-min-width:2rem;
-height:2rem;
-min-height:2rem;
-border-radius:2px;
+.b-hod li input[type="radio"] {
+appearance: none; /* Skryje standardní radiobutton */
+-webkit-appearance: none; /* Skryje standardní radiobutton */
+-moz-appearance: none; /* Skryje standardní radiobutton */
+width:1rem; /* Nastavení velikosti */
+height:1rem; /* Nastavení velikosti */
+border: 1px solid var(--b5); /* Nastavení barvy borderu */
+border-radius:50%;
+position:relative;
 cursor:pointer;
+background-color:transparent;
+}
+
+/* Styl pro vybraný stav */
+.b-hod li input[type="radio"]:checked {
+background-color:var(--b4); /* Nastavení barvy pozadí */
+border:1px solid var(--b4); /* Barva borderu při vybrání */
+}
+
+.b-hod li input[type="radio"]:checked::after {
+content: '';
+display: block;
+width:.5rem; /* Velikost pro vnitřní kolečko */
+height:.5rem; /* Velikost pro vnitřní kolečko */
+background-color:white; /* Barva vnitřního kolečka */
+border-radius:50%;
+position: absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+}
+
+.b-hod li input[type="radio"]:disabled
+{
+background-color:transparent; /* Barva pozadí pro disabled stav */
+border-color:transparent; /* Barva borderu pro disabled stav */
+cursor:not-allowed; /* Změna kurzoru */
+}
+
+.potvrzeni button
+{
+font-family:"nadpis",sans-serif;
+width:100%;
+font-size:1.25rem;
+font-weight:bold;
+text-align:center;
+padding:.5rem;
+border-radius:10px;
+border:2px solid var(--b4);
+background-color:white;
+margin-bottom:1rem;
 }
 
 .d-n

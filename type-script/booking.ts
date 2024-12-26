@@ -428,6 +428,46 @@ return new Date(rok,mesic+1,0).getDate(); // vrátí počet dnů v aktuálním m
 };
 
 
+class Cas_rezervace
+{
+// objekt zajišťuje potřebné funkcionality pro volbu času rezervace
+readonly id_radio:string="cas"; // počátek ID input type radio cas1-cas14
+readonly id_li:string="lic"; // počátek ID li v kterém je input type radio lic1-lic14
+
+aktivace()
+{
+const pocet_casu=14; // počet celkových časových rozmezí, které může uživatel zvolit 1-14
+for(let i=0;i<pocet_casu;i++)
+{
+// smička zajistí přidělení posluchačú událostí CLICK všem li elementům s volbou času
+const li=document.getElementById(`${this.id_li}${i+1}`); // Element li je číslován od 1 : proto i+1
+if(li)
+{
+// pokud existuje HTML element
+li.addEventListener("click", this); // přidělí posluchač událosi elementu li
+}}};
+
+handleEvent(e:any)
+{
+const k:string=e.target.id; // zjistí ID prvku na který byl klik proveden
+
+const number:number=parseInt(k.replace(/\D/g,'')); // .replace(/\D/g, '') odstraní všechny nečíselné znaky (což jsou ty, které nejsou číslice) z řetězce a parseInt() převádí tento řetězec na celé číslo.
+
+const radio=document.getElementById(`${this.id_radio}${number}`); // příslušný input type radio nacházející se v stejnél li elementu na který bylo kliknuto
+
+if(radio)
+{
+// pokud existuje HTML element
+(radio as HTMLInputElement).checked=true; // zatrhne konkrétní input type radio
+}
+
+}
+
+};
+
+const cas_rezervace=new Cas_rezervace(); // vytvoří objekt pro operace kolem volby času k rezervaci uživatelem
+cas_rezervace.aktivace(); // aktivuje posluchače pro volbu konkrétního času rezervace uživatelem
+
 
 
 
