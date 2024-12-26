@@ -129,15 +129,24 @@
 <form id="dokoncit_form" class="f-kon d-n" action="#" method="post">
 <p class="p-n">Dokončení rezervace</p>
 <fieldset  class="potvrzeni">
-<p>Vaše rezervace telfonního hovoru:</p>
-<p>15:00 hod. dne 24. 12. 2024</p>
+<p>Vaše rezervace telefonního hovoru</p>
+<p>Úterý, 24.&#8239;prosince&#8239;2024, <span class="nw">15:00-15:30&#8239;hod.</span></p>
 <button id="zmenit" type="button" title="Změnit tuto rezervaci">Změnit rezervaci</button>
 </fieldset>
 
-<fieldset>
+<fieldset class="udaje">
+<label>Vaše údaje</label>
 <input type="text" placeholder="Jméno a příjmení" required>
+
+<div class="dabl">
+<button type="button" title="Napiš mi @">@</button>
 <input type="email" placeholder="Váš email" required>
-<input type="tel" placeholder="777666555" required><label>Uveďte telefoní číslo ze kterého bude volat</label>
+</div>
+<div class="dabl">
+<input type="text" value="+420" readonly>
+<input type="tel" id="phone" name="phone" pattern="[0-9]{9}" maxlength="9" placeholder="Telefon (např.: 999000222)" required>
+</div>
+<input type="text" placeholder="Obsah hovoru. O čem bude hovor?">
 </fieldset>
 
 

@@ -353,6 +353,21 @@ border-color:transparent; /* Barva borderu pro disabled stav */
 cursor:not-allowed; /* Změna kurzoru */
 }
 
+.potvrzeni p
+{
+color:white;
+text-align:center;
+font-size:1.25rem;
+font-weight:bold;
+}
+
+.potvrzeni p:first-child
+{
+font-size:1rem;
+margin-bottom:.5rem;
+font-weight:normal;
+}
+
 .potvrzeni button
 {
 font-family:"nadpis",sans-serif;
@@ -367,6 +382,57 @@ background-color:white;
 margin-bottom:1rem;
 }
 
+.udaje
+{
+display:grid;
+gap:1rem;
+justify-content:center;
+grid-template-columns:1fr;
+}
+
+.udaje label
+{
+text-align:center;
+font-weight:bold;
+color:white;
+margin-bottom:-.5rem;
+}
+
+.udaje input,.udaje div input,.udaje div button
+{
+padding:.5rem .5rem .25rem .5rem;
+font-size:1rem;
+border-radius:10px;
+border:1px solid var(--b1);
+background-color:white;
+color:black;
+}
+
+.udaje input:focus,.udaje div input:focus
+{
+outline:1px solid var(--b4); /* Odstranění standardního outline */
+border:1px solid var(--b4); /* Nastavení barvy borderu při focusu */
+caret-color:var(--b5);
+}
+
+.dabl
+{
+display:flex;
+}
+
+.dabl input:first-child,.dabl button:first-child
+{
+width:6ch;
+border-radius:10px 0 0 10px;
+border-right:none;
+}
+
+.dabl input:last-child
+{
+width:calc(100% - 6ch);
+border-radius:0 10px  10px 0;
+}
+
 .d-n
 {
 display:none;
@@ -375,4 +441,9 @@ display:none;
 .ma
 {
 margin:auto;
+}
+
+.nw
+{
+white-space:nowrap;
 }
