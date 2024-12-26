@@ -22,7 +22,7 @@
 <body>
 
 <div class="h-kon">
-<form id="rez_form" class="f-kon" action="#" method="post">
+<form id="rezervace_form" class="f-kon" action="#" method="post">
 <p class="p-n">Rezervovat telefonní&nbsp;hovor</p>
 <fieldset class="b-mesic">
 <button id="m_minus" type="button" title="měsíc zpět">&lt;</button>
@@ -30,7 +30,7 @@
 <button id="m_plus" type="button" title="měsíc vpřed">&gt;</button>
 </fieldset>
 
-<fieldset id="plocha_kalendar" class="b-dny" style="position: relative;">
+<fieldset id="plocha_kalendar" class="b-dny">
 
 <p class="bw">Po</p>
 <p class="bw">Út</p>
@@ -115,6 +115,52 @@
 
 
 </form>
+
+
+
+
+
+
+
+
+
+
+
+<form id="dokoncit_form" class="f-kon d-n" action="#" method="post">
+<p class="p-n">Dokončení rezervace</p>
+<fieldset  class="potvrzeni">
+<p>Vaše rezervace telfonního hovoru:</p>
+<p>15:00 hod. dne 24. 12. 2024</p>
+<button id="zmenit" type="button" title="Změnit tuto rezervaci">Změnit rezervaci</button>
+</fieldset>
+
+<fieldset>
+<input type="text" placeholder="Jméno a příjmení" required>
+<input type="email" placeholder="Váš email" required>
+<input type="tel" placeholder="777666555" required><label>Uveďte telefoní číslo ze kterého bude volat</label>
+</fieldset>
+
+
+<fieldset>
+
+    <input type="checkbox" required>
+    Souhlasím se zpracováním osobních údajů podle
+    <a href="#" target="_blank">Zásad ochrany osobních údajů</a>.
+
+
+</fieldset>
+
+<fieldset class="potvrzeni">
+<button id="dokoncit" type="submit">Dokončit rezervaci</button>
+</fieldset>
+
+
+</form>
+
+
+
+
+
 
 
 

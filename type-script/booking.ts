@@ -465,28 +465,116 @@ if(radio)
 
 };
 
-const cas_rezervace=new Cas_rezervace(); // vytvoří objekt pro operace kolem volby času k rezervaci uživatelem
-cas_rezervace.aktivace(); // aktivuje posluchače pro volbu konkrétního času rezervace uživatelem
-
-
-
-
-const form_rezervace=document.getElementById("rez_form"); // HTML element FORM rezervačního systému
-if(form_rezervace)
+class Boss
 {
-// pokud existuje HTML element FORM rezervačního systému
-(form_rezervace as HTMLFormElement).addEventListener("submit",(event)=>{
-event.preventDefault(); // Zabrání výchozímu chování (odeslání formuláře)
-});
+// class bude zajišťovat hlavní chod celé aplikace rezervace
+readonly id_form=["rezervace_form","dokoncit_form"]; // id formulářů
+readonly id_button=["zmenit"]; // id hlavních buttonů formulářů
+
+posluchace()
+{
+// posluchače formulářů a hlavních buttonů formulářů
+const d1=this.id_form.length; // délka pole
+for(let i=0;i<d1;i++)
+{
+// smička zajistí blokaci formulářů odesláním submit
+const form=document.getElementById(this.id_form[i]); // HTML element FORM
+if(form){
+// pokud existuje HTML element FORM
+form.addEventListener("submit",this); // přiřadí posluchač k formuláři
+};
 }
 
-const datum=new Datum(); // vytvoření objektu datum
-const kalendar=new Kalendar(); // pomocí class Kalendar vytvoří objekt kalendar
-const mesic_a_rok=new Mesic_a_rok(); // pomocí class Mesic_a_rok vytvoří objekt mesic_a_rok
+const d2=this.id_button.length; // délka pole
+for(let i=0;i<d2;i++)
+{
+// smička zajistí posluchače pro hlavní butony formulářů: Změnit rezervaci
+const button=document.getElementById(this.id_button[i]); // HTML element Button
+if(button)
+{
+button.addEventListener("click",this); // přiřadí posluchač click k buttonu na this
+}
+}
 
+
+};
+
+
+handleEvent(e:any)
+{
+const k=e.target.id; // id buttonu na který bylo kliknuto
+
+
+if(k===this.id_form[0]||k===this.id_form[1])
+{
+// pokud jde požadavek od některého z formulářů
+e.preventDefault(); // Zabrání výchozímu chování (odeslání formuláře)
+}
+
+if(k===this.id_form[0])
+{
+// pokud byl požadavek uživatele klik na button Rezervovat
+this.form_posun(this.id_form[0],this.id_form[1]); // metoda zajistí posun formuláře z Rezervovat na Dokončit Rezervaci
+}
+
+if(k===this.id_button[0])
+{
+// pokud byl požadavek uživatele klik na button Změnit rezervaci
+this.form_posun(this.id_form[1],this.id_form[0]);  // metoda zajistí posun formuláře z Rezervovat na Dokončit Rezervaci
+}
+
+if(k===this.id_form[1])
+{
+// pokud byl požadavek uživatele klik na button Dokončit rezervaci
+this.rezervovat(); // metoda zajistí plné dokončení rezervace
+}
+
+
+
+
+};
+
+form_posun(old_form:string,new_form:string)
+{
+// metoda zajistí posun formuláře z Rezervovat na Dokončit Rezervaci a opačně (old_form=== ID formuláře, který hceme zavřít), (new_form=== ID formuláře,který chceme otevřít)
+
+const form_old=document.getElementById(old_form); // HTML element FORM
+const form_new=document.getElementById(new_form); // HTML element FORM
+
+if(form_old&&form_new)
+{
+form_old.style.display="none";
+form_new.style.opacity="0";
+form_new.style.display="flex";
+setTimeout(()=>
+{
+form_new.style.opacity="1";
+},100); // drobné zpoždění zajistí bezproblémový průběh animace opacity
+}};
+
+rezervovat(){
+// metoda zajistí plné dokončení rezervace
+console.log("Dokončit rezervaci");
+};
+
+spustit_aplikaci()
+{
+// metoda zajišťuje spuštění základních procesů pro chod aplikace rezervace
+this.posluchace(); // spustí posluchače formulářů a hlavních buttonů formulářů
 kalendar.vytvorit(); // vytvoří čísla na buttonu kalendáře
 kalendar.nazev_mesice(); // funkce přepíše název měsíce a roku v input měsíc a rok
 kalendar.upravit(); // upraví kalendář, tak. aby zobrazoval pouze dne v aktuálním měsíci mimo dnešního dne
 kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
 kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
 mesic_a_rok.aktivace(); // aktivuje posluchače události click k tlačítkům pro posun měsíce VPŘED a VZAD
+cas_rezervace.aktivace(); // aktivuje posluchače pro volbu konkrétního času rezervace uživatelem
+}
+
+};
+
+const boss=new Boss; // vytvoří objekt, který má nastarosti hlavní chod aplikace rezervace
+const cas_rezervace=new Cas_rezervace(); // vytvoří objekt pro operace kolem volby času k rezervaci uživatelem
+const datum = new Datum(); // vytvoření objektu datum
+const kalendar = new Kalendar(); // pomocí class Kalendar vytvoří objekt kalendar
+const mesic_a_rok = new Mesic_a_rok(); // pomocí class Mesic_a_rok vytvoří objekt mesic_a_rok
+boss.spustit_aplikaci(); // metoda zajistí spuštění hlavních funkcí aplikace
