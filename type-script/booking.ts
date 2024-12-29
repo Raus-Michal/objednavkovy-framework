@@ -567,11 +567,50 @@ this.vybrany_cas=number; // do proměnné uloží informaci s číslem, podle kt
 
 };
 
+class Dia
+{
+// CLASS slouží pro řízení otvírání a zavírání dialogových oken
+on(id:string,id_butt:string,id_kotva:string="")
+{
+
+const okno=document.getElementById(id); // načte HTML element dialogového okna
+if(okno)
+{
+// pokud HTML objekt existuje
+(okno as HTMLDialogElement).showModal(); // otevře dialogové okno
+
+
+const button_close=document.getElementById(id_butt); // načte HTML element buttonu pro zavření dialogového okna
+if(button_close)
+{
+// pokud HTML objekt existuje
+(button_close as HTMLButtonElement).addEventListener("click",()=>{(okno as HTMLDialogElement).close();}); // přidá posluchač buttonu pro zavření dialogového okna
+
+/* !!!!!!!!!!! POZOR - chybý odebrání posluchače - po více otevření dia oken by se násobil !!!! */
+
+}
+}
+
+if(id_kotva!=="")
+{
+// pokud byl zaslána id kotvy pro scroll
+const kotva=document.getElementById(id_kotva); // načte HTML element s kotvou pro SroollTo
+
+if(kotva)
+{
+// pokud HTML objekt existuje
+kotva.scrollIntoView({ behavior: 'smooth'}); // provede scrool TO na HTML kotvu
+}
+}
+}
+
+};
+
 class Boss
 {
 // class bude zajišťovat hlavní chod celé aplikace rezervace
 readonly id_form=["rezervace_form","dokoncit_form"]; // id formulářů
-readonly id_button=["zmenit"]; // id hlavních buttonů formulářů
+readonly id_button=["zmenit","ukaz_zasady"]; // id hlavních buttonů formulářů
 readonly id_cas="slovne_cas_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje čas rezervace
 readonly id_den="slovne_den_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje den rezervace Pondělí-Neděle
 readonly id_den_v_mesici="ciselne_den_v_mesici_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje den v měsíci rezervace 1-31
@@ -590,7 +629,7 @@ for(let i=0;i<d1;i++)
 const form=document.getElementById(this.id_form[i]); // HTML element FORM
 if(form){
 // pokud existuje HTML element FORM
-form.addEventListener("submit",this); // přiřadí posluchač k formuláři
+(form as HTMLFormElement).addEventListener("submit",this); // přiřadí posluchač k formuláři
 };
 }
 
@@ -601,7 +640,7 @@ for(let i=0;i<d2;i++)
 const button=document.getElementById(this.id_button[i]); // HTML element Button
 if(button)
 {
-button.addEventListener("click",this); // přiřadí posluchač click k buttonu na this
+(button as HTMLButtonElement).addEventListener("click",this); // přiřadí posluchač click k buttonu na this
 }
 }
 
@@ -705,6 +744,12 @@ if(k===this.id_button[0])
 this.form_posun(this.id_form[1],this.id_form[0]);  // metoda zajistí posun formuláře z Rezervovat na Dokončit Rezervaci
 }
 
+if(k===this.id_button[1])
+{
+// kliknuto na button Zásady ochrany osobních údajů
+dia.on("zasady","butt_zasady"); // otevře dialogové okno Zásady ochrany osobních údajů  !!!!! OPRAVIT !!!! - id dát do pole! this!
+}
+
 if(k===this.id_form[1])
 {
 // pokud byl požadavek uživatele klik na button Dokončit rezervaci
@@ -772,4 +817,5 @@ const cas_rezervace=new Cas_rezervace(); // vytvoří objekt pro operace kolem v
 const datum = new Datum(); // vytvoření objektu datum
 const kalendar = new Kalendar(); // pomocí class Kalendar vytvoří objekt kalendar
 const mesic_a_rok = new Mesic_a_rok(); // pomocí class Mesic_a_rok vytvoří objekt mesic_a_rok
+const dia=new Dia(); // pomocí class Dia se řídí otevírání a zavírání dialogových oken
 boss.spustit_aplikaci(); // metoda zajistí spuštění hlavních funkcí aplikace

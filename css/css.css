@@ -494,6 +494,14 @@ margin-top:.25rem;
 cursor:pointer;
 }
 
+
+dialog.dia-zasady[open]
+{animation:fadeIn .3s ease-in-out;}
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(-20px);}
+to{opacity:1;transform:translateY(0);}
+}
+
 .d-n
 {
 display:none;
