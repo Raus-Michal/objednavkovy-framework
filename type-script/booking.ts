@@ -67,7 +67,7 @@ const cislo_t=cislo.toString(); // převede proměnou type number na string
 upravit(){
 // funkce zablokuje pro booking dny které v měsíci už uběhly a den následující
 
-const a_d=datum.den_v_mesici; // aktuální den v měsíci 1-31,1-30,1-28 ...
+let a_d=datum.den_v_mesici; // aktuální den v měsíci 1-31,1-30,1-28 ...
 
 for(let i=1;i<32;i++)
 {
@@ -85,7 +85,14 @@ if(this.poloha===0)
 // pokud bude poloha uživatel v kalendáři nezměněna
 if(a_d!==1)
 {
-// pokud se právě aktuální den v měsíci !== 1 (tedy to není první den v měsící), budou se odebírat buttony pro objenání
+// pokud se právě aktuální den v měsíci !== 1 (tedy to není první den v měsící), budou se odebírat buttony pro objenání do tohoto dne v měsíci
+const hours = new Date().getHours(); // Získání aktuální hodiny
+if(hours>17)
+{
+// pokud je po 18 hod - zablokuje se booking i následujícího dne
+a_d++; // +1 === blokace ještě dalšího dne
+}
+
 for(let i=1;i<a_d+1;i++)
 {
 const button_i=document.getElementById(`${this.p_id}${i}`); // konkrétní button s číslem dne v měsíci
@@ -98,12 +105,24 @@ if(button_i)
 }
 else
 {
-// pokud právě aktuální den v měsíci je prvního - bude se odebírat poze tento den
+// pokud právě aktuální den v měsíci je prvního - bude se odebírat tento den
 const button_i=document.getElementById(`${this.p_id}${a_d}`); // konkrétní button s číslem dne v měsíci
 if(button_i)
 {
 (button_i as HTMLButtonElement).disabled=true; // udělá disabled na buttonu 1. v měsíci
+(button_i as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonům, které ho nepotřebují
 }
+
+const hours = new Date().getHours(); // Získání aktuální hodiny
+if(hours>17)
+{
+// pokud je po 18 hod - zablokuje se booking i následujícíiho dne
+a_d++; // +1 === blokace ještě dalšího dne
+const button_i2=document.getElementById(`${this.p_id}${a_d}`); // konkrétní button s číslem dne v měsíci
+if(button_i2){
+(button_i2 as HTMLButtonElement).disabled=true; // udělá disabled na buttonu 2. v měsíci
+(button_i2 as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonům, které ho nepotřebují
+}}
 }
 }
 else
@@ -113,7 +132,7 @@ for(let i=1;i<32;i++){
 const button_i=document.getElementById(`${this.p_id}${i}`); // konkrétní button s číslem dne v měsíci
 if (button_i){
 // pokud HTML objekt pod Id existuje
-(button_i as HTMLButtonElement).disabled = false; // udělá odstraní disabled na všech buttonech
+(button_i as HTMLButtonElement).disabled=false; // udělá odstraní disabled na všech buttonech
 }
 }
 }
@@ -135,10 +154,7 @@ cmp=datum.mesic_v_roce+this.poloha-datum.mesice.length; // upraví číslo měs�
 a_r++; // přidá se jeden rok
 }
 const pdva=datum.dnu_v_mesici(a_r,cmp); // funkce vrací počet dní v aktuálním měsíci datum.dnu_v_mesici(rok,měsíc)
-    
-console.log("Počet dní v aktuálním měsíci:"+ pdva);
-    
-    
+
 for(let i=1;i<32;i++)
 {
 // smyčka zneviditelní všechny budttony v měsíci
