@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 
 
-<link rel="stylesheet" href="css/css.css?v=1">
+<link rel="stylesheet" href="css/css.css?v=2">
 
 <!-- popis vebové stránky
 <meta name="description" content = " Popis o čem je www stránka ">
@@ -24,6 +24,7 @@
 <div class="h-kon">
 <form id="rezervace_form" class="f-kon" action="#" method="post">
 <p class="p-n">Rezervovat telefonní&nbsp;hovor</p>
+<div class="spojovac">
 <fieldset class="b-mesic">
 <button id="m_minus" type="button" title="měsíc zpět">&lt;</button>
 <input id="mesic_a_rok" type="text" title="měsíc a rok" readonly>
@@ -82,7 +83,7 @@
 <button id="b31" type="button" title=""> </button>
 <div class="fake-kon"><input id="fake-checked" type="checkbox" title="Určete den rezervace" required></div>
 </fieldset>
-
+</div>
 
 <fieldset>
 
@@ -128,10 +129,13 @@
 
 <form id="dokoncit_form" class="f-kon d-n" action="#" method="post">
 <p class="p-n">Dokončení rezervace</p>
-<fieldset  class="potvrzeni">
+
+<fieldset class="hlava">
 <p>Vaše rezervace telefonního hovoru</p>
 <p>Úterý, 24.&#8239;prosince&#8239;2024, <span class="nw">15:00-15:30&#8239;hod.</span></p>
+<div class="potvrzeni">
 <button id="zmenit" type="button" title="Změnit tuto rezervaci">Změnit rezervaci</button>
+</div>
 </fieldset>
 
 <fieldset class="udaje">
@@ -146,7 +150,7 @@
 <input type="text" value="+420" readonly>
 <input type="tel" id="phone" name="phone" pattern="[0-9]{9}" maxlength="9" placeholder="Telefon (např.: 999000222)" required>
 </div>
-<input type="text" placeholder="Obsah hovoru. O čem bude hovor?">
+<input type="text" placeholder="O čem bude hovor?">
 </fieldset>
 
 

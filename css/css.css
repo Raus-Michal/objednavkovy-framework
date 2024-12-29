@@ -121,12 +121,17 @@ padding:1rem;
 .f-kon
 {
 display:flex;
-flex-direction:column;
+flex-direction:row;
+flex-wrap:wrap;
+justify-content:center;
+align-items:flex-end;
 gap:1.5rem;
 width:100%;
-max-width:22.5rem;
+max-width:58rem; /* 928px */
 transition:250ms opacity;
 }
+
+
 
 
 .p-n
@@ -141,17 +146,30 @@ margin-top:.5rem;
 margin-bottom:0;
 letter-spacing:.12rem;
 word-spacing:.2rem;
+width:100%;
 }
 
 
 
 
-.f-kon fieldset
+.f-kon fieldset, .spojovac
 {
 border:none;
 padding:0;
 margin:0;
+width:100%;
+max-width:28rem; /* 448 px */
 }
+
+ /* > 448px */
+ @media only screen and (min-width:28em)
+ {
+.f-kon fieldset, .spojovac
+ {
+ max-width:18rem;
+ max-width:calc(18rem + 1vw);
+ }
+ }
 
 .b-mesic
 {
@@ -172,6 +190,7 @@ font-weight:bold;
 color:black;
 background-color:white;
 border:1px solid black;
+margin-bottom:1rem;
 }
 
 .b-mesic button:first-child
@@ -213,6 +232,8 @@ grid-template-columns:repeat(7,1fr);
 gap:.5rem;
 justify-content:center;
 justify-items:center;
+align-items:center;
+align-content:center;
 min-height:18rem; /* zajistí, že roržení nebude poskakovat při posunech buttonu a jejich počtu */
 position:relative;
 }
@@ -245,6 +266,7 @@ padding:.7rem .5rem .5rem .5rem;
 font-size:1rem;
 font-weight:bold;
 line-height:1;
+color:black;
 background-color:white;
 }
 
@@ -254,13 +276,6 @@ border:1px dotted grey;
 font-weight:normal;
 color:grey;
 opacity:.7;
-cursor:no-drop;
-}
-
-.p-v
-{
-line-height:.8;
-padding-left:.58rem;
 cursor:no-drop;
 }
 
@@ -353,25 +368,19 @@ border-color:transparent; /* Barva borderu pro disabled stav */
 cursor:not-allowed; /* Změna kurzoru */
 }
 
-.potvrzeni p
+.potvrzeni
 {
-color:white;
-text-align:center;
-font-size:1.25rem;
-font-weight:bold;
-}
-
-.potvrzeni p:first-child
-{
-font-size:1rem;
-margin-bottom:.5rem;
-font-weight:normal;
+width:100%;
+display:flex;
+justify-content:center;
 }
 
 .potvrzeni button
 {
 font-family:"nadpis",sans-serif;
+height:3rem;
 width:100%;
+max-width:28rem; /* 448 px */
 font-size:1.25rem;
 font-weight:bold;
 text-align:center;
@@ -379,7 +388,23 @@ padding:.5rem;
 border-radius:10px;
 border:2px solid var(--b4);
 background-color:white;
+color:black;
 margin-bottom:1rem;
+}
+
+.hlava p
+{
+color:white;
+text-align:center;
+font-size:1.25rem;
+font-weight:bold;
+}
+
+.hlava p:first-child
+{
+font-size:1rem;
+margin-bottom:.5rem;
+font-weight:normal;
 }
 
 .udaje
@@ -406,6 +431,8 @@ border-radius:10px;
 border:1px solid var(--b1);
 background-color:white;
 color:black;
+height:3rem;
+width:100%;
 }
 
 .udaje input:focus,.udaje div input:focus

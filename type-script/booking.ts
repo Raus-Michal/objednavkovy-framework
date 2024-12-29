@@ -235,7 +235,7 @@ const p_b=document.getElementById(`${this.z_posun_id}${i+1}`); // HTML P element
 if(p_b)
 {
 // pokud HTML Element existuje
-(p_b as HTMLElement).style.display="block"; // zobrazí vyplňovací HTML P element
+(p_b as HTMLElement).style.display="flex"; // zobrazí vyplňovací HTML P element
 }
 }
 };
