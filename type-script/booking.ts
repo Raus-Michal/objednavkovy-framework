@@ -411,33 +411,33 @@ if(k===this.id_posun[0]||(pohyb===1&&k===this.id_kalendar))
 {
 // kliknuto na button VZAD, nebo tah uživatele prstem po kalendáři doprava
 console.log("VZAD");
+if(kalendar.aktualni_poloha!==0)
+{
+// pokud níní poloha kalendáře === 0, protože pozun vzad již není dále možný
+problik_posunu(); // interní funkce zajistí probliknutí plochy kalendáře se dny 1-31, aby uživatele vizuělné upozornil na posun, který nastal
+}
 kalendar.posun=-1; // přičte +1 poloze uživatele v kalendáři
 kalendar.nazev_mesice(); // upraví název měsíce vzhledem k aktuální poloze uživatele v kalendáři
 kalendar.upravit(); // upraví kalendář, tak. aby zobrazoval pouze dny v aktuálním měsíci
 kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
 kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
 kalendar.oznacit_den(); // funkce zajistí, že bude vždy oznacen den a pouze den, který zadal uživatel
-if(kalendar.aktualni_poloha!==0)
-{
-// pokud níní poloha kalendáře === 0, protože pozun vzad již není dále možný
-problik_posunu(); // interní funkce zajistí probliknutí plochy kalendáře se dny 1-31, aby uživatele vizuělné upozornil na posun, který nastal
-}
 }
 else if(k===this.id_posun[1]||(pohyb===2&&k===this.id_kalendar))
 {
 // kliknuto na button VPŘED, nebo tah uživatele prstem po kalendáři doleva
 console.log("VPŘED");
+if(kalendar.aktualni_poloha!==12)
+{
+// pokud uživatel není v poloze kalendáře 12, ta je poslední a další pohyb vpřed, již není možný
+problik_posunu(); // interní funkce zajistí probliknutí plochy kalendáře se dny 1-31, aby uživatele vizuělné upozornil na posun, který nastal
+}
 kalendar.posun=+1; // přičte +1 poloze uživatele v kalendáři, řešeno setterem
 kalendar.nazev_mesice(); // upraví název měsíce vzhledem k aktuální poloze uživatele v kalendáři
 kalendar.upravit(); // upraví kalendář, tak. aby zobrazoval pouze dny v aktuálním měsíci
 kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
 kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
 kalendar.oznacit_den(); // funkce zajistí, že bude vždy oznacen den a pouze den, který zadal uživatel
-if(kalendar.aktualni_poloha!==12)
-{
-// pokud uživatel není v poloze kalendáře 12, ta je poslední a další pohyb vpřed, již není možný
-problik_posunu(); // interní funkce zajistí probliknutí plochy kalendáře se dny 1-31, aby uživatele vizuělné upozornil na posun, který nastal
-}
 }
 
 }

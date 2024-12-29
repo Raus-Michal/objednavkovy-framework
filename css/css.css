@@ -379,7 +379,8 @@ justify-content:center;
 .potvrzeni button
 {
 font-family:"nadpis",sans-serif;
-height:3rem;
+height:auto;
+min-height:3rem;
 width:100%;
 max-width:28rem; /* 448 px */
 font-size:1.25rem;
@@ -392,6 +393,17 @@ background-color:white;
 color:black;
 margin-bottom:1rem;
 }
+
+.potvrzeni button.normal-font
+{
+font-size:1rem;
+}
+
+.hlava
+{
+align-self:center;
+}
+
 
 .hlava p
 {
@@ -459,6 +471,26 @@ border-right:none;
 {
 width:calc(100% - 6ch);
 border-radius:0 10px  10px 0;
+}
+
+.souhlas
+{
+color:white;
+display:flex;
+gap:1rem;
+line-height:1.5;
+margin-bottom:1rem;
+text-align:justify;
+hyphens:auto;
+}
+
+.souhlas input
+{
+height:2rem;
+min-height:2rem;
+width:2rem;
+min-width:2rem;
+align-self:center;
 }
 
 .d-n
