@@ -10,9 +10,30 @@ readonly color_oznacen:string="rgb(87,168,110)"; // barva označeného buttonu s
 readonly color_NEoznacen:string="white"; // barva neoznačeného buttonu s dny v měsíci
 readonly z_posun_id:string="pb"; // začátek id vyplňovacích bloků pro posun buttonu s čísly dnů v kalendáři (id="pb1" až id="pb6")
 
+get rezervovane_datum()
+{
+// getter vrací pole s vybraným datumem od uživatele [rok, měsíc(0-11), den]:number[]
+if(this.byl_vybran_datum)
+{
+return this.book_den; // vrací pole s vybraným datumem od uživatele [rok, měsíc(0-11), den]:number[]
+}
+return [9999,9999,9999]; // uživatel nevybral datum a návratová hodnota je taková, aby bylo možné odfiltrovat nezadání uživatele 
+};
+
+
 get aktualni_poloha(){
 // getter slouží k zaslání aktuální polohy uživatele v kalendáři, jetomu poroto, aby private this.poloha mohl měnit použe objekt této třídy
 return this.poloha; // getter vrací aktuální polohu uživatele v kalendáři
+};
+
+get byl_vybran_datum(){
+// getter složí k odpovědi, zda uživatel vybral datum, pokud ano bude TRUE, pokud ne, bude FALSE
+if(this.book_den.some(value=>value!==0))
+{
+// some() - kontroluje, že alespoň jedna hodnota v poli se nerovná 0
+return true; // pokud se všechny prvky v poli !==0 uživatel vybral datum
+}
+return false; // pokud se včechny prvky v poli===0, uživatel nevybral datum
 };
 
 
@@ -483,6 +504,36 @@ class Cas_rezervace
 // objekt zajišťuje potřebné funkcionality pro volbu času rezervace
 readonly id_radio:string="cas"; // počátek ID input type radio cas1-cas14
 readonly id_li:string="lic"; // počátek ID li v kterém je input type radio lic1-lic14
+private vybrany_cas:number=0; // vybraný čas uživatelem, kde 0 znamená, že čas nebyl vybrán a 1 je první čas
+readonly casy:string[]=["9:00-9:30 hod.","9:30-10:00 hod.","10:00-10:30 hod.","10:30-11:00 hod.","11:00-11:30 hod.","11:30-12:00 hod.","12:00-12:30 hod.","12:30-13:00 hod.","13:00-13:30 hod.","13:30-14:00 hod.","14:00-14:30 hod.","14:30-15:00 hod.","15:00-15:30 hod.","15:30-16:00 hod."]; // všechny časy zadané slovně
+
+get cislo_vybraneho_casu()
+{
+// getter vrací číslo vybraného času 1-14
+return this.vybrany_cas; //  vrací číslo vybraného času 1-14
+};
+
+get zobrazit_vybrany_cas()
+{
+// getter pomáhá zasílat čas vybraný uživatelem slovně
+if(this.vybrany_cas!==0)
+{
+// pokud již uživatel vybral nějáký čas, pokud nevybral čas this.vybrany_cas===0
+return this.casy[this.vybrany_cas-1]; // vrátí vybraný čas v textu: -1 protože pole je číslováno od 0, kdežto výbšr času je od 1, pokud je u vybraného času 0, znamená to, že čas nebyl uživatelem vybrán
+}
+return ("Čas nebyl doposud uživatelem vybrán");
+};
+
+get byl_vybran_cas()
+{
+// getter slouží k odpovědi, zda uživatel vybral čas
+if(this.vybrany_cas>0&&this.vybrany_cas<=14)
+{
+// pokud byl vybrán čas uživatelem je jeho výběr v rozmezí 1-14 časových pásem
+return true; // true===čas byl uživatelem vybrán
+}
+return false; // čas nebyl užívatelem vybrán
+};
 
 aktivace()
 {
@@ -509,6 +560,7 @@ if(radio)
 {
 // pokud existuje HTML element
 (radio as HTMLInputElement).checked=true; // zatrhne konkrétní input type radio
+this.vybrany_cas=number; // do proměnné uloží informaci s číslem, podle které je možné zjistit jaký čas byl uživatelem vybrán (1-14)
 }
 
 }
@@ -520,6 +572,13 @@ class Boss
 // class bude zajišťovat hlavní chod celé aplikace rezervace
 readonly id_form=["rezervace_form","dokoncit_form"]; // id formulářů
 readonly id_button=["zmenit"]; // id hlavních buttonů formulářů
+readonly id_cas="slovne_cas_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje čas rezervace
+readonly id_den="slovne_den_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje den rezervace Pondělí-Neděle
+readonly id_den_v_mesici="ciselne_den_v_mesici_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje den v měsíci rezervace 1-31
+readonly id_mesic="slone_mesic_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje měsíc rezervace leden-prosinec
+readonly id_rok="ciselne_rok_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje rok rezervace např. 2024
+private slovne_datum=""; // v proměnné je slovně uložené celé datum rezervace
+private slovne_cas=""; // v proměnné je uloženo slovně konkrétní čas rezervace
 
 posluchace()
 {
@@ -549,6 +608,72 @@ button.addEventListener("click",this); // přiřadí posluchač click k buttonu 
 
 };
 
+zobrazeni_datumu(){
+// funkce zajistí správné zobrazení datumu rezervace ve formuláři Dokončit rezervaci
+
+const dny:string[]=["Neděle","Pondělí","Úterý","Středa","Čtvrtek","Pátek","Sobota"]; // dny v týdnu
+const mesice:string[]=["ledna","února","března","dubna","květena","června","července","srpna","září","října","listopadu","prosince"]; // měsíce v roce
+
+const den_rezervace_uzivatel:number[]=kalendar.rezervovane_datum; // getter vrátí datum zadané uživatelem [rok, měsíc(0-11), den]:number[]
+
+if(den_rezervace_uzivatel.every(value=>value===9999))
+{
+// pokud se návratová hodnota getteru=== [9999,9999,9999], znamená to, že uživatel nevybral datum
+alert("Kritická chyba aplikace: uživatel nevybral datum");
+return; // funkce bude ukončena
+}
+
+const den_v_tydnu=new Date(den_rezervace_uzivatel[0],den_rezervace_uzivatel[1],den_rezervace_uzivatel[2]).getDay(); // den v týdnu v určitém dnu v měsíci a roce, kde 0 je neděle
+
+const den_v_tydnu_slovne:string=dny[den_v_tydnu]; // konkrétní den v roce zadaný uivatelem slovně Neděle až Pátek
+const den_v_mesici:string=den_rezervace_uzivatel[2].toString(); // den v měsíci převeden na string
+const mesic_v_roce_slovne:string=mesice[den_rezervace_uzivatel[1]]; // měsíc v roce slovně
+const rok:string=den_rezervace_uzivatel[0].toString(); // rok převeden na string
+
+const span_den_slovne=document.getElementById(this.id_den);  // HTML SPAN ve formuláři Dokončit rezervaci, kde se zapisuje den rezervace Pondělí-Neděle
+const span_cislo_dne=document.getElementById(this.id_den_v_mesici); // HTML SPAN ve formuláři Dokončit rezervaci, kde se zapisuje den v měsíci rezervace 1-31
+const span_mesic=document.getElementById(this.id_mesic); // HTML SPAN ve formuláři Dokončit rezervaci, kde se zapisuje měsíc rezervace leden-prosinec
+const span_rok=document.getElementById(this.id_rok); //  HTML SPAN ve formuláři Dokončit rezervaci, kde se zapisuje rok rezervace např. 2024
+
+if(span_den_slovne)
+{
+// pokud HTML objekt existuje
+(span_den_slovne as HTMLSpanElement).innerText=den_v_tydnu_slovne; // přepíše den v týdnu
+}
+
+if(span_cislo_dne)
+{
+// pokud HTML objekt existuje
+(span_cislo_dne as HTMLSpanElement).innerText=den_v_mesici; // přepíše číslo dne
+}
+
+if(span_mesic)
+{
+// pokud HTML objekt existuje
+(span_mesic as HTMLSpanElement).innerText=mesic_v_roce_slovne; // přepíše měsíc v roce
+}
+
+if(span_rok)
+{
+// pokud HTML objekt existuje
+(span_rok as HTMLSpanElement).innerText=rok; // přepíše rok
+}
+
+this.slovne_datum=`${den_v_tydnu_slovne}, ${den_v_mesici}.${mesic_v_roce_slovne} ${rok}`; // do proměnné bude vložen kompletní datum rezervace
+
+};
+
+zobrazeni_casu(){
+// funkce zajistí správné zobrazení času rezervace ve formuláři Dokončit rezervaci
+const span_cas=document.getElementById(this.id_cas); // HTML span pro čas rezervace
+if(span_cas)
+{
+(span_cas as HTMLSpanElement).innerText=cas_rezervace.zobrazit_vybrany_cas; // přepíše čas rezervace na čas vybraný uživatelem
+}
+
+this.slovne_cas=cas_rezervace.zobrazit_vybrany_cas; // do proměnné zapíše slovně čas rezerace
+
+};
 
 handleEvent(e:any)
 {
@@ -564,7 +689,14 @@ e.preventDefault(); // Zabrání výchozímu chování (odeslání formuláře)
 if(k===this.id_form[0])
 {
 // pokud byl požadavek uživatele klik na button Rezervovat
+if(cas_rezervace.byl_vybran_cas&&kalendar.byl_vybran_datum)
+{
+// pokud byl vybrán datum a čas rezervace
 this.form_posun(this.id_form[0],this.id_form[1]); // metoda zajistí posun formuláře z Rezervovat na Dokončit Rezervaci
+this.zobrazeni_casu(); // funkce zajistí správné zobrazení času rezervace ve formuláři Dokončit rezervaci
+this.zobrazeni_datumu(); // funkce zajistí správné zobrazení datumu rezervace ve formuláři Dokončit rezervaci
+}
+
 }
 
 if(k===this.id_button[0])
@@ -593,18 +725,31 @@ const form_new=document.getElementById(new_form); // HTML element FORM
 
 if(form_old&&form_new)
 {
-form_old.style.display="none";
-form_new.style.opacity="0";
-form_new.style.display="flex";
+(form_old as HTMLFormElement).style.display="none"; /* vypne starý formulář */
+(form_new as HTMLFormElement).style.opacity="0"; /* nastavý nový formulář na opacity 0 */
+(form_new as HTMLFormElement).style.display="flex"; /* aktivuje na novém formuláři display:flex */
 setTimeout(()=>
 {
-form_new.style.opacity="1";
+(form_new as HTMLFormElement).style.opacity="1"; // nastavý novému formuláři opacity na 1
+(form_new as HTMLFormElement).scrollIntoView({behavior:"smooth"}); // v případě pohybu ve formuláři zajistí posun na jeho počátek-top
 },100); // drobné zpoždění zajistí bezproblémový průběh animace opacity
 }};
 
 rezervovat(){
 // metoda zajistí plné dokončení rezervace
 console.log("Dokončit rezervaci");
+
+const den_rezervace_uzivatel:number[]=kalendar.rezervovane_datum; // getter vrátí datum zadané uživatelem [rok, měsíc(0-11), den]:number[]
+const cas_rezervace_uzivatel:number=cas_rezervace.cislo_vybraneho_casu; // getter vrací číslo vybraného času uživatelem 1-14
+
+const cas_rezervace_slovne:string=this.slovne_cas; // slovně zapsaný čas rezervace pro rozesílání emailem (např.:9:00-9:30 hod.)
+const datum_rezervace_slovne:string=this.slovne_datum; // slovně zapsaný celé datum rezervace pro zaslání emalem (např.: Úterý, 1. dubna 2025)
+
+console.log("den_rezervace_uzivatel: "+den_rezervace_uzivatel);
+console.log("cas_rezervace_uzivatel: "+cas_rezervace_uzivatel);
+console.log("cas_rezervace_slovne: "+cas_rezervace_slovne);
+console.log("datum_rezervace_slovne "+datum_rezervace_slovne);
+
 };
 
 spustit_aplikaci()

@@ -490,7 +490,8 @@ height:2rem;
 min-height:2rem;
 width:2rem;
 min-width:2rem;
-align-self:center;
+margin-top:.25rem;
+cursor:pointer;
 }
 
 .d-n
