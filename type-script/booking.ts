@@ -310,8 +310,10 @@ class Mesic_a_rok{
 readonly id_posun=["m_minus","m_plus"]; // id šipek s posunem měsíce 0===vzad, 1===vpřed
 readonly id_text="mesic_a_rok"; // id inputu s textem měsíc a rok
 readonly id_kalendar="plocha_kalendar"; // ide Fielsetu kalendáře, kde jsou dny Po-Pá, dny v měsící 1-31, výplně 1-6
-private touchStartX:number=0; // zachycení začátku pohybu uživatele prstem na obrazovce
-private touchEndX:number=0; // zachycení konce pohybu uživatele prstem na obrazovce
+private touchStartX:number=0; // zachycení začátku pohybu uživatele prstem na obrazovce (osa X)
+private touchEndX:number=0; // zachycení konce pohybu uživatele prstem na obrazovce (osa X)
+private touchStartY:number=0; // zachycení začátku pohybu uživatele prstem na obrazovce (osa Y)
+private touchEndY:number=0; // zachycení konce pohybu uživatele prstem na obrazovce (osa Y)
 aktivace(){
 // funkce aktivuje posluchače šipek měsíc vzad a vpřed
 
@@ -336,11 +338,13 @@ if(plocha_dny)
 // Posluchač pro začátek dotyku
 (plocha_dny as HTMLFieldSetElement).addEventListener("touchstart",(e)=>{
 this.touchStartX=e.touches[0].clientX; // počáteční souřadnice pohybu po ose X
+this.touchStartY=e.touches[0].clientY; // počáteční souřadnice pohybu po ose Y
 });
 
 // Posluchač pro pohyb prstu
 (plocha_dny as HTMLFieldSetElement).addEventListener("touchmove",(e)=>{
 this.touchEndX=e.touches[0].clientX;  // konečné souřadnice pohybu po ose X
+this.touchEndY=e.touches[0].clientY; // konečné souřadnice pohybu po ose Y
 });
 
 // Posluchač pro konec dotyku
@@ -350,8 +354,9 @@ this.handleGesture(e); // funkce vyhodnotí zda uživatel udělal pohyb prstem n
 };
 handleGesture(e:any){
  // funkce vyhodnotí zda uživatel udělal pohyb prstem na obrazovce vpravo nebo vlevo
-const diffX=this.touchEndX-this.touchStartX; // rozdíl hodnoty počátečního dotku uživatele plochy a konečného ukončení pohybu 
-if(Math.abs(diffX)>125){ // Práh pohybu (125px)
+const diffX=this.touchEndX-this.touchStartX; // rozdíl hodnoty počátečního dotku uživatele plochy a konečného ukončení pohybu (osa X)
+const diffY=this.touchEndY-this.touchStartY; // rozdíl hodnoty počátečního dotku uživatele plochy a konečného ukončení pohybu (osa Y)
+if(Math.abs(diffX)>50&&Math.abs(diffY)<30){ // Práh pohybu (X:50px,Y:30px)
 if(diffX>0){
 console.log("Tah doprava");
 this.handleEvent(e,1); // tah doprava
@@ -363,6 +368,10 @@ else
 {
 console.log("Pohyb nebyl dostatečný");
 }
+this.touchStartX=0; // anulace hodnoty po vyhodnocení Prahu pohybu
+this.touchStartY=0; // anulace hodnoty po vyhodnocení Prahu pohybu
+this.touchEndX=0; // anulace hodnoty po vyhodnocení Prahu pohybu
+this.touchEndY=0; // anulace hodnoty po vyhodnocení Prahu pohybu
 };
 handleEvent(e:any,pohyb:number=0){
 const k:string=e.currentTarget.id; // id odkazuje na prvek, na který je navázán posluchač události
