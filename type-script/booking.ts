@@ -10,6 +10,12 @@ readonly color_oznacen:string="rgb(87,168,110)"; // barva označeného buttonu s
 readonly color_NEoznacen:string="white"; // barva neoznačeného buttonu s dny v měsíci
 readonly z_posun_id:string="pb"; // začátek id vyplňovacích bloků pro posun buttonu s čísly dnů v kalendáři (id="pb1" až id="pb6")
 
+get aktualni_poloha(){
+// getter slouží k zaslání aktuální polohy uživatele v kalendáři, jetomu poroto, aby private this.poloha mohl měnit použe objekt této třídy
+return this.poloha; // getter vrací aktuální polohu uživatele v kalendáři
+};
+
+
 set posun(kam:number){
 // setter bude nastavovat maximální a minimální hodnotu this.poloha
 if(kam===+1)
@@ -355,18 +361,18 @@ if(plocha_dny)
 (plocha_dny as HTMLFieldSetElement).addEventListener("touchstart",(e)=>{
 this.touchStartX=e.touches[0].clientX; // počáteční souřadnice pohybu po ose X
 this.touchStartY=e.touches[0].clientY; // počáteční souřadnice pohybu po ose Y
-});
+},{passive:true}); // Pokud je event listener označen jako pasivní ({ passive: true }), znamená to, že prohlížeč ví, že event handler nebude volat preventDefault(). To umožňuje prohlížeči optimalizovat chování stránky, což může vést ke zvýšení výkonu, zejména při posouvání na dotykových zařízeních. Jinými slovy, pasivní event listener říká prohlížeči: "Nebudu měnit výchozí chování této události, můžeš ji tedy zpracovat okamžitě."
 
 // Posluchač pro pohyb prstu
 (plocha_dny as HTMLFieldSetElement).addEventListener("touchmove",(e)=>{
 this.touchEndX=e.touches[0].clientX;  // konečné souřadnice pohybu po ose X
 this.touchEndY=e.touches[0].clientY; // konečné souřadnice pohybu po ose Y
-});
+},{passive:true}); // Pokud je event listener označen jako pasivní ({ passive: true }), znamená to, že prohlížeč ví, že event handler nebude volat preventDefault(). To umožňuje prohlížeči optimalizovat chování stránky, což může vést ke zvýšení výkonu, zejména při posouvání na dotykových zařízeních. Jinými slovy, pasivní event listener říká prohlížeči: "Nebudu měnit výchozí chování této události, můžeš ji tedy zpracovat okamžitě."
 
 // Posluchač pro konec dotyku
 (plocha_dny as HTMLFieldSetElement).addEventListener("touchend",(e)=>{
 this.handleGesture(e); // funkce vyhodnotí zda uživatel udělal pohyb prstem na obrazovce vpravo nebo vlevo
-});}
+},{passive:true});} // Pokud je event listener označen jako pasivní ({ passive: true }), znamená to, že prohlížeč ví, že event handler nebude volat preventDefault(). To umožňuje prohlížeči optimalizovat chování stránky, což může vést ke zvýšení výkonu, zejména při posouvání na dotykových zařízeních. Jinými slovy, pasivní event listener říká prohlížeči: "Nebudu měnit výchozí chování této události, můžeš ji tedy zpracovat okamžitě."
 };
 handleGesture(e:any){
  // funkce vyhodnotí zda uživatel udělal pohyb prstem na obrazovce vpravo nebo vlevo
@@ -384,13 +390,22 @@ else
 {
 console.log("Pohyb nebyl dostatečný");
 }
-this.touchStartX=0; // anulace hodnoty po vyhodnocení Prahu pohybu
-this.touchStartY=0; // anulace hodnoty po vyhodnocení Prahu pohybu
-this.touchEndX=0; // anulace hodnoty po vyhodnocení Prahu pohybu
-this.touchEndY=0; // anulace hodnoty po vyhodnocení Prahu pohybu
+this.touchStartX=this.touchStartY=this.touchEndX=this.touchEndY=0; // anulace hodnot po vyhodnocení Prahu pohybu
 };
 handleEvent(e:any,pohyb:number=0){
 const k:string=e.currentTarget.id; // id odkazuje na prvek, na který je navázán posluchač události
+
+let problik_posunu=()=>{
+// interní funkce zajistí probliknutí plochy kalendáře se dny 1-31, aby uživatele vizuělné upozornil na posun, který nastal
+const plocha_kalendare=document.getElementById(mesic_a_rok.id_kalendar); // načte objekt, kde je zobrazena plocha kalendáře dny v měsící 1-31
+if(plocha_kalendare)
+{
+// pokud HTML element existuje
+(plocha_kalendare as HTMLElement).style.opacity="0"; // opasity nastaví bez prodlení na 0
+setTimeout(()=>{
+(plocha_kalendare as HTMLElement).style.opacity="1"; // opacity nastaví s prodlením na 1, aby se zobrazil efekt postuopného transition opacity
+},250);
+}};
 
 if(k===this.id_posun[0]||(pohyb===1&&k===this.id_kalendar))
 {
@@ -402,6 +417,11 @@ kalendar.upravit(); // upraví kalendář, tak. aby zobrazoval pouze dny v aktu�
 kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
 kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
 kalendar.oznacit_den(); // funkce zajistí, že bude vždy oznacen den a pouze den, který zadal uživatel
+if(kalendar.aktualni_poloha!==0)
+{
+// pokud níní poloha kalendáře === 0, protože pozun vzad již není dále možný
+problik_posunu(); // interní funkce zajistí probliknutí plochy kalendáře se dny 1-31, aby uživatele vizuělné upozornil na posun, který nastal
+}
 }
 else if(k===this.id_posun[1]||(pohyb===2&&k===this.id_kalendar))
 {
@@ -413,6 +433,11 @@ kalendar.upravit(); // upraví kalendář, tak. aby zobrazoval pouze dny v aktu�
 kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
 kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
 kalendar.oznacit_den(); // funkce zajistí, že bude vždy oznacen den a pouze den, který zadal uživatel
+if(kalendar.aktualni_poloha!==12)
+{
+// pokud uživatel není v poloze kalendáře 12, ta je poslední a další pohyb vpřed, již není možný
+problik_posunu(); // interní funkce zajistí probliknutí plochy kalendáře se dny 1-31, aby uživatele vizuělné upozornil na posun, který nastal
+}
 }
 
 }
