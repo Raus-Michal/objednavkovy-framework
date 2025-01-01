@@ -154,17 +154,57 @@ if(button_i2){
 }
 else
 {
-// pokud nebude kalendář v poloze===0 budou všechny buttony připravené
+// pokud nebude kalendář v poloze===0
+
 for(let i=1;i<32;i++){
+// pomocí této smičky, budou všechny buttony připravené
 const button_i=document.getElementById(`${this.p_id}${i}`); // konkrétní button s číslem dne v měsíci
 if (button_i){
 // pokud HTML objekt pod Id existuje
 (button_i as HTMLButtonElement).disabled=false; // udělá odstraní disabled na všech buttonech
 }
 }
+
+if(this.poloha===1)
+{
+// opatření pokud je další den dnem 1. v měsíci anebo obden je dnem 1. v měsíci a je po 18 hod., provede se opatření při pohybu v kalendáři na další měsíc
+
+const hours=new Date().getHours(); // Získání aktuální hodiny
+const today = new Date(); // do proměnné načte objekt Date
+const nextDay=new Date(today.getFullYear(),today.getMonth(),today.getDate()+1); // zjistí datum, které je jeden den po dnešním dni
+
+const button_1 = document.getElementById(`${this.p_id}1`); // 1. button s číslem dne v měsíci (tedy 1. den toho měsíce)
+const button_2 = document.getElementById(`${this.p_id}2`); // 2. button s číslem dne v měsíci (tedy 2. den toho měsíce)
+
+if(nextDay.getDate()===1)
+{
+// pokud je datum po dnešním dni === 1, bude zítra 1. dalšího měsíce
+
+if(button_1)
+{
+// pokud HTML element existuje
+(button_1 as HTMLButtonElement).disabled=true; // udělá disabled na buttonu 1. v měsíci
+(button_1 as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonu 1. v měsíci
 }
 
+if(hours>17){
+// pokud je po 18 hod - zablokuje se booking i následujícího dne
+(button_2 as HTMLButtonElement).disabled=true; // udělá disabled na buttonu 2. v měsíci
+(button_2 as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonu 2. v měsíci
+}}
 
+const every_other_day=new Date(today.getFullYear(),today.getMonth(),today.getDate()+2); // zjistí datum, který je dva dny po dnešním dni
+
+if(every_other_day.getDate()===1&&hours>17)
+{
+// pokud je dva dny po dnešním dni 1. den v měsíci a je po 18 hodině
+if(button_1)
+{
+// pokud HTML element existuje
+(button_1 as HTMLButtonElement).disabled=true; // udělá disabled na buttonu 1. v měsíci
+(button_1 as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonu 1. v měsíci
+}}
+}}
 };
 
 
@@ -272,8 +312,6 @@ posunovaci_bloky=6; // posun o 6
 
 for(let i=0;i<posunovaci_bloky;i++)
 {
-console.log("posun"+i);
-console.log("posun bloku= "+posunovaci_bloky);
 const p_b=document.getElementById(`${this.z_posun_id}${i+1}`); // HTML P element zastupující posun dny v týdnu Po-Ne
 if(p_b)
 {
@@ -401,16 +439,10 @@ const diffX=this.touchEndX-this.touchStartX; // rozdíl hodnoty počátečního 
 const diffY=this.touchEndY-this.touchStartY; // rozdíl hodnoty počátečního dotku uživatele plochy a konečného ukončení pohybu (osa Y)
 if(Math.abs(diffX)>50&&Math.abs(diffY)<30){ // Práh pohybu (X:50px,Y:30px)
 if(diffX>0){
-console.log("Tah doprava");
 this.handleEvent(e,1); // tah doprava
 }else{
-console.log("Tah doleva");
 this.handleEvent(e,2); // tah doleva
 }}
-else
-{
-console.log("Pohyb nebyl dostatečný");
-}
 this.touchStartX=this.touchStartY=this.touchEndX=this.touchEndY=0; // anulace hodnot po vyhodnocení Prahu pohybu
 };
 handleEvent(e:any,pohyb:number=0){
