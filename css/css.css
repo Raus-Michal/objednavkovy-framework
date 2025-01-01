@@ -220,7 +220,8 @@ cursor:default;
 }
 
 .b-mesic input:focus
-{outline: none;
+{
+outline:none;
 box-shadow:none;
 border-color:initial;
 }
@@ -232,8 +233,8 @@ grid-template-columns:repeat(7,1fr);
 gap:.5rem;
 justify-content:center;
 justify-items:center;
-align-items:center;
-align-content:center;
+align-items:start;
+align-content:start;
 min-height:18rem; /* zajistí, že roržení nebude poskakovat při posunech buttonu a jejich počtu */
 position:relative;
 transition:250ms opacity;
@@ -494,12 +495,101 @@ margin-top:.25rem;
 cursor:pointer;
 }
 
+dialog.dia-zasady
+{
+background-color:var(--b2);
+width:90%;
+max-width:50rem; /* 800px */
+border:none;
+border-radius:16px;
+padding:1rem;
+}
+
+dialog.dia-zasady::backdrop
+{
+background-color:rgba(0,0,0,.75); /* Nastaví poloprůhledné černé pozadí */ 
+}
 
 dialog.dia-zasady[open]
-{animation:fadeIn .3s ease-in-out;}
-@keyframes fadeIn{
-from{opacity:0;transform:translateY(-20px);}
+{
+animation:fadeIn .3s ease-in-out;
+}
+
+@keyframes fadeIn
+{
+from{opacity:0;transform:translateY(-30px);}
 to{opacity:1;transform:translateY(0);}
+}
+
+dialog.dia-zasady::-webkit-scrollbar{display:none;}
+
+/* obsahový div dialogu */
+.dialog-content
+{
+width:100%;
+height:100%;
+position:relative;
+}
+
+.n-dialog
+{
+font-family:"nadpis",sans-serif;
+font-size:1.5rem;
+font-weight:500;
+}
+
+.absol-box
+{
+position:absolute;
+bottom:-3rem;
+left:0;
+height:3rem;
+width:100%;
+z-index:3;
+background-color:var(--b2);
+display:flex;
+justify-content:flex-end;
+align-items:center;
+}
+
+.absol-box button
+{
+font-family:"nadpis",sans-serif;
+font-size:1rem;
+font-weight:bold;
+text-align:center;
+padding:.5rem;
+border-radius:10px;
+border:2px solid var(--b4);
+background-color:white;
+color:black;
+}
+
+.scroll-butt
+{
+position:-webkit-sticky;
+position:sticky;
+bottom:0;
+width:2rem;
+height:2rem;
+transform:
+rotateZ(90deg);
+left:100%;
+border-radius:50%;
+border-color:white;
+border:1px solid var(--b4);
+color:black;
+font-weight:bold;
+padding:0;
+padding-left:.5rem;
+font-size:1.25rem;
+z-index:2;
+}
+
+.ods
+{
+text-align:justify;
+hyphens:auto;
 }
 
 .d-n
