@@ -503,11 +503,12 @@ max-width:50rem; /* 800px */
 border:none;
 border-radius:16px;
 padding:1rem;
+transition:.2s opacity,.2s transform;
 }
 
 dialog.dia-zasady::backdrop
 {
-background-color:rgba(0,0,0,.75); /* Nastaví poloprůhledné černé pozadí */ 
+background-color:rgba(0,0,0,.5); /* Nastaví poloprůhledné černé pozadí */ 
 }
 
 dialog.dia-zasady[open]
@@ -522,6 +523,18 @@ to{opacity:1;transform:translateY(0);}
 }
 
 dialog.dia-zasady::-webkit-scrollbar{display:none;}
+
+.dialog-kotva-top,.dialog-kotva-bottom
+{
+position:relative;
+top:-1rem;
+left:0;
+}
+
+.dialog-kotva-bottom
+{
+top:3rem;
+}
 
 /* obsahový div dialogu */
 .dialog-content
@@ -550,6 +563,7 @@ background-color:var(--b2);
 display:flex;
 justify-content:flex-end;
 align-items:center;
+box-shadow:16px -16px 16px var(--b2);
 }
 
 .absol-box button
@@ -563,6 +577,12 @@ border-radius:10px;
 border:2px solid var(--b4);
 background-color:white;
 color:black;
+}
+
+@keyframes growShrink
+{
+0%,100%{transform:rotateZ(90deg) scale(.975);} /* počáteční a konečná velikost */ 
+50%{transform:rotateZ(90deg) scale(1.025);} /* zvětšení o 2% ve středu animace */ 
 }
 
 .scroll-butt
@@ -584,6 +604,7 @@ padding:0;
 padding-left:.5rem;
 font-size:1.25rem;
 z-index:2;
+animation:growShrink 1s infinite; /* animace trvá 2 sekundy a opakuje se donekonečna */
 }
 
 .ods

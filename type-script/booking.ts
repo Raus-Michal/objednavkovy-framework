@@ -599,41 +599,144 @@ this.vybrany_cas=number; // do proměnné uloží informaci s číslem, podle kt
 
 };
 
+
+interface Dialog_okno
+{
+// interface pro vytvoření všech parametrů pro správné fungování dialogového okna
+id_okna:string; // id dialogového okna
+id_buton_pro_zavreni?:string; // id buttonu pro zavření dialogového okna
+id_top_kotva?:string; // id horní kotvy dialogového okna, která slouží k scrool po otevření okna
+id_button_pro_scroll_bottom?:string; // id buttonu, kterým je možné provést scroll k bottom kotvě
+id_bottom_kotva?:string; // id spodní kotva dialogového okna, která slouží k scrool na bottom dialogového okna
+};
+
 class Dia
 {
 // CLASS slouží pro řízení otvírání a zavírání dialogových oken
-on(id:string,id_butt:string,id_kotva:string="")
+
+boundOffs:{[key:string]:any}={}; // objekt, který zajistí správný způsob je skutečně uložit bindovanou funkci do proměnné
+
+dia_zasady:Dialog_okno={
+// objekt s id pro dialogové okno: Zásady ochrany osobních údajů
+id_okna:"zasady",
+id_buton_pro_zavreni:"butt_zasady",
+id_top_kotva:"top_kotva_zasady",
+id_button_pro_scroll_bottom:"scroll_butt_zasady",
+id_bottom_kotva:"bottom_kotva_zasady"
+};
+
+get addDia_zasady()
+{
+// getter vrátí všechny parametry nutné ke spuštění funkcionalit dialogového okna: Zásady ochrany osobních údajů
+return Object.values(this.dia_zasady) as [string,string?,string?,string?,string?]; // vrátí všechny hodnoty objektu jednu po druhé, jejich použití je možné pomocí speed operátoru ...
+};
+
+on(id_dialog:string,id_button_z:string="",id_kotva_top:string="",id_button_scroll:string="",id_kotva_bottom:string="")
 {
 
-const okno=document.getElementById(id); // načte HTML element dialogového okna
+const okno=document.getElementById(id_dialog); // načte HTML element dialogového okna
 if(okno)
 {
 // pokud HTML objekt existuje
 (okno as HTMLDialogElement).showModal(); // otevře dialogové okno
+}
 
-
-const button_close=document.getElementById(id_butt); // načte HTML element buttonu pro zavření dialogového okna
+if(id_button_z!=="")
+{
+// pokud bude zaslán id butonu pro zavření dialogového okna
+const button_close=document.getElementById(id_button_z); // načte HTML element buttonu pro zavření dialogového okna
 if(button_close)
 {
 // pokud HTML objekt existuje
-(button_close as HTMLButtonElement).addEventListener("click",()=>{(okno as HTMLDialogElement).close();}); // přidá posluchač buttonu pro zavření dialogového okna
+const boundOff = this.off.bind(this,id_dialog,id_button_z,id_button_scroll); // proměnná, do které se uloží bind funkce, aby mohla být správně pomocí removeEventlistener odstraněna
+this.boundOffs[id_button_z]=boundOff; // proměná bude uložena do globální proměnné pod klíčem id_button_z
+(button_close as HTMLButtonElement).addEventListener("click",boundOff); // přidá posluchač buttonu pro zavření dialogového okna
+}}
 
-/* !!!!!!!!!!! POZOR - chybý odebrání posluchače - po více otevření dia oken by se násobil !!!! */
-
-}
-}
-
-if(id_kotva!=="")
+if(id_kotva_top!=="")
 {
 // pokud byl zaslána id kotvy pro scroll
-const kotva=document.getElementById(id_kotva); // načte HTML element s kotvou pro SroollTo
+const kotva=document.getElementById(id_kotva_top); // načte HTML element s kotvou pro sroll
 
 if(kotva)
 {
 // pokud HTML objekt existuje
-kotva.scrollIntoView({ behavior: 'smooth'}); // provede scrool TO na HTML kotvu
+setTimeout(()=>{
+kotva.scrollIntoView({behavior:"smooth",block:"start"}); // provede scroll TO na HTML kotvu
+},100); // Přidání zpoždění pro zajištění posunu
 }
 }
+
+if(id_button_scroll!==""&&id_kotva_bottom!=="")
+{
+// pokud byla metoda volána s id_button_scroll a id_kotva_bottom
+const butt_kotva=document.getElementById(id_button_scroll); // načte HTML element buttonem pro scroll
+
+if(butt_kotva)
+{
+// pokud existuje HTML element
+const boundOff_k=this.scroll.bind(this,id_kotva_bottom); // vytvoří referenci pro volání a následné odstranění posluchače bind
+this.boundOffs[id_button_scroll]=boundOff_k; // zapíše refernci do objektu pod klíčem: d_button_scroll
+(butt_kotva as HTMLButtonElement).addEventListener("click",boundOff_k); // přidá posluchač události
+}}
+console.log("OPEN");
+};
+off(id_dialog:string,id_button_z:string="",id_button_scroll:string="")
+{
+// metoda zavře dialogové okno
+
+if(id_button_z!=="")
+{
+// pokud bude zaslán do funkce parametr s id buttonu pro zavření dialofového okna
+const button_close=document.getElementById(id_button_z); // načte HTML element buttonu pro zavření dialogového okna
+if(button_close)
+{
+// pokud HTML objekt existuje
+(button_close as HTMLButtonElement).removeEventListener("click",this.boundOffs[id_button_z]); // odebere posluchač buttonu pro zavření dialogového okna
+delete this.boundOffs[id_button_z]; // odstraní referenci z objektu
+}
+}
+
+const okno=document.getElementById(id_dialog); // načte HTML element dialogového okna
+
+if(okno)
+{
+// pokud HTML objekt existuje
+(okno as HTMLDialogElement).style.opacity="0"; // zneviditelní dialogové okno, díky transitions v css vytvoří animaci
+(okno as HTMLDialogElement).style.transform="scale(.5)"; // začne dialogové okno zmenšovat, díky transitions v css vytvoří animaci
+setTimeout(()=>{
+(okno as HTMLDialogElement).close(); // zavře dialogové okno
+(okno as HTMLDialogElement).style.opacity="1"; // nastaví hodnotu na default
+(okno as HTMLDialogElement).style.transform="scale(1)"; // nastaví hodnotu na default
+},200); // zpoždění odpovídá transition 0.2s v CSS
+}
+
+if(id_button_scroll!=="")
+{
+const butt_kotva=document.getElementById(id_button_scroll); // načte HTML element buttonem pro scroll
+
+if(butt_kotva)
+{
+// pokud existuje HTML element
+const boundOff_k=this.boundOffs[id_button_scroll]; // načte referenci, která byla přidána posluchačí funke bind, klíč je: id_button_scroll
+(butt_kotva as HTMLButtonElement).removeEventListener("click",boundOff_k); // odebere posluchač události buttonu pro scroll bottom
+delete this.boundOffs[id_button_scroll]; // odstraní referenci z objektu
+}
+
+}
+
+console.log("CLOSE");
+};
+
+scroll(id_kotva_bottom:string)
+{
+const kotva=document.getElementById(id_kotva_bottom); // načte HTML objekt kotvy
+if(kotva)
+{
+// pokud HTML objekt existuje
+(kotva as HTMLElement).scrollIntoView({behavior:"smooth",block:"end"}); // provede scrollTo na HTML kotvu
+}
+console.log("scroll bottom");
 }
 
 };
@@ -641,6 +744,7 @@ kotva.scrollIntoView({ behavior: 'smooth'}); // provede scrool TO na HTML kotvu
 class Boss
 {
 // class bude zajišťovat hlavní chod celé aplikace rezervace
+readonly id_boss_con="boss_con"; // id hlavního kontejneru aplikace
 readonly id_form=["rezervace_form","dokoncit_form"]; // id formulářů
 readonly id_button=["zmenit","ukaz_zasady"]; // id hlavních buttonů formulářů
 readonly id_cas="slovne_cas_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje čas rezervace
@@ -779,7 +883,7 @@ this.form_posun(this.id_form[1],this.id_form[0]);  // metoda zajistí posun form
 if(k===this.id_button[1])
 {
 // kliknuto na button Zásady ochrany osobních údajů
-dia.on("zasady","butt_zasady"); // otevře dialogové okno Zásady ochrany osobních údajů  !!!!! OPRAVIT !!!! - id dát do pole! this!
+dia.on(...dia.addDia_zasady); // otevře dialogové okno Zásady ochrany osobních údajů
 }
 
 if(k===this.id_form[1])
@@ -808,7 +912,12 @@ if(form_old&&form_new)
 setTimeout(()=>
 {
 (form_new as HTMLFormElement).style.opacity="1"; // nastavý novému formuláři opacity na 1
-(form_new as HTMLFormElement).scrollIntoView({behavior:"smooth"}); // v případě pohybu ve formuláři zajistí posun na jeho počátek-top
+const h_c=document.getElementById(this.id_boss_con); // HTML element - hlavní kontejner aplikace
+if(h_c)
+{
+// pokud HTML Element existuje
+(h_c as HTMLElement).scrollIntoView({behavior:"smooth",block:"start"}); // v případě pohybu ve formuláři zajistí posun na počátek-top hlavního kontejneru
+}
 },100); // drobné zpoždění zajistí bezproblémový průběh animace opacity
 }};
 
