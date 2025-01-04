@@ -498,6 +498,11 @@ cursor:pointer;
 dialog.dia-zasady
 {
 background-color:var(--b2);
+height:90%;
+height:90vh;
+height:90lvh;
+height:90dvh;
+max-height:31.25rem; /* 500px */
 width:90%;
 max-width:50rem; /* 800px */
 border:none;
@@ -553,17 +558,19 @@ font-weight:500;
 
 .absol-box
 {
-position:absolute;
-bottom:-3rem;
-left:0;
-height:3rem;
+position:-webkit-sticky;
+position:sticky;
+bottom:-1rem;
+right:0;
+padding:1rem 0;
+height:auto;
 width:100%;
 z-index:3;
 background-color:var(--b2);
 display:flex;
 justify-content:flex-end;
 align-items:center;
-box-shadow:16px -16px 16px var(--b2);
+border-top:1px dotted black;
 }
 
 .absol-box button
@@ -574,27 +581,25 @@ font-weight:bold;
 text-align:center;
 padding:.5rem;
 border-radius:10px;
-border:2px solid var(--b4);
 background-color:white;
 color:black;
 }
 
 @keyframes growShrink
 {
-0%,100%{transform:rotateZ(90deg) scale(.975);} /* počáteční a konečná velikost */ 
-50%{transform:rotateZ(90deg) scale(1.025);} /* zvětšení o 2% ve středu animace */ 
+0%,100%{transform:rotateZ(90deg) scale(1);} /* počáteční a konečná velikost */ 
+50%{transform:rotateZ(90deg) scale(0.95);} /* zvětšení o 2% ve středu animace */ 
 }
 
 .scroll-butt
 {
 position:-webkit-sticky;
 position:sticky;
-bottom:0;
+bottom:5rem;
 width:2rem;
 height:2rem;
-transform:
-rotateZ(90deg);
-left:100%;
+transform:rotateZ(90deg);
+left:calc(100% - 2rem);
 border-radius:50%;
 border-color:white;
 border:1px solid var(--b4);
@@ -605,6 +610,18 @@ padding-left:.5rem;
 font-size:1.25rem;
 z-index:2;
 animation:growShrink 1s infinite; /* animace trvá 2 sekundy a opakuje se donekonečna */
+}
+
+.scroll-kryt
+{
+height:5rem;
+margin:0;
+padding:0;
+width:100%;
+position:relative;
+z-index:3;
+background-color:var(--b2);
+box-shadow:-1px -13px 10px 4px var(--b2);
 }
 
 .ods
