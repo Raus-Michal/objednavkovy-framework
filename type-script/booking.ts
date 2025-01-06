@@ -4,7 +4,7 @@ readonly p_id:string="b"; // počáteční id každého buttonu ke kterému je p
 readonly m_a_r_id:string="mesic_a_rok"; // id inputu s měsícem a rokem
 readonly den_id:string="d"; // počáteční id každého dne v týdnu v kalendáři <p> Po,Út,St,Čt,Pá,So,Ne
 private poloha:number=0; // proměnná určuje polohu kalendáře 0===default, 1-krok o měsíc dále , 2-krok o dva měsíce dále
-private book_den:number[]=[0,0,0]; // zápis booklého dne uživatelem : rok, měsíc, den
+private book_den:[number,number,number]=[0,0,0]; // zápis booklého dne uživatelem : rok, měsíc, den
 readonly facke_checked_id:string="fake-checked"; // id input type chacked - fake chacked, který nedošle formulář, dokud není od uživatele označený konkrétní den
 readonly color_oznacen:string="rgb(87,168,110)"; // barva označeného buttonu s dnem v měsíci zvoleným uživatelem
 readonly color_NEoznacen:string="white"; // barva neoznačeného buttonu s dny v měsíci
@@ -17,9 +17,9 @@ get rezervovane_datum()
 // getter vrací pole s vybraným datumem od uživatele [rok, měsíc(0-11), den]:number[]
 if(this.byl_vybran_datum)
 {
-return this.book_den; // vrací pole s vybraným datumem od uživatele [rok, měsíc(0-11), den]:number[]
+return this.book_den as [number, number, number]; // vrací pole s vybraným datumem od uživatele [rok, měsíc(0-11), den]:number[]
 }
-return [9999,9999,9999]; // uživatel nevybral datum a návratová hodnota je taková, aby bylo možné odfiltrovat nezadání uživatele 
+return [9999,9999,9999]as [number, number, number]; // uživatel nevybral datum a návratová hodnota je taková, aby bylo možné odfiltrovat nezadání uživatele 
 };
 
 
@@ -1098,61 +1098,113 @@ if(error_div)
 }}
 };
 
-rezervovat(){
+async rezervovat(){
 // metoda zajistí plné dokončení rezervace
 console.log("Dokončit rezervaci");
 
-const den_rezervace_uzivatel:number[]=kalendar.rezervovane_datum; // getter vrátí datum zadané uživatelem [rok, měsíc(0-11), den]:number[]
+const den_rezervace_uzivatel:[number,number,number]=kalendar.rezervovane_datum; // getter vrátí datum zadané uživatelem [rok, měsíc(0-11), den]:number[]
 const cas_rezervace_uzivatel:number=cas_rezervace.cislo_vybraneho_casu; // getter vrací číslo vybraného času uživatelem 1-14
 
-const cas_rezervace_slovne:string=this.slovne_cas; // slovně zapsaný čas rezervace pro rozesílání emailem (např.:9:00-9:30 hod.)
-const datum_rezervace_slovne:string=this.slovne_datum; // slovně zapsaný celé datum rezervace pro zaslání emalem (např.: Úterý, 1. dubna 2025)
-
-console.log("den_rezervace_uzivatel: "+den_rezervace_uzivatel);
-console.log("cas_rezervace_uzivatel: "+cas_rezervace_uzivatel);
-console.log("cas_rezervace_slovne: "+cas_rezervace_slovne);
-console.log("datum_rezervace_slovne "+datum_rezervace_slovne);
 
 
+const input_hidden=document.getElementById("token");
+let token=""; // v proměnné bude uložen token, který bude zároveň heslem ke každé rezervaci - bude mít pokaždé stejnou délku 32 znaků!!!
+if(input_hidden)
+{
+token=(input_hidden as HTMLInputElement).value; // načte token z HTML elementu input type hidden
+}
+
+
+
+const data_pro_JSON:[number,number,number,number,string]=[...den_rezervace_uzivatel,cas_rezervace_uzivatel,token]; // spojí všechny potřebné proměnné a vytvoří pole, které se následně bude zapisovat do souboru JSON
+
+console.log(data_pro_JSON);
 
 const in_jmeno_uzivatel=document.getElementById(this.id_inputHost[0]); // input s jménem a příjmením uživatel
 const in_email_uzivatel=document.getElementById(this.id_inputHost[1]); // input s emailem uživatele
 const in_phone_uzivatel=document.getElementById(this.id_inputHost[2]); // input s telefonem uživatele
 const in_predmet_uzivatel=document.getElementById(this.id_inputHost[3]); // input s předmětem uživatele (O čem bude hovor?)
 
+
+const data_pro_Email:string[]=[]; // do pole budou zapsána všechna data, která jsou pro odesílání emailu
 let jmeno="", // jméno uživatele
 email="", // email uživatele
 phone="", // telefon uživatele
 predmet=""; // předmět uživatele (O čem bude hovor)
 
+
+
+
+
 if(in_jmeno_uzivatel)
 {
 // pokud HTML element existuje
 jmeno=(in_jmeno_uzivatel as HTMLInputElement).value; // z input načte jméno a příjmení
+data_pro_Email.push(jmeno);
 }
 
 if(in_email_uzivatel)
 {
 // pokud HTML element existuje
 email=(in_email_uzivatel as HTMLInputElement).value; // z input načte email
+data_pro_Email.push(email);
 }
 
 if(in_phone_uzivatel)
 {
 // pokud HTML element existuje
 phone=(in_phone_uzivatel as HTMLInputElement).value; // z input načte telefon
+data_pro_Email.push(phone);
 }
 
 if(in_predmet_uzivatel)
 {
 // pokud HTML element existuje
 predmet=(in_predmet_uzivatel as HTMLInputElement).value; // z input načte O čem bude hovor
+data_pro_Email.push(predmet);
 }
+
+const datum_rezervace_slovne:string=this.slovne_datum; // slovně zapsaný celé datum rezervace pro zaslání emalem (např.: Úterý, 1. dubna 2025)
+data_pro_Email.push(datum_rezervace_slovne);
+
+const cas_rezervace_slovne:string=this.slovne_cas; // slovně zapsaný čas rezervace pro rozesílání emailem (např.:9:00-9:30 hod.)
+data_pro_Email.push(cas_rezervace_slovne);
+
+data_pro_Email.push(token); // bude na poslední pole vložen token
+
+console.log("token: "+token); // zobrazí token
+console.log("den_rezervace_uzivatel: "+den_rezervace_uzivatel);
+console.log("cas_rezervace_uzivatel: "+cas_rezervace_uzivatel);
+console.log("cas_rezervace_slovne: "+cas_rezervace_slovne);
+console.log("datum_rezervace_slovne "+datum_rezervace_slovne);
 
 console.log("Jméno: "+jmeno);
 console.log("email: "+email);
 console.log("Telefon: "+phone);
 console.log("O čem bude hovor: "+predmet);
+
+const data=`
+csrf_token=${encodeURIComponent(token)}
+&data_json=${encodeURIComponent(JSON.stringify(data_pro_JSON))}
+&data_email=${encodeURIComponent(JSON.stringify(data_pro_Email))}
+`; // nachystá data na odeslání pro fetch API metodou post
+
+
+// Vytvoření AJAX požadavku
+fetch("../config/zatim_neni.php",{
+method:"POST",  // Metoda POST
+headers:{
+"Content-Type":"application/x-www-form-urlencoded"  // Nastavení typu obsahu
+},
+body:data  // data ve formátu klíč=hodnota
+})
+.then(response=>response.text())  // Očekáváme textovou odpověď
+.then(result=>{
+console.log('Výsledek:',result);
+})
+.catch(error=>{
+console.error('Chyba při odesílání dat:',error);
+});
 
 };
 
