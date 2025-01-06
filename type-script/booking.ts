@@ -9,7 +9,9 @@ readonly facke_checked_id:string="fake-checked"; // id input type chacked - fake
 readonly color_oznacen:string="rgb(87,168,110)"; // barva označeného buttonu s dnem v měsíci zvoleným uživatelem
 readonly color_NEoznacen:string="white"; // barva neoznačeného buttonu s dny v měsíci
 readonly z_posun_id:string="pb"; // začátek id vyplňovacích bloků pro posun buttonu s čísly dnů v kalendáři (id="pb1" až id="pb6")
-
+block_days:number[][]=[]; // pole s blokovanými datumy pro booking dne
+load_data_book_block_day:boolean=false; // proměnná na true ukazuje, že data o dnech, které se mají blokovat, jsou z JSON souboru načtena a false, že nejsou načtena
+load_data_time_out:number|null=null; // časovač pro REKLUZI funkce data_book_block_day()
 get rezervovane_datum()
 {
 // getter vrací pole s vybraným datumem od uživatele [rok, měsíc(0-11), den]:number[]
@@ -62,35 +64,6 @@ this.poloha=0; // poloha bude 0 - není možné se vrátit zpět
 
 };
 
-
-vytvorit(){
-// funkce vytvoří k buttonum s daty čísla
-
-const dny:string[]=[]; // pole určuje všechny id buttony pro dny v měsíci
-
-for(let i=1;i<32;i++)
-{
-let nazev:string=`${this.p_id}${i}`; // k názvu přiřadí odpovídající číslici
-dny.push(nazev); // pushne název id buttonu do pole
-}
-
-
-
-const d=dny.length; // délka pole
-for(let i=0;i<d;i++)
-{
-const button_i=document.getElementById(dny[i]); // konkrétní button s číslem dne v měsíci
-if(button_i)
-{
-// pokud HTML objekt pod Id existuje
-const cislo=i+1; // dny začínají od 1, i=0, proto bude číslo dnu vždy +1
-const cislo_t=cislo.toString(); // převede proměnou type number na string
-(button_i as HTMLButtonElement).innerText=cislo_t; // přepíše text buttonu na konkrétní číslo 1-28,1-30,1-31
-}
-}
-
-};
-
 upravit(){
 // funkce zablokuje pro booking dny které v měsíci už uběhly a den následující
 
@@ -104,6 +77,7 @@ if(button_i)
 {
 // pokud HTML objekt pod Id existuje
 (button_i as HTMLButtonElement).addEventListener("click",this); // přidělí posluchač událostí buttonu
+(button_i as HTMLButtonElement).disabled=false; // odblokuje všechny buttony
 }
 }
 
@@ -321,7 +295,154 @@ if(p_b)
 }
 };
 
+book_block_day(){
+// metoda fakticky blokuje dny, které jsou uvedeny v JSON souboru
+if(!this.load_data_book_block_day)
+{
+if(this.load_data_time_out)
+{
+// pokud je časovač již spuštěn
+clearTimeout(this.load_data_time_out); // vynuluje časovač
+}
+this.load_data_time_out=setTimeout(()=>{this.book_block_day();},1000); // REKLUZE - pokud nejsou data načtena pokusí se funkci spustit opět za 1s
+return; // data zatím nebyla načtena - funkce bude ukončena
+}
 
+const block_days:number[][]=this.block_days; // převede globýlní pole s blokovanými dny do lokální proměnné
+const d=block_days.length; // délka pole:  globýlní pole s blokovanými dny do lokální proměnné
+const poloha=this.aktualni_poloha; // aktuální poloha uživatele v kalendáři
+const aktualni_mesic=datum.mesic_v_roce; // aktuální měsíc, kde 0 je leden
+let rozhodny_mesic=aktualni_mesic+poloha; // rozhodný měsíc je měsíc vzhledem k poloze uživatele v kalendáři
+let aktualni_rok=datum.aktualni_rok; // aktuální rok
+
+if(rozhodny_mesic>11)
+{
+// pokud bude měsíc prosinec, začnou měsíce od ledna a přičte se rok
+rozhodny_mesic=aktualni_mesic+this.poloha-datum.mesice.length; // upraví číslo měsíce tak, aby vycházel na následující měsíc v novém roce
+aktualni_rok++; // přidá jeden rok navíc
+}
+
+let dny_k_blokaci:number[]=[]; // pole, kde se budou zapisovat dny k blokaci v měsíci
+
+for(let i=0;i<d;i++)
+{
+// smička zjistí jestli se poloha v kalendáři shoduje s blokovaným rokem a měsícem, pokud ano, udělá push blokovaného dne do pole dny_k_blokaci[]
+if((block_days[i][0]===aktualni_rok)&&(block_days[i][1]===rozhodny_mesic))
+{
+// pokud je shoda v roce a měsíci vzhledem k aktuální poloze užovatele v kalendáři
+dny_k_blokaci.push(block_days[i][2]); // zapíše den blokovaný v konkrétním měsíci a roce
+}
+}
+console.log(dny_k_blokaci);
+
+const d2=dny_k_blokaci.length; // délka pole, kde jsou push dny k blokaci v roce a měsíci připadající na aktuálně zobrazený kalendář
+
+if(d2!==0)
+{
+// pokud byly zapsány nějýké blokované dny do pole, nerovná se jeho délka 0
+
+for(let i=0;i<d2;i++)
+{
+// smyčka zablokuje včechny buttony dnů, které se nacházejí v poli: dny_k_blokaci
+const button_i=document.getElementById(`${this.p_id}${dny_k_blokaci[i]}`); // konkrétní button s číslem dne v měsíci
+if(button_i)
+{
+// pokud HTML element existuje
+(button_i as HTMLButtonElement).disabled=true; // udělá disabled na buttonu
+(button_i as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonu
+}}}
+
+};
+
+load_book_block_day()
+{
+// načtení z JSON dnů, které mají být blokovány - nepřístupné k bookingu
+
+
+// ZAČÁTEK SIMULACE
+
+
+// const jsonString = `
+// {
+// "data":
+// [
+// {"rok":2025,"mesic":0,"den":5},
+// {"rok":2025,"mesic":0,"den":6},
+// {"rok":2025,"mesic":0,"den":8},
+// {"rok":2025,"mesic":0,"den":9},
+// {"rok":2025,"mesic":0,"den":13},
+// {"rok":2025,"mesic":0,"den":14},
+// {"rok":2025,"mesic":0,"den":16},
+// {"rok":2025,"mesic":0,"den":17},
+// {"rok":2025,"mesic":0,"den":21},
+// {"rok":2025,"mesic":0,"den":22},
+// {"rok":2025,"mesic":0,"den":24},
+// {"rok":2025,"mesic":0,"den":25},
+// {"rok":2025,"mesic":0,"den":29},
+// {"rok":2025,"mesic":0,"den":30}
+// ]
+// }
+// `;
+  
+// Funkce pro načtení JSON souboru z řetězce
+// const loadJSONFromString=(jsonStr:string):any=>{
+// try{
+// const jsonData=JSON.parse(jsonStr);
+// console.log('Načtená data (ze simulace):',jsonData);
+// return jsonData;
+// }catch (error) {
+// console.error('Chyba při načítání JSON (ze simulace):', error);
+// return null;
+// }
+// }
+
+// KONEC SIMLACE
+  
+// Asynchronní funkce pro načtení JSON souboru pomocí fetch
+const fetchJSON=async():Promise<any> =>{
+const jsonFilePath ="../config/cti_blok_days.php"; // cesta k PHP souboru, který zajistí čtení JSON souboru, číst JSON může kdokli, ale musí být chráněn proti zápisu
+try{
+const response=await fetch(jsonFilePath); // načítání dat ze souboru JSON
+if(!response.ok)
+{
+throw new Error('Síťová odpověď nebyla v pořádku'); // chyba při načítání
+}
+const jsonData=await response.json(); // převzetí dat do proměnné
+console.log('Načtená data (reálně):',jsonData);
+return jsonData; // vrací načtená data
+}
+catch(error)
+{
+console.error('Chyba při načítání JSON (reálně):', error);
+return null;
+}
+}
+  
+
+setTimeout(async ()=>{
+// Načtení JSON dat ze serveru anebo simulačně dle potřeby
+
+const jsonData=await fetchJSON(); // Načtení JSON dat z servru -- NAOSTRO !!!
+
+// const jsonData=loadJSONFromString(jsonString);  Načtení JSON dat z řetězce -- SIMULACE !!!
+
+// Pokud byla data úspěšně načtena, pokračuj ve zpracování
+if(jsonData){
+jsonData.data.forEach((item:{rok:number,mesic:number,den:number})=>{
+const dateArray:number[]=[item.rok,item.mesic,item.den];
+this.block_days.push(dateArray);
+});
+  
+console.log(this.block_days);
+
+}
+
+this.load_data_book_block_day=true; // proměnná na true ukazuje, že data o dnech, které se mají blokovat, jsou z JSON souboru načtena
+this.book_block_day(); // jakmile budou načtena data, metoda provede faktickou blokaci konkrétních dnů podle dnů v souboru JSON
+
+},0);  // Použití setTimeout k oddělení asynchronní operace
+
+};
 
 handleEvent(e:any){
 const k:string=e.target.id;
@@ -382,7 +503,8 @@ if(button_i){
 button_i.style.backgroundColor=this.color_oznacen; // přidá buttonu barvu označeného buttonu
 }
 }
-}
+};
+
 };
 
 
@@ -475,6 +597,7 @@ kalendar.upravit(); // upraví kalendář, tak. aby zobrazoval pouze dny v aktu�
 kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
 kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
 kalendar.oznacit_den(); // funkce zajistí, že bude vždy oznacen den a pouze den, který zadal uživatel
+kalendar.book_block_day();// metoda fakticky blokuje dny, které jsou uvedeny v JSON souboru
 }
 else if(k===this.id_posun[1]||(pohyb===2&&k===this.id_kalendar))
 {
@@ -491,6 +614,7 @@ kalendar.upravit(); // upraví kalendář, tak. aby zobrazoval pouze dny v aktu�
 kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
 kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
 kalendar.oznacit_den(); // funkce zajistí, že bude vždy oznacen den a pouze den, který zadal uživatel
+kalendar.book_block_day();// metoda fakticky blokuje dny, které jsou uvedeny v JSON souboru
 }
 
 }
@@ -679,7 +803,6 @@ const boundOff_k=this.scroll.bind(this,id_kotva_bottom); // vytvoří referenci 
 this.boundOffs[id_button_scroll]=boundOff_k; // zapíše refernci do objektu pod klíčem: d_button_scroll
 (butt_kotva as HTMLButtonElement).addEventListener("click",boundOff_k); // přidá posluchač události
 }}
-console.log("OPEN");
 };
 off(id_dialog:string,id_button_z:string="",id_button_scroll:string="")
 {
@@ -1039,13 +1162,13 @@ spustit_aplikaci()
 // metoda zajišťuje spuštění základních procesů pro chod aplikace rezervace
 this.kontola_verze_javaScript(); // metoda zkontroluje jestli uživatel má alespoň Java Script ES2017, pokud ne, aktivuje DIV s errorem
 this.posluchace(); // spustí posluchače formulářů a hlavních buttonů formulářů
-kalendar.vytvorit(); // vytvoří čísla na buttonu kalendáře
 kalendar.nazev_mesice(); // funkce přepíše název měsíce a roku v input měsíc a rok
 kalendar.upravit(); // upraví kalendář, tak. aby zobrazoval pouze dne v aktuálním měsíci mimo dnešního dne
 kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
 kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
 mesic_a_rok.aktivace(); // aktivuje posluchače události click k tlačítkům pro posun měsíce VPŘED a VZAD
 cas_rezervace.aktivace(); // aktivuje posluchače pro volbu konkrétního času rezervace uživatelem
+kalendar.load_book_block_day(); // funkce načte JSON soubor, kde jsou blokované dny pro rezervaci, po jeho načtení zapne blokaci dnů napsaných v JSON souboru
 }
 
 };

@@ -1,0 +1,4 @@
+POZOR!!!
+do JSON SE ZAPISUJÍ MĚSÍCE TAKTO: 0=== leden, 11===prosinec
+{"rok":2025,"mesic":0,"den":5}, // 5.ledna 2025
+{"rok":2025,"mesic":11,"den":5}, // 5.prosince 2025
