@@ -400,7 +400,7 @@ load_book_block_day()
   
 // Asynchronní funkce pro načtení JSON souboru pomocí fetch
 const fetchJSON=async():Promise<any> =>{
-const jsonFilePath ="../config/cti_blok_days.php"; // cesta k PHP souboru, který zajistí čtení JSON souboru, číst JSON může kdokli, ale musí být chráněn proti zápisu
+const jsonFilePath ="config/cti_blok_days.php"; // cesta k PHP souboru, který zajistí čtení JSON souboru, číst JSON může kdokli, ale musí být chráněn proti zápisu
 try{
 const response=await fetch(jsonFilePath); // načítání dat ze souboru JSON
 if(!response.ok)
