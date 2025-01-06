@@ -116,6 +116,7 @@ justify-content:center;
 overflow:auto;
 background-color:var(--b5);
 padding:1rem;
+position:relative; /* hodnota, kvůli no-script boxu ! */
 }
 
 .f-kon
@@ -131,7 +132,28 @@ max-width:58rem; /* 928px */
 transition:250ms opacity;
 }
 
+.no-script,.no-version-script
+{
+display:flex;
+align-items:center;
+justify-content:center;
+position:absolute;
+left:0;
+top:0;
+z-index:100;
+width:100%;
+height:100%;
+color:rgb(253,116,116);
+background-color:black;
+padding:1rem;
+text-align:center;
+}
 
+.no-script p,.no-version-script p
+{
+font-size:1.25rem;
+cursor:default;
+}
 
 
 .p-n
@@ -504,7 +526,7 @@ height:90lvh;
 height:90dvh;
 max-height:31.25rem; /* 500px */
 width:90%;
-max-width:50rem; /* 800px */
+max-width:40rem; /* 640px */
 border:none;
 border-radius:16px;
 padding:1rem;
@@ -581,6 +603,7 @@ font-weight:bold;
 text-align:center;
 padding:.5rem;
 border-radius:10px;
+border:2px solid var(--b4);
 background-color:white;
 color:black;
 }

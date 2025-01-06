@@ -746,7 +746,8 @@ class Boss
 // class bude zajišťovat hlavní chod celé aplikace rezervace
 readonly id_boss_con="boss_con"; // id hlavního kontejneru aplikace
 readonly id_form=["rezervace_form","dokoncit_form"]; // id formulářů
-readonly id_button=["zmenit","ukaz_zasady"]; // id hlavních buttonů formulářů
+readonly id_button=["zmenit","ukaz_zasady","butt_zavinac"]; // id hlavních buttonů formulářů
+readonly id_inputHost=["jmeno","email","phone","predmet"]; // id input, které vyplňoval návštěvník [návštěvník: jméno a příjmení, návštěvník: email, návštěvník: telefon, návštěvník: O čem bude hovor]
 readonly id_cas="slovne_cas_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje čas rezervace
 readonly id_den="slovne_den_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje den rezervace Pondělí-Neděle
 readonly id_den_v_mesici="ciselne_den_v_mesici_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje den v měsíci rezervace 1-31
@@ -849,6 +850,16 @@ if(span_cas)
 this.slovne_cas=cas_rezervace.zobrazit_vybrany_cas; // do proměnné zapíše slovně čas rezerace
 
 };
+napis_zavinac()
+{
+// metoda napíše @ do input email
+const input_email=document.getElementById(this.id_inputHost[1]); // načete HTML element input email
+if(input_email)
+{
+// pokud HTML element existuje
+(input_email as HTMLInputElement).value+="@"; // přidá @ do input email
+}
+};
 
 handleEvent(e:any)
 {
@@ -874,25 +885,29 @@ this.zobrazeni_datumu(); // funkce zajistí správné zobrazení datumu rezervac
 
 }
 
-if(k===this.id_button[0])
+else if(k===this.id_button[0])
 {
 // pokud byl požadavek uživatele klik na button Změnit rezervaci
 this.form_posun(this.id_form[1],this.id_form[0]);  // metoda zajistí posun formuláře z Rezervovat na Dokončit Rezervaci
 }
 
-if(k===this.id_button[1])
+else if(k===this.id_button[1])
 {
 // kliknuto na button Zásady ochrany osobních údajů
 dia.on(...dia.addDia_zasady); // otevře dialogové okno Zásady ochrany osobních údajů
 }
 
-if(k===this.id_form[1])
+else if(k===this.id_form[1])
 {
 // pokud byl požadavek uživatele klik na button Dokončit rezervaci
 this.rezervovat(); // metoda zajistí plné dokončení rezervace
 }
 
-
+else if(k===this.id_button[2])
+{
+// pokud byl požadavek uživatele klik na button @
+this.napis_zavinac(); // metoda zajistí přidání @ do input pro email
+}
 
 
 };
@@ -921,6 +936,45 @@ if(h_c)
 },100); // drobné zpoždění zajistí bezproblémový průběh animace opacity
 }};
 
+kontola_verze_javaScript()
+{
+const id_div="no_es2017"; // id div, který obsahuje informaci o tom, že uživatel nemá alespoň veri Java Scriptu es2017
+const error_div=document.getElementById(id_div); // načte HTML element do proměnné
+    
+let kontrola1=false; // proměnná pro první kontrolu Object.values
+let kontrola2=false; // proměnná pro druhou kontrolu (async/await)
+    
+// podmínka testuje dostupnost funkce Object.values, která je také součástí ES2017.
+if(typeof Object.values==="function")
+{
+kontrola1=true; // ES2017 je podporován
+}
+else
+{
+kontrola1=false; // ES2017 není podporován
+}
+
+try
+{
+// použítí vlastnosti ES2017 (async/await)
+new Function("async()=>{}")();
+kontrola2=true; // ES2017 je podporován
+}
+catch(e)
+{
+kontrola2=false; // ES2017 není podporován
+}
+
+if(!kontrola1||!kontrola2)
+{
+// pokud jedna z kontrolovaných proměnných neprošla testem
+if(error_div)
+{
+// pokud HTML element existuje
+(error_div as HTMLElement).style.display="flex"; // nastaví DIV, tak aby byl pro uživatele viditelný
+}}
+};
+
 rezervovat(){
 // metoda zajistí plné dokončení rezervace
 console.log("Dokončit rezervaci");
@@ -936,11 +990,54 @@ console.log("cas_rezervace_uzivatel: "+cas_rezervace_uzivatel);
 console.log("cas_rezervace_slovne: "+cas_rezervace_slovne);
 console.log("datum_rezervace_slovne "+datum_rezervace_slovne);
 
+
+
+const in_jmeno_uzivatel=document.getElementById(this.id_inputHost[0]); // input s jménem a příjmením uživatel
+const in_email_uzivatel=document.getElementById(this.id_inputHost[1]); // input s emailem uživatele
+const in_phone_uzivatel=document.getElementById(this.id_inputHost[2]); // input s telefonem uživatele
+const in_predmet_uzivatel=document.getElementById(this.id_inputHost[3]); // input s předmětem uživatele (O čem bude hovor?)
+
+let jmeno="", // jméno uživatele
+email="", // email uživatele
+phone="", // telefon uživatele
+predmet=""; // předmět uživatele (O čem bude hovor)
+
+if(in_jmeno_uzivatel)
+{
+// pokud HTML element existuje
+jmeno=(in_jmeno_uzivatel as HTMLInputElement).value; // z input načte jméno a příjmení
+}
+
+if(in_email_uzivatel)
+{
+// pokud HTML element existuje
+email=(in_email_uzivatel as HTMLInputElement).value; // z input načte email
+}
+
+if(in_phone_uzivatel)
+{
+// pokud HTML element existuje
+phone=(in_phone_uzivatel as HTMLInputElement).value; // z input načte telefon
+}
+
+if(in_predmet_uzivatel)
+{
+// pokud HTML element existuje
+predmet=(in_predmet_uzivatel as HTMLInputElement).value; // z input načte O čem bude hovor
+}
+
+console.log("Jméno: "+jmeno);
+console.log("email: "+email);
+console.log("Telefon: "+phone);
+console.log("O čem bude hovor: "+predmet);
+
 };
+
 
 spustit_aplikaci()
 {
 // metoda zajišťuje spuštění základních procesů pro chod aplikace rezervace
+this.kontola_verze_javaScript(); // metoda zkontroluje jestli uživatel má alespoň Java Script ES2017, pokud ne, aktivuje DIV s errorem
 this.posluchace(); // spustí posluchače formulářů a hlavních buttonů formulářů
 kalendar.vytvorit(); // vytvoří čísla na buttonu kalendáře
 kalendar.nazev_mesice(); // funkce přepíše název měsíce a roku v input měsíc a rok
