@@ -12,6 +12,7 @@ readonly z_posun_id:string="pb"; // začátek id vyplňovacích bloků pro posun
 block_days:number[][]=[]; // pole s blokovanými datumy pro booking dne
 load_data_book_block_day:boolean=false; // proměnná na true ukazuje, že data o dnech, které se mají blokovat, jsou z JSON souboru načtena a false, že nejsou načtena
 load_data_time_out:number|null=null; // časovač pro REKLUZI funkce data_book_block_day()
+
 get rezervovane_datum()
 {
 // getter vrací pole s vybraným datumem od uživatele [rok, měsíc(0-11), den]:number[]
@@ -312,6 +313,12 @@ this.load_data_time_out=setTimeout(()=>{this.book_block_day();},1000); // REKLUZ
 return; // data zatím nebyla načtena - funkce bude ukončena
 }
 
+if(this.block_days.length===0)
+{
+// pokud bude globýlní pole s blokovanými dny prázdné, znamená to, že nejsou zadány žádné blokovaný dny
+return; // funkce bude ukončena
+}
+
 const block_days:number[][]=this.block_days; // převede globýlní pole s blokovanými dny do lokální proměnné
 const d=block_days.length; // délka pole:  globýlní pole s blokovanými dny do lokální proměnné
 const poloha=this.aktualni_poloha; // aktuální poloha uživatele v kalendáři
@@ -449,7 +456,9 @@ this.book_block_day(); // jakmile budou načtena data, metoda provede faktickou 
 
 };
 
+
 handleEvent(e:any){
+// klik na den v měsíci 1-31
 const k:string=e.target.id;
 const cislo_dne:number=parseInt(`${k[1]}${k[2]}`);
 
@@ -476,7 +485,8 @@ if(fake_check)
 
 this.oznacit_den(); // funkce zajišťuje označení konkrétního dne
 
-
+cas_rezervace.aktivace(); // aktivuje všechny radia a li na možnost zarezervování
+cas_rezervace.data_rezervace_blok_time(); // zablokuje časy rezervace, které již byly rezervovány, data ze souboru JSON
 };
 oznacit_den(){
 // funkce zajistí označení konkrétního dne uživatelem
@@ -669,6 +679,9 @@ readonly id_radio:string="cas"; // počátek ID input type radio cas1-cas14
 readonly id_li:string="lic"; // počátek ID li v kterém je input type radio lic1-lic14
 private vybrany_cas:number=0; // vybraný čas uživatelem, kde 0 znamená, že čas nebyl vybrán a 1 je první čas
 readonly casy:string[]=["9:00-9:30 hod.","9:30-10:00 hod.","10:00-10:30 hod.","10:30-11:00 hod.","11:00-11:30 hod.","11:30-12:00 hod.","12:00-12:30 hod.","12:30-13:00 hod.","13:00-13:30 hod.","13:30-14:00 hod.","14:00-14:30 hod.","14:30-15:00 hod.","15:00-15:30 hod.","15:30-16:00 hod."]; // všechny časy zadané slovně
+rezervace:number[][]=[]; // pole s rokem, měsíce, dnem a časem(1-14) rezervace
+load_data_rezervace:boolean=false; // proměnná, která ukazuje, zda byly ze souboru JSON načteny rezervace, pokud ano===true, pokud ne===false
+load_rezervace_time_out:number|null=null; // časovač pro REKLUZI funkce data_rezervace_blok_time()
 
 get cislo_vybraneho_casu()
 {
@@ -700,16 +713,201 @@ return false; // čas nebyl užívatelem vybrán
 
 aktivace()
 {
-const pocet_casu=14; // počet celkových časových rozmezí, které může uživatel zvolit 1-14
+const pocet_casu=this.casy.length; // délka pole ukazuje na počet časů
 for(let i=0;i<pocet_casu;i++)
 {
 // smička zajistí přidělení posluchačú událostí CLICK všem li elementům s volbou času
+
+const radio=document.getElementById(`${this.id_radio}${i+1}`); // input type radio, číslování je od 1, proto i+1
+if(radio)
+{
+(radio as HTMLInputElement).disabled=false; // vypne disabled, pokud by byl zaplý
+(radio as HTMLInputElement).checked=false; // nastaví checked na false, čímž ho vypne, pokud by bylo zaplé
+}
+
 const li=document.getElementById(`${this.id_li}${i+1}`); // Element li je číslován od 1 : proto i+1
 if(li)
 {
 // pokud existuje HTML element
-li.addEventListener("click", this); // přidělí posluchač událosi elementu li
-}}};
+const hasListener=(li as HTMLElement).getAttribute('data-has-listener')==='true'; // Pokud button ještě nemá posluchače událostí
+if (!hasListener){
+(li as HTMLElement).addEventListener("click",this); // přidělí posluchač událosi elementu li
+(li as HTMLElement).style.color="black"; // nastaví konkrétní časem shodné  li na color black
+(li as HTMLElement).style.backgroundColor="white"; // nastaví konkrétní časem shodné li na background-color white
+(li as HTMLElement).style.cursor="pointer"; // nastaví konkrétní časem shodné li na cursor pointer
+(li as HTMLElement).setAttribute("data-has-listener","true"); // přidá prvku atribut s hodnotou true
+}}
+}
+this.vybrany_cas=0; // nastaví čas vybraného času na default hodnotu - čas nebyl vybrán
+};
+
+data_rezervace_blok_time()
+{
+// funkce zajistí blokaci časů, které již jsou rezervovány, časy byly načteny z JSON
+if(!this.load_data_rezervace)
+{
+if(this.load_rezervace_time_out)
+{
+// pokud je časovač již spuštěn
+clearTimeout(this.load_rezervace_time_out); // vynuluje časovač
+}
+this.load_rezervace_time_out=setTimeout(()=>{this.data_rezervace_blok_time();},1000); // REKLUZE - pokud nejsou data načtena pokusí se funkci spustit opět za 1s
+return; // data zatím nebyla načtena - funkce bude ukončena
+}
+
+if(this.rezervace.length===0)
+{
+// pokud bude globýlní pole s blokovanými dny prázdné, znamená to, že nejsou zadány žádné blokovaný dny
+return; // funkce bude ukončena
+}
+
+
+const rezervace:number[][]=this.rezervace; // převede globýlní pole s rezervací (rok,měsíc 0-11,den,čas 1-14) do lokální proměnné
+const book_den=kalendar.rezervovane_datum; // getter vrací aktuální rezervované datum uživatelem [rok, měsíc , den]
+
+const cas_shody:number[]=[]; // do pole budou zapsány všechny časy (1-14) odpovídající stejnému roku, měsíci a dnu rezervace
+
+// Smyčka pro procházení pole polí a kontrolu shod
+rezervace.forEach(item=>{
+const [rok,mesic,den,cas]=item;
+if(rok===book_den[0]&&mesic===book_den[1]&&den===book_den[2])
+{
+// Pokud se shodují první tři hodnoty, proveďte akci
+cas_shody.push(cas); // zapíše do pole čas shody pro konkrétní rok , měsíc a den
+}
+});
+
+
+if(cas_shody.length!==0)
+{
+// pokud byl zapsán nějáký čas shody
+
+const pocet_shod=cas_shody.length; // počet shodných časů odpovídá délce pole
+
+for(let i=0;i<pocet_shod;i++)
+{
+
+const radio=document.getElementById(`${this.id_radio}${i+1}`); // input type radio, číslování je od 1, proto i+1
+const li=document.getElementById(`${this.id_li}${i+1}`); // li, které přísluší k input type radio
+
+if(radio)
+{
+(radio as HTMLInputElement).disabled=true; // nastaví konkrétní časem shodné radio na disabled
+}
+
+if(li)
+{
+(li as HTMLElement).style.color="grey"; // nastaví konkrétní časem shodné  li na color grey
+(li as HTMLElement).style.backgroundColor="lightgray"; // nastaví konkrétní časem shodné li na background-color lightgray
+(li as HTMLElement).style.cursor="not-allowed"; // nastaví konkrétní časem shodné li na cursor přeškrklý
+(li as HTMLElement).removeEventListener("click",this); // odebere posluchač klik
+(li as HTMLElement).removeAttribute('data-has-listener'); // odebere prvku atribut, pokud ho má
+}
+
+}
+
+}
+
+
+
+
+
+};
+
+load_rezervace()
+{
+// načtení z JSON časy, které jsou již rezervované
+
+
+// ZAČÁTEK SIMULACE
+
+
+// const jsonString = `
+// {
+// "data":
+// [
+// {
+// "rok": 2025,
+// "mesic": 3,
+// "den": 13,
+// "cas_rezervace": 1,
+// "encrypted_token": "ENCRYPTED_TOKEN_1",
+// "iv": "IV_BASE64_1"
+// },
+// {
+// "rok": 2025,
+// "mesic": 2,
+// "den": 25,
+// "cas_rezervace": 4,
+// "encrypted_token": "ENCRYPTED_TOKEN_2",
+// "iv": "IV_BASE64_2"
+// },
+// {
+// "rok": 2025,
+// "mesic": 2,
+// "den": 25,
+// "cas_rezervace": 1,
+// "encrypted_token": "ENCRYPTED_TOKEN_2",
+// "iv": "IV_BASE64_2"
+// }
+// ]
+// }
+// `;
+  
+// Funkce pro načtení JSON souboru z řetězce
+// const loadJSONFromString=(jsonStr:string):any=>{
+// try{
+// const jsonData=JSON.parse(jsonStr);
+// console.log('Načtená data (ze simulace):',jsonData);
+// return jsonData;
+// }catch (error) {
+// console.error('Chyba při načítání JSON (ze simulace):', error);
+// return null;
+// }
+// }
+
+// KONEC SIMLACE
+  
+// Asynchronní funkce pro načtení JSON souboru pomocí fetch
+const fetchJSON=async():Promise<any> =>{
+const jsonFilePath ="config/cti-rezervace.php"; // cesta k PHP souboru, který zajistí čtení JSON souboru, číst JSON může kdokli, ale musí být chráněn proti zápisu
+try{
+const response=await fetch(jsonFilePath); // načítání dat ze souboru JSON
+if(!response.ok)
+{
+throw new Error('Síťová odpověď nebyla v pořádku'); // chyba při načítání
+}
+const jsonData=await response.json(); // převzetí dat do proměnné
+console.log('Načtená data (reálně):',jsonData);
+return jsonData; // vrací načtená data
+}
+catch(error)
+{
+console.error('Chyba při načítání JSON (reálně):', error);
+return null;
+}
+}
+  
+
+setTimeout(async ()=>{
+// Načtení JSON dat ze serveru anebo simulačně dle potřeby
+
+const jsonData=await fetchJSON(); // Načtení JSON dat z servru -- NAOSTRO !!!
+
+// const jsonData=loadJSONFromString(jsonString);  Načtení JSON dat z řetězce -- SIMULACE !!!
+
+// Pokud byla data úspěšně načtena, pokračuj ve zpracování
+if(jsonData){
+jsonData.data.forEach((item:{rok:number,mesic:number,den:number,cas_rezervace:number})=>{
+const dateArray:number[]=[item.rok,item.mesic,item.den,item.cas_rezervace];
+this.rezervace.push(dateArray); // vložení načtených dat z JSON do globálního pole
+});
+console.log(this.rezervace);
+}
+this.load_data_rezervace=true; // proměnná na true ukazuje, že data o dnech, které se mají blokovat, jsou z JSON souboru načtena
+},0);  // Použití setTimeout k oddělení asynchronní operace
+
+};
 
 handleEvent(e:any)
 {
@@ -885,6 +1083,7 @@ readonly id_mesic="slone_mesic_rezervace"; // id SPAN ve formuláři Dokončit r
 readonly id_rok="ciselne_rok_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje rok rezervace např. 2024
 private slovne_datum=""; // v proměnné je slovně uložené celé datum rezervace
 private slovne_cas=""; // v proměnné je uloženo slovně konkrétní čas rezervace
+private vyrizeni_rezervace:[boolean,boolean,boolean]=[false,false,false]; // pole slouží pro zjištění vyřízení rezervace - odesílání dat pomocí fetch
 
 posluchace()
 {
@@ -1237,22 +1436,41 @@ throw new Error(result.message);
 const result:any=await response.json(); // Převádí odpověď na JSON formát
 if(result.status==="success")
 {
+
+
 if (result.message==="Token je platný. Ověření úspěšné.")
 {
 console.log("Token je platný:",result.message);
+this.vyrizeni_rezervace[0]=true; // do pole vloží na první místo info, že token je ok
 // Zde vložím kód pro úspěšné ověření tokenu
 }
+
 else if(result.message==="Data uložena úspěšně")
 {
 console.log("Úspěch:", result.message);
 // všechny data pro JSON byla úspěšně uložena
 // zde se vloží kód, když se uložení rezervace provedlo
+this.vyrizeni_rezervace[1]=true; // do pole vloží informaci, že uložení do JSON proběhlo úspěšně
 }
+
 else if(result.message==="Oba e-maily byly úspěšně odeslány")
 {
 console.log("Úspěch:", result.message);
 // zde se vloží kód, když byly oba e-maily úspěšně odeslány
+this.vyrizeni_rezervace[2]=true; // do pole vloží informaci, že oba emaily byli úspěšně odeslány
 }
+
+if(this.vyrizeni_rezervace[0]&&this.vyrizeni_rezervace[1]&&this.vyrizeni_rezervace[2])
+{
+alert("REZERVACE PROBĚHLA ÚSPĚŠNĚ");
+this.vyrizeni_rezervace[0]=this.vyrizeni_rezervace[1]=this.vyrizeni_rezervace[2]=false; // nastaví pole na default
+cas_rezervace.load_data_rezervace=false; // nastaví proměnnou nahrání časů rezervace na default
+cas_rezervace.load_rezervace(); // nahraje nová data rezervace
+cas_rezervace.aktivace(); // aktivuje všechny tlačítka pro rezervaci
+cas_rezervace.data_rezervace_blok_time(); // provede novou blokaci časů rezervace
+
+}
+
 }
 else if(result.status==="partial_success") {
 console.warn("Částečný úspěch:",result.message);
@@ -1319,6 +1537,7 @@ kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,�
 mesic_a_rok.aktivace(); // aktivuje posluchače události click k tlačítkům pro posun měsíce VPŘED a VZAD
 cas_rezervace.aktivace(); // aktivuje posluchače pro volbu konkrétního času rezervace uživatelem
 kalendar.load_book_block_day(); // funkce načte JSON soubor, kde jsou blokované dny pro rezervaci, po jeho načtení zapne blokaci dnů napsaných v JSON souboru
+cas_rezervace.load_rezervace(); // nahraje JSON soubor a data rezervace časů, které byly už rezervované
 }
 
 };
