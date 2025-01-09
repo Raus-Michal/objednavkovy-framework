@@ -63,23 +63,29 @@ this.poloha=0; // poloha bude 0 - není možné se vrátit zpět
 }
 
 };
+restart_dnu_v_kalendari()
+{
+// metoda - povolí posluchače všem buttonům od 1-31, pokud tento posluchač nemají a všem nastaví disbled===false
+for(let i = 1; i < 32; i++) {
+// smyška postupně "projede" všechny buttony 1-31 dnů v kalendáři, jelikož jejich id začíná od 1 a je jich 31 >>> i = 1 a i < 32
+const button_i = document.getElementById(`${this.p_id}${i}`); // Získá konkrétní HTML button s číslem dne v měsíci 1-31
+if(button_i){
+// Pokud HTML objekt pod Id existuje
+const hasListener=button_i.getAttribute("data-has-listener")==="true"; // Zkontroluje, zda už má button atribut 'data-has-listener' nastavený na 'true'
+if(!hasListener){
+// Pokud button ještě nemá posluchače událostí
+(button_i as HTMLButtonElement).addEventListener("click", this); // Přidělí posluchač událostí buttonu konkrétnímu buttonu 
+button_i.setAttribute("data-has-listener","true"); // Nastaví atribut 'data-has-listener' na 'true' pro označení, že button má posluchače
+}
+(button_i as HTMLButtonElement).disabled=false; // Odblokuje všechny buttony
+}
+}
 
+};
 upravit(){
 // funkce zablokuje pro booking dny které v měsíci už uběhly a den následující
 
 let a_d=datum.den_v_mesici; // aktuální den v měsíci 1-31,1-30,1-28 ...
-
-for(let i=1;i<32;i++)
-{
-// smyčka povolí posluchače všem buttonům od 1-31
-const button_i=document.getElementById(`${this.p_id}${i}`); // konkrétní button s číslem dne v měsíci
-if(button_i)
-{
-// pokud HTML objekt pod Id existuje
-(button_i as HTMLButtonElement).addEventListener("click",this); // přidělí posluchač událostí buttonu
-(button_i as HTMLButtonElement).disabled=false; // odblokuje všechny buttony
-}
-}
 
 if(this.poloha===0)
 {
@@ -102,6 +108,7 @@ if(button_i)
 // pokud HTML objekt pod Id existuje
 (button_i as HTMLButtonElement).disabled=true; // udělá disabled na buttonu na dny, které už v měsíci uplynuly včetně dnešního
 (button_i as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonům, které ho nepotřebují
+(button_i as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }}
 }
 else
@@ -112,6 +119,7 @@ if(button_i)
 {
 (button_i as HTMLButtonElement).disabled=true; // udělá disabled na buttonu 1. v měsíci
 (button_i as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonům, které ho nepotřebují
+(button_i as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }
 
 const hours = new Date().getHours(); // Získání aktuální hodiny
@@ -123,21 +131,13 @@ const button_i2=document.getElementById(`${this.p_id}${a_d}`); // konkrétní bu
 if(button_i2){
 (button_i2 as HTMLButtonElement).disabled=true; // udělá disabled na buttonu 2. v měsíci
 (button_i2 as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonům, které ho nepotřebují
+(button_i2 as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }}
 }
 }
 else
 {
 // pokud nebude kalendář v poloze===0
-
-for(let i=1;i<32;i++){
-// pomocí této smičky, budou všechny buttony připravené
-const button_i=document.getElementById(`${this.p_id}${i}`); // konkrétní button s číslem dne v měsíci
-if (button_i){
-// pokud HTML objekt pod Id existuje
-(button_i as HTMLButtonElement).disabled=false; // udělá odstraní disabled na všech buttonech
-}
-}
 
 if(this.poloha===1)
 {
@@ -147,8 +147,8 @@ const hours=new Date().getHours(); // Získání aktuální hodiny
 const today = new Date(); // do proměnné načte objekt Date
 const nextDay=new Date(today.getFullYear(),today.getMonth(),today.getDate()+1); // zjistí datum, které je jeden den po dnešním dni
 
-const button_1 = document.getElementById(`${this.p_id}1`); // 1. button s číslem dne v měsíci (tedy 1. den toho měsíce)
-const button_2 = document.getElementById(`${this.p_id}2`); // 2. button s číslem dne v měsíci (tedy 2. den toho měsíce)
+const button_1=document.getElementById(`${this.p_id}1`); // 1. button s číslem dne v měsíci (tedy 1. den toho měsíce)
+const button_2=document.getElementById(`${this.p_id}2`); // 2. button s číslem dne v měsíci (tedy 2. den toho měsíce)
 
 if(nextDay.getDate()===1)
 {
@@ -159,12 +159,14 @@ if(button_1)
 // pokud HTML element existuje
 (button_1 as HTMLButtonElement).disabled=true; // udělá disabled na buttonu 1. v měsíci
 (button_1 as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonu 1. v měsíci
+(button_1 as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }
 
 if(hours>17){
 // pokud je po 18 hod - zablokuje se booking i následujícího dne
 (button_2 as HTMLButtonElement).disabled=true; // udělá disabled na buttonu 2. v měsíci
 (button_2 as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonu 2. v měsíci
+(button_2 as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }}
 
 const every_other_day=new Date(today.getFullYear(),today.getMonth(),today.getDate()+2); // zjistí datum, který je dva dny po dnešním dni
@@ -177,6 +179,7 @@ if(button_1)
 // pokud HTML element existuje
 (button_1 as HTMLButtonElement).disabled=true; // udělá disabled na buttonu 1. v měsíci
 (button_1 as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonu 1. v měsíci
+(button_1 as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }}
 }}
 };
@@ -221,6 +224,7 @@ const button_i=document.getElementById(`${this.p_id}${i}`); // konkrétní butto
 if(button_i){
 // pokud HTML objekt pod Id existuje
 (button_i as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač konkrétnímu buttonu
+(button_i as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }
 }
 
@@ -350,6 +354,7 @@ if(button_i)
 // pokud HTML element existuje
 (button_i as HTMLButtonElement).disabled=true; // udělá disabled na buttonu
 (button_i as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonu
+(button_i as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }}}
 
 };
@@ -593,6 +598,7 @@ problik_posunu(); // interní funkce zajistí probliknutí plochy kalendáře se
 }
 kalendar.posun=-1; // přičte +1 poloze uživatele v kalendáři
 kalendar.nazev_mesice(); // upraví název měsíce vzhledem k aktuální poloze uživatele v kalendáři
+kalendar.restart_dnu_v_kalendari(); // funkce aktivuje všechny buttony pro dny 1-31 (všem nastaví disabled==false a přidá posluchače click)
 kalendar.upravit(); // upraví kalendář, tak. aby zobrazoval pouze dny v aktuálním měsíci
 kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
 kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
@@ -610,6 +616,7 @@ problik_posunu(); // interní funkce zajistí probliknutí plochy kalendáře se
 }
 kalendar.posun=+1; // přičte +1 poloze uživatele v kalendáři, řešeno setterem
 kalendar.nazev_mesice(); // upraví název měsíce vzhledem k aktuální poloze uživatele v kalendáři
+kalendar.restart_dnu_v_kalendari(); // funkce aktivuje všechny buttony pro dny 1-31 (všem nastaví disabled==false a přidá posluchače click)
 kalendar.upravit(); // upraví kalendář, tak. aby zobrazoval pouze dny v aktuálním měsíci
 kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
 kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
@@ -1305,6 +1312,7 @@ spustit_aplikaci()
 this.kontola_verze_javaScript(); // metoda zkontroluje jestli uživatel má alespoň Java Script ES2017, pokud ne, aktivuje DIV s errorem
 this.posluchace(); // spustí posluchače formulářů a hlavních buttonů formulářů
 kalendar.nazev_mesice(); // funkce přepíše název měsíce a roku v input měsíc a rok
+kalendar.restart_dnu_v_kalendari(); // funkce aktivuje všechny buttony pro dny 1-31 (všem nastaví disabled==false a přidá posluchače click)
 kalendar.upravit(); // upraví kalendář, tak. aby zobrazoval pouze dne v aktuálním měsíci mimo dnešního dne
 kalendar.odebrat_dny(); // odebere přebytečné dny v konkrétním měsíci
 kalendar.poradi_dnu(); // funkce upraví v kalendáři počadí dnů (Po,Ut,St,Čt,Pá,So,Ne) podle měsíce
