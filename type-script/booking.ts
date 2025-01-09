@@ -400,7 +400,7 @@ load_book_block_day()
   
 // Asynchronní funkce pro načtení JSON souboru pomocí fetch
 const fetchJSON=async():Promise<any> =>{
-const jsonFilePath ="config/cti_blok_days.php"; // cesta k PHP souboru, který zajistí čtení JSON souboru, číst JSON může kdokli, ale musí být chráněn proti zápisu
+const jsonFilePath ="config/cti-blok-days.php"; // cesta k PHP souboru, který zajistí čtení JSON souboru, číst JSON může kdokli, ale musí být chráněn proti zápisu
 try{
 const response=await fetch(jsonFilePath); // načítání dat ze souboru JSON
 if(!response.ok)
@@ -1126,11 +1126,11 @@ const in_phone_uzivatel=document.getElementById(this.id_inputHost[2]); // input 
 const in_predmet_uzivatel=document.getElementById(this.id_inputHost[3]); // input s předmětem uživatele (O čem bude hovor?)
 
 
-const data_pro_Email:string[]=[]; // do pole budou zapsána všechna data, která jsou pro odesílání emailu
-let jmeno="", // jméno uživatele
-email="", // email uživatele
-phone="", // telefon uživatele
-predmet=""; // předmět uživatele (O čem bude hovor)
+const data_pro_Email:[string,string,string,string,string,string,string,string]=["","","","","","","",""]; // do pole budou zapsána všechna data, která jsou pro odesílání emailu
+let jmeno:string="", // jméno uživatele
+email:string="", // email uživatele
+phone:string="", // telefon uživatele
+predmet:string=""; // předmět uživatele (O čem bude hovor)
 
 
 
@@ -1140,48 +1140,51 @@ if(in_jmeno_uzivatel)
 {
 // pokud HTML element existuje
 jmeno=(in_jmeno_uzivatel as HTMLInputElement).value; // z input načte jméno a příjmení
-data_pro_Email.push(jmeno);
+data_pro_Email[0]=jmeno;
 }
 
 if(in_email_uzivatel)
 {
 // pokud HTML element existuje
 email=(in_email_uzivatel as HTMLInputElement).value; // z input načte email
-data_pro_Email.push(email);
+data_pro_Email[1]=email;
 }
 
 if(in_phone_uzivatel)
 {
 // pokud HTML element existuje
 phone=(in_phone_uzivatel as HTMLInputElement).value; // z input načte telefon
-data_pro_Email.push(phone);
+data_pro_Email[2]=phone;
 }
 
 if(in_predmet_uzivatel)
 {
 // pokud HTML element existuje
 predmet=(in_predmet_uzivatel as HTMLInputElement).value; // z input načte O čem bude hovor
-data_pro_Email.push(predmet);
+data_pro_Email[3]=predmet;
 }
 
 const datum_rezervace_slovne:string=this.slovne_datum; // slovně zapsaný celé datum rezervace pro zaslání emalem (např.: Úterý, 1. dubna 2025)
-data_pro_Email.push(datum_rezervace_slovne);
-
+data_pro_Email[4]=datum_rezervace_slovne;
 const cas_rezervace_slovne:string=this.slovne_cas; // slovně zapsaný čas rezervace pro rozesílání emailem (např.:9:00-9:30 hod.)
-data_pro_Email.push(cas_rezervace_slovne);
+data_pro_Email[5]=cas_rezervace_slovne;
+const currentUrl:string=window.location.href; // Tento kód uloží aktuální URL do proměnné
+const cleanUrl:string=currentUrl.split("#")[0].split("?")[0]; // očistí url adresu, kdyby obsahovala hash # anebo honotu za ?
+data_pro_Email[6]=cleanUrl;
+data_pro_Email[7]=token; // bude na poslední pole vložen token
 
-data_pro_Email.push(token); // bude na poslední pole vložen token
+// console.log("token: " + token);
+// console.log("den_rezervace_uzivatel: " + den_rezervace_uzivatel);
+// console.log("cas_rezervace_uzivatel: " + cas_rezervace_uzivatel);
+// console.log("cas_rezervace_slovne: " + cas_rezervace_slovne);
+// console.log("datum_rezervace_slovne " + datum_rezervace_slovne);
+// console.log("Jméno: " + jmeno);
+// console.log("email: " + email);
+// console.log("Telefon: " + phone);
+// console.log("URL adresa www stránky: " + currentUrl);
+// console.log("O čem bude hovor: " + predmet);
 
-console.log("token: "+token); // zobrazí token
-console.log("den_rezervace_uzivatel: "+den_rezervace_uzivatel);
-console.log("cas_rezervace_uzivatel: "+cas_rezervace_uzivatel);
-console.log("cas_rezervace_slovne: "+cas_rezervace_slovne);
-console.log("datum_rezervace_slovne "+datum_rezervace_slovne);
-
-console.log("Jméno: "+jmeno);
-console.log("email: "+email);
-console.log("Telefon: "+phone);
-console.log("O čem bude hovor: "+predmet);
+console.log(data_pro_Email);
 
 const data=`
 csrf_token=${encodeURIComponent(token)}
@@ -1191,20 +1194,107 @@ csrf_token=${encodeURIComponent(token)}
 
 
 // Vytvoření AJAX požadavku
-fetch("../config/zatim_neni.php",{
-method:"POST",  // Metoda POST
+const sendRequest=async()=>{
+try{
+setTimeout(async()=>{
+const response:Response=await fetch("../config/distributor-rezervace.php",{
+method:"POST",
 headers:{
-"Content-Type":"application/x-www-form-urlencoded"  // Nastavení typu obsahu
+"Content-Type":"application/x-www-form-urlencoded"
 },
-body:data  // data ve formátu klíč=hodnota
-})
-.then(response=>response.text())  // Očekáváme textovou odpověď
-.then(result=>{
-console.log('Výsledek:',result);
-})
-.catch(error=>{
-console.error('Chyba při odesílání dat:',error);
+body:data
 });
+
+if(response.status===429){
+const result:{message:string}=await response.json();
+// Zde vložím funkci, kterou chci provést v případě překročení RATE LIMIT
+alert("Překročili jste limit požadavků. Zkuste to znovu později.");
+throw new Error(result.message);
+}
+
+if(response.status===403){
+const result:{message:string}=await response.json();
+// zde se vloží funkce, kterou chci provést v případě, že je token neplatný
+alert('Token je neplatný. Přístup zamítnut.');
+throw new Error(result.message);
+}
+
+if(response.status===405){
+const result:{message:string}=await response.json();
+// Tento blok kódu znamená, že pokud server obdrží jiný požadavek než POST (třeba GET), vrátí stavový kód 405 s zprávou "Neplatný požadavek.".
+// zde se vloží funkce, kterou chci provést v případě, že nebyl požadavek metody POST
+alert('Neplatný požadavek, požadavek nebyl POST.');
+throw new Error(result.message);
+}
+
+const result:any=await response.json(); // Převádí odpověď na JSON formát
+if(result.status==="success")
+{
+if (result.message==="Token je platný. Ověření úspěšné.")
+{
+console.log("Token je platný:",result.message);
+// Zde vložím kód pro úspěšné ověření tokenu
+}
+else if(result.message==="Data uložena úspěšně")
+{
+console.log("Úspěch:", result.message);
+// všechny data pro JSON byla úspěšně uložena
+// zde se vloží kód, když se uložení rezervace provedlo
+}
+else if(result.message==="Oba e-maily byly úspěšně odeslány")
+{
+console.log("Úspěch:", result.message);
+// zde se vloží kód, když byly oba e-maily úspěšně odeslány
+}
+}
+else if(result.status==="partial_success") {
+console.warn("Částečný úspěch:",result.message);
+// zde se vloží kód, když byl jeden z e-mailů úspěšně odeslán
+}
+else if(result.status==="error")
+{
+if(result.message.includes("Data uložena úspěšně"))
+{
+console.error("Chyba:", result.message);
+// data do JSON souboru nebyla uložena
+// zde se vloží kód, když se uložení rezervace NEprovedlo
+}
+else
+{
+console.error("Chyba:", result.message);
+// žádný e-mail nebyl odeslán nebo došlo k jiné chybě
+// zde se vloží kód, když se nepodařilo odeslat ani jeden email
+}
+}
+
+},0); // setTimeout(0) odloží vykonání kódu až po dokončení všech aktuálně vykonávaných úkolů, čímž vytvoří asynchronní úlohu.
+}
+catch(error){
+if(error instanceof Error){
+if(error.message.includes("Chybné data")){
+
+console.error("Nastala chyba při zpracování dat pro rozesílání emailu: Chybné data");
+// zde se vloží kód když data pro zaslání emailu nebyla ok
+}
+else if (error.message.includes("Chybný požadavek"))
+{
+console.error("Nastala chyba při zpracování dat pro rozesílání emailu: Chybný požadavek");
+// zde se vloží kód, pokud byl chybný požadavek dat pro email
+}
+else
+{
+console.error("Chyba při odesílání dat:", error);
+// zde se vloží kód pro další chyby při zpracování požadavku
+}
+}
+else
+{
+console.error("Neznámá chyba:", error);
+}
+}
+};
+
+sendRequest(); // Zavolejte asynchronní funkci pro odeslání požadavku
 
 };
 
