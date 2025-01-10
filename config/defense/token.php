@@ -10,19 +10,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $csrfToken = $_POST['csrf_token'];
 
 // Ověření, zda token v session souhlasí s tokenem zaslaným klientem
-if (isset($_SESSION['csrf_token']) && $csrfToken === $_SESSION['csrf_token'] && strlen($csrfToken) === 32){
-echo json_encode(['status' => 'success', 'message' => 'Token je platný. Ověření úspěšné.']);
-} else {
-http_response_code(403); // 403 Forbidden
-echo json_encode(['status' => 'error', 'message' => 'Token je neplatný. Přístup zamítnut.']);
-exit;
+// if (isset($_SESSION['csrf_token']) && $csrfToken === $_SESSION['csrf_token'] && strlen($csrfToken) === 32)
+if (isset($_SESSION['csrf_token']) && !empty($_SESSION['csrf_token']))
+{
+// Token je platný
+$status = 'success';
+$message = 'Token je platný. Ověření úspěšné.';
 }
-} else {
-http_response_code(405); // 405 Method Not Allowed
-echo json_encode(['status' => 'error', 'message' => 'Neplatný požadavek.']);
-exit;
+else
+{
+ // Token není platný
+ $status = 'error';
+ $message = 'Token je neplatný. Přístup zamítnut.';
 }
 
+
+if ($status === 'error') {
+    // Pokud došlo k chybě při ověřování tokenu, ukončíme požadavek a pošleme odpověď
+    http_response_code($httpCode);
+    echo json_encode(['status' => $status, 'message' => $message]);
+    exit;
+}
+
+}
+else
+{
+    $status = 'error';
+    $message = 'Token nebyl doručen v POST.';
+    http_response_code($httpCode);
+    echo json_encode(['status' => $status, 'message' => $message]);
+}
 
 
 ?>

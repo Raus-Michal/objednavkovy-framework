@@ -869,24 +869,30 @@ load_rezervace()
 // KONEC SIMLACE
   
 // Asynchronní funkce pro načtení JSON souboru pomocí fetch
-const fetchJSON=async():Promise<any> =>{
-const jsonFilePath ="config/cti-rezervace.php"; // cesta k PHP souboru, který zajistí čtení JSON souboru, číst JSON může kdokli, ale musí být chráněn proti zápisu
-try{
-const response=await fetch(jsonFilePath); // načítání dat ze souboru JSON
-if(!response.ok)
-{
-throw new Error('Síťová odpověď nebyla v pořádku'); // chyba při načítání
-}
-const jsonData=await response.json(); // převzetí dat do proměnné
-console.log('Načtená data (reálně):',jsonData);
-return jsonData; // vrací načtená data
-}
-catch(error)
-{
-console.error('Chyba při načítání JSON (reálně):', error);
-return null;
-}
-}
+const fetchJSON = async (): Promise<any> => {
+    const jsonFilePath = "config/cti-rezervace.php"; // cesta k PHP souboru
+    try {
+        const response = await fetch(jsonFilePath); // načítání dat ze souboru JSON
+        if (!response.ok) {
+            throw new Error('Síťová odpověď nebyla v pořádku'); // chyba při načítání
+        }
+
+        let jsonData = await response.json(); // převzetí dat do proměnné
+
+        // Pokud JSON neobsahuje pole 'data' nebo pokud je prázdné, nastavíme prázdné pole
+        if (!jsonData || !jsonData.data || !Array.isArray(jsonData.data)) {
+            jsonData = { data: [] };  // Zajistíme, že data budou vždy pole
+        }
+
+        console.log('Načtená data (reálně):', jsonData);
+        return jsonData; // vrací načtená data
+    } catch (error) {
+        console.error('Chyba při načítání JSON (reálně):', error);
+        return { data: [] }; // Vrátí prázdný objekt, pokud dojde k chybě
+    }
+};
+
+
   
 
 setTimeout(async ()=>{
@@ -1083,8 +1089,6 @@ readonly id_mesic="slone_mesic_rezervace"; // id SPAN ve formuláři Dokončit r
 readonly id_rok="ciselne_rok_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje rok rezervace např. 2024
 private slovne_datum=""; // v proměnné je slovně uložené celé datum rezervace
 private slovne_cas=""; // v proměnné je uloženo slovně konkrétní čas rezervace
-private vyrizeni_rezervace:[boolean,boolean,boolean]=[false,false,false]; // pole slouží pro zjištění vyřízení rezervace - odesílání dat pomocí fetch
-
 posluchace()
 {
 // posluchače formulářů a hlavních buttonů formulářů
@@ -1318,6 +1322,7 @@ let token=""; // v proměnné bude uložen token, který bude zároveň heslem k
 if(input_hidden)
 {
 token=(input_hidden as HTMLInputElement).value; // načte token z HTML elementu input type hidden
+console.log("TOKEN: "+token);
 }
 
 
@@ -1400,126 +1405,56 @@ csrf_token=${encodeURIComponent(token)}
 
 
 // Vytvoření AJAX požadavku
-const sendRequest=async()=>{
-try{
-setTimeout(async()=>{
-const response:Response=await fetch("../config/distributor-rezervace.php",{
-method:"POST",
-headers:{
-"Content-Type":"application/x-www-form-urlencoded"
-},
-body:data
-});
+const sendRequest = async () => {
+    try {
+        // Nastavení prodlevy před odesláním požadavku
+        setTimeout(async () => {
+            // Odeslání požadavku na server
+            const response: Response = await fetch("config/distributor-rezervace.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: data
+            });
 
-if(response.status===429){
-const result:{message:string}=await response.json();
-// Zde vložím funkci, kterou chci provést v případě překročení RATE LIMIT
-alert("Překročili jste limit požadavků. Zkuste to znovu později.");
-throw new Error(result.message);
-}
+            // Převedení odpovědi na JSON
+            const result = await response.json();
 
-if(response.status===403){
-const result:{message:string}=await response.json();
-// zde se vloží funkce, kterou chci provést v případě, že je token neplatný
-alert('Token je neplatný. Přístup zamítnut.');
-throw new Error(result.message);
-}
+            // Zkontrolujte, zda server odpověděl s 'status' a 'message'
+            if (response.ok) {
+                // Server vrátil odpověď se statusem 'success'
+                if (result.status === 'success') {
+                    console.log('Úspěch:', result.message);
+                    // Další logika pro úspěšné zpracování
+                } else {
+                    // Server vrátil odpověď s chybou ('error')
+                    console.error('Chyba:', result.message);
+                    // Zobrazení chyby uživateli
+                }
+            } else {
+                // Pokud odpověď serveru není v pořádku (např. 4xx nebo 5xx)
+                console.error('Chyba serveru:', result.message || 'Neznámá chyba');
+                // Ošetření chyby serveru, např. zobrazení hlášení uživateli
+            }
 
-if(response.status===405){
-const result:{message:string}=await response.json();
-// Tento blok kódu znamená, že pokud server obdrží jiný požadavek než POST (třeba GET), vrátí stavový kód 405 s zprávou "Neplatný požadavek.".
-// zde se vloží funkce, kterou chci provést v případě, že nebyl požadavek metody POST
-alert('Neplatný požadavek, požadavek nebyl POST.');
-throw new Error(result.message);
-}
+            
 
-const result:any=await response.json(); // Převádí odpověď na JSON formát
-if(result.status==="success")
-{
+        }, 0); // Nastavení 0 ms zpoždění pro vykonání funkce
 
+    }
 
-if (result.message==="Token je platný. Ověření úspěšné.")
-{
-console.log("Token je platný:",result.message);
-this.vyrizeni_rezervace[0]=true; // do pole vloží na první místo info, že token je ok
-// Zde vložím kód pro úspěšné ověření tokenu
-}
-
-else if(result.message==="Data uložena úspěšně")
-{
-console.log("Úspěch:", result.message);
-// všechny data pro JSON byla úspěšně uložena
-// zde se vloží kód, když se uložení rezervace provedlo
-this.vyrizeni_rezervace[1]=true; // do pole vloží informaci, že uložení do JSON proběhlo úspěšně
-}
-
-else if(result.message==="Oba e-maily byly úspěšně odeslány")
-{
-console.log("Úspěch:", result.message);
-// zde se vloží kód, když byly oba e-maily úspěšně odeslány
-this.vyrizeni_rezervace[2]=true; // do pole vloží informaci, že oba emaily byli úspěšně odeslány
-}
-
-if(this.vyrizeni_rezervace[0]&&this.vyrizeni_rezervace[1]&&this.vyrizeni_rezervace[2])
-{
-alert("REZERVACE PROBĚHLA ÚSPĚŠNĚ");
-this.vyrizeni_rezervace[0]=this.vyrizeni_rezervace[1]=this.vyrizeni_rezervace[2]=false; // nastaví pole na default
-cas_rezervace.load_data_rezervace=false; // nastaví proměnnou nahrání časů rezervace na default
-cas_rezervace.load_rezervace(); // nahraje nová data rezervace
-cas_rezervace.aktivace(); // aktivuje všechny tlačítka pro rezervaci
-cas_rezervace.data_rezervace_blok_time(); // provede novou blokaci časů rezervace
-
-}
-
-}
-else if(result.status==="partial_success") {
-console.warn("Částečný úspěch:",result.message);
-// zde se vloží kód, když byl jeden z e-mailů úspěšně odeslán
-}
-else if(result.status==="error")
-{
-if(result.message.includes("Data uložena úspěšně"))
-{
-console.error("Chyba:", result.message);
-// data do JSON souboru nebyla uložena
-// zde se vloží kód, když se uložení rezervace NEprovedlo
-}
-else
-{
-console.error("Chyba:", result.message);
-// žádný e-mail nebyl odeslán nebo došlo k jiné chybě
-// zde se vloží kód, když se nepodařilo odeslat ani jeden email
-}
-}
-
-},0); // setTimeout(0) odloží vykonání kódu až po dokončení všech aktuálně vykonávaných úkolů, čímž vytvoří asynchronní úlohu.
-}
-catch(error){
-if(error instanceof Error){
-if(error.message.includes("Chybné data")){
-
-console.error("Nastala chyba při zpracování dat pro rozesílání emailu: Chybné data");
-// zde se vloží kód když data pro zaslání emailu nebyla ok
-}
-else if (error.message.includes("Chybný požadavek"))
-{
-console.error("Nastala chyba při zpracování dat pro rozesílání emailu: Chybný požadavek");
-// zde se vloží kód, pokud byl chybný požadavek dat pro email
-}
-else
-{
-console.error("Chyba při odesílání dat:", error);
-// zde se vloží kód pro další chyby při zpracování požadavku
-}
-}
-else
-{
-console.error("Neznámá chyba:", error);
-}
-}
+    
+    catch (error) {
+        // Pokud došlo k chybě při komunikaci s API (např. nevalidní JSON nebo síťová chyba)
+        console.error('Chyba při zpracování odpovědi:', error);
+        // Ošetření chyb, např. zobrazení informace o problému s připojením
+    }
 };
 
-sendRequest(); // Zavolejte asynchronní funkci pro odeslání požadavku
+// Zavolání asynchronní funkce pro odeslání požadavku
+sendRequest();
+
 
 };
 

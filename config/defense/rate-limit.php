@@ -7,7 +7,7 @@ $limit = 3;  // Maximální počet požadavků
 $timeWindow = 86400; // Časové okno v sekundách (86400 sekund == 24hodin)
 
 $ipAddress = $_SERVER["REMOTE_ADDR"];
-$rateLimitFile = "config/defense/rate_limit.json";
+$rateLimitFile = "defense/rate_limit.json";
 
 // Načtení dat o předchozích požadavcích
 if (file_exists($rateLimitFile)){
@@ -29,8 +29,15 @@ if (isset($data[$ipAddress])) {
 
 // Zkontrolujte, zda IP adresa překročila limit
 if (isset($data[$ipAddress]) && count($data[$ipAddress]) >= $limit) {
-    http_response_code(429);  // 429 Too Many Requests
-    echo json_encode(["status" => "error", "message" => "Překročili jste limit požadavků. Zkuste to znovu za 24 hodin."]);
+    $status = 'error';
+    $message = 'Překročili jste limit požadavků. Zkuste to znovu za 24 hodin.';
+}
+
+// Odesílání chyby do fetch
+if ($status === 'error') {
+    // Pokud došlo k překročení limitu požadavků, ukončíme požadavek a pošleme odpověď
+    http_response_code($httpCode);
+    echo json_encode(['status' => $status, 'message' => $message]);
     exit;
 }
 
