@@ -1397,11 +1397,7 @@ data_pro_Email[7]=token; // bude na poslední pole vložen token
 
 console.log(data_pro_Email);
 
-const data=`
-csrf_token=${encodeURIComponent(token)}
-&data_json=${encodeURIComponent(JSON.stringify(data_pro_JSON))}
-&data_email=${encodeURIComponent(JSON.stringify(data_pro_Email))}
-`; // nachystá data na odeslání pro fetch API metodou post
+const data=`csrf_token=${encodeURIComponent(token)}&data_json=${encodeURIComponent(JSON.stringify(data_pro_JSON))}&data_email=${encodeURIComponent(JSON.stringify(data_pro_Email))}`; // nachystá data na odeslání pro fetch API metodou post
 
 
 // Vytvoření AJAX požadavku
@@ -1427,14 +1423,19 @@ const sendRequest = async () => {
                 if (result.status === 'success') {
                     console.log('Úspěch:', result.message);
                     // Další logika pro úspěšné zpracování
+                alert("REZERVACE PROBĚHLA ÚSPĚŠNĚ");
+
                 } else {
                     // Server vrátil odpověď s chybou ('error')
                     console.error('Chyba:', result.message);
+                    alert("CHYBA - REZERVECA SE NEZDAŘILA!");
+
                     // Zobrazení chyby uživateli
                 }
             } else {
                 // Pokud odpověď serveru není v pořádku (např. 4xx nebo 5xx)
                 console.error('Chyba serveru:', result.message || 'Neznámá chyba');
+                alert("CHYBA - REZERVECA SE NEZDAŘILA - SERVER NEODPOVÍDÁ!");
                 // Ošetření chyby serveru, např. zobrazení hlášení uživateli
             }
 
