@@ -943,6 +943,7 @@ id_buton_pro_zavreni?:string; // id buttonu pro zavření dialogového okna
 id_top_kotva?:string; // id horní kotvy dialogového okna, která slouží k scrool po otevření okna
 id_button_pro_scroll_bottom?:string; // id buttonu, kterým je možné provést scroll k bottom kotvě
 id_bottom_kotva?:string; // id spodní kotva dialogového okna, která slouží k scrool na bottom dialogového okna
+id_animace?:string; // id animace dialogového okna, pokud je potřeba tuto animaci spustit při jeho otevření
 };
 
 class Dia
@@ -951,6 +952,8 @@ class Dia
 
 boundOffs:{[key:string]:any}={}; // objekt, který zajistí správný způsob je skutečně uložit bindovanou funkci do proměnné
 
+casovac_animace:number|null=null;
+
 dia_zasady:Dialog_okno={
 // objekt s id pro dialogové okno: Zásady ochrany osobních údajů
 id_okna:"zasady",
@@ -958,6 +961,24 @@ id_buton_pro_zavreni:"butt_zasady",
 id_top_kotva:"top_kotva_zasady",
 id_button_pro_scroll_bottom:"scroll_butt_zasady",
 id_bottom_kotva:"bottom_kotva_zasady"
+};
+
+dia_waiting:Dialog_okno={
+// objekt s id pro dialogové okno: Čekejte prosím ... Zpracovává se popožadavek
+id_okna:"waiting",
+id_animace:"cir_1",
+};
+
+dia_uspech:Dialog_okno={
+// objekt s id pro dialogové okno: Rezervace byla úspěšně dokončena
+id_okna:"uspech",
+id_buton_pro_zavreni:"butt_uspech"
+};
+
+dia_neuspech:Dialog_okno={
+// objekt s id pro dialogové okno: Rezervace byla NEúspěšně dokončena
+id_okna:"neuspech",
+id_buton_pro_zavreni:"butt_neuspech"
 };
 
 get addDia_zasady()
@@ -1071,7 +1092,38 @@ if(kotva)
 (kotva as HTMLElement).scrollIntoView({behavior:"smooth",block:"end"}); // provede scrollTo na HTML kotvu
 }
 console.log("scroll bottom");
+};
+wait_activ()
+{
+// metoda aktivuje dialogové okno: Čekejte prosím! Zpracovává se požadavek ... 
+
+this.on(this.dia_waiting.id_okna); // otevře dialogové okno
+const id_an=this.dia_waiting.id_animace ?? "cir_1"; // operátor nulového slučování (nullish coalescing operator), který poskytne výchozí hodnotu, pokud je hodnota undefined nebo null
+const animace=document.getElementById(id_an); // HTML elemnt prvku s první animací
+
+if(animace instanceof SVGAnimateElement)
+{
+animace.beginElement(); // pustí animaci
+this.casovac_animace=setInterval(()=>{
+animace.beginElement(); // pustí animaci
+},4500); // spustí opakující se interval
 }
+};
+
+
+wait_deactiv()
+{
+// metoda deaktivuje dialogové okno: Čekejte prosím! Zpracovává se požadavek ... 
+
+if(this.casovac_animace!=null)
+{
+// pokud je časovač aktivován
+clearInterval(this.casovac_animace); // vynuluje časovač
+}
+this.off(this.dia_waiting.id_okna); // zavře dialogové okno
+}
+
+
 
 };
 
@@ -1082,6 +1134,7 @@ readonly id_boss_con="boss_con"; // id hlavního kontejneru aplikace
 readonly id_form=["rezervace_form","dokoncit_form"]; // id formulářů
 readonly id_button=["zmenit","ukaz_zasady","butt_zavinac"]; // id hlavních buttonů formulářů
 readonly id_inputHost=["jmeno","email","phone","predmet"]; // id input, které vyplňoval návštěvník [návštěvník: jméno a příjmení, návštěvník: email, návštěvník: telefon, návštěvník: O čem bude hovor]
+readonly id_predvolba_phone="predvolba"; // id input s predvolbou telefonní +420
 readonly id_cas="slovne_cas_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje čas rezervace
 readonly id_den="slovne_den_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje den rezervace Pondělí-Neděle
 readonly id_den_v_mesici="ciselne_den_v_mesici_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje den v měsíci rezervace 1-31
@@ -1114,6 +1167,18 @@ if(button)
 }
 }
 
+const input_predvolba=document.getElementById(this.id_predvolba_phone); // HTML input s předvolbou telefoního čísla +420
+if(input_predvolba)
+{
+// pokud HTML element existuje
+(input_predvolba as HTMLInputElement).addEventListener("focus",()=>{
+const input_telefon=document.getElementById(this.id_inputHost[2]); // načte HTML input s telefoním číslem
+if(input_telefon)
+{
+(input_telefon as HTMLInputElement).focus(); // focus na input zadání telefonního čísla
+}
+}); // přidá posluchač focus - pokud někdo focusne předvolbu +420 hned ho to focusne na zadání telefoního čísla, předvolba +420 je readonly
+}
 
 };
 
@@ -1191,6 +1256,7 @@ if(input_email)
 {
 // pokud HTML element existuje
 (input_email as HTMLInputElement).value+="@"; // přidá @ do input email
+(input_email as HTMLInputElement).focus(); // přehodí uživatele hbytě za vepsaný @ v inputu s emailem
 }
 };
 
@@ -1404,6 +1470,9 @@ const data=`csrf_token=${encodeURIComponent(token)}&data_json=${encodeURICompone
 const sendRequest = async () => {
     try {
         // Nastavení prodlevy před odesláním požadavku
+        
+        dia.wait_activ(); // zapne dialogové okno Čekejte prosím … Zpracovává se rezervace
+
         setTimeout(async () => {
             // Odeslání požadavku na server
             const response: Response = await fetch("config/distributor-rezervace.php", {
@@ -1414,8 +1483,8 @@ const sendRequest = async () => {
                 body: data
             });
 
-            // Převedení odpovědi na JSON
-            const result = await response.json();
+           
+            const result = await response.json(); // Převedení odpovědi na JSON
 
             // Zkontrolujte, zda server odpověděl s 'status' a 'message'
             if (response.ok) {
@@ -1423,20 +1492,38 @@ const sendRequest = async () => {
                 if (result.status === 'success') {
                     console.log('Úspěch:', result.message);
                     // Další logika pro úspěšné zpracování
-                alert("REZERVACE PROBĚHLA ÚSPĚŠNĚ");
+                // alert("REZERVACE PROBĚHLA ÚSPĚŠNĚ");
+                dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
+                dia.on(dia.dia_uspech.id_okna,dia.dia_uspech.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace proběhla úspěšně
+                
 
                 } else {
                     // Server vrátil odpověď s chybou ('error')
-                    console.error('Chyba:', result.message);
+                    console.error('Chyba:', result.message); // Zobrazení chyby do konzole
                     alert("CHYBA - REZERVECA SE NEZDAŘILA!");
-
-                    // Zobrazení chyby uživateli
+if(result.message==="Překročili jste limit požadavků. Zkuste to znovu za 24 hodin.")
+{
+// pokud se překročí Rate Limit
+    alert("CHYBA - Překročili jste limit požadavků. Zkuste to znovu za 24 hodin.");
+}
+else
+{
+alert("CHYBA - PŘEKROČEN LIMIT REZERVACÍ!");
+}
+                    dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
+                    dia.on(dia.dia_neuspech.id_okna,dia.dia_neuspech.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace proběhla NEúspěšně
                 }
             } else {
                 // Pokud odpověď serveru není v pořádku (např. 4xx nebo 5xx)
                 console.error('Chyba serveru:', result.message || 'Neznámá chyba');
-                alert("CHYBA - REZERVECA SE NEZDAŘILA - SERVER NEODPOVÍDÁ!");
+
+
+ alert("CHYBA - SERVERU anebo Neznámá chyba!");
+
+               
+                dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
                 // Ošetření chyby serveru, např. zobrazení hlášení uživateli
+                dia.on(dia.dia_neuspech.id_okna,dia.dia_neuspech.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace proběhla NEúspěšně
             }
 
             
@@ -1448,8 +1535,11 @@ const sendRequest = async () => {
     
     catch (error) {
         // Pokud došlo k chybě při komunikaci s API (např. nevalidní JSON nebo síťová chyba)
-        console.error('Chyba při zpracování odpovědi:', error);
+        console.error('Chyba při zpracování odpovědi:', error); // výpis chyb do konzole
         // Ošetření chyb, např. zobrazení informace o problému s připojením
+        dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
+        dia.on(dia.dia_neuspech.id_okna,dia.dia_neuspech.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace proběhla NEúspěšně
+
     }
 };
 

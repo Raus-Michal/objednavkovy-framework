@@ -343,8 +343,9 @@ grid-template-columns:1fr 1fr;
 .b-hod li
 {
 display:flex;
+align-items:center;
 gap:.5rem;
-padding:.5rem;
+padding:.75rem .75rem .5rem .75rem;
 border:1px solid var(--b4);
 cursor:pointer;
 white-space:nowrap;
@@ -359,6 +360,7 @@ appearance: none; /* Skryje standardní radiobutton */
 -moz-appearance: none; /* Skryje standardní radiobutton */
 width:1rem; /* Nastavení velikosti */
 height:1rem; /* Nastavení velikosti */
+margin-bottom:.25rem;
 border: 1px solid var(--b5); /* Nastavení barvy borderu */
 border-radius:50%;
 position:relative;

@@ -10,8 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $csrfToken = $_POST['csrf_token'];
 
 // Ověření, zda token v session souhlasí s tokenem zaslaným klientem
-// if (isset($_SESSION['csrf_token']) && $csrfToken === $_SESSION['csrf_token'] && strlen($csrfToken) === 32)
-if (isset($_SESSION['csrf_token']) && !empty($_SESSION['csrf_token']))
+if (isset($_SESSION['csrf_token']) && $csrfToken === $_SESSION['csrf_token'] && strlen($csrfToken) === 32)
 {
 // Token je platný
 $status = 'success';
