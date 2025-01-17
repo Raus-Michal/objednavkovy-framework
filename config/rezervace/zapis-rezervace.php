@@ -1,5 +1,11 @@
 <?php
-include "sifrovaci-heslo.php"; // Načtení hesla
+include "defense/sifrovaci-heslo.php"; // Načtení hesla
+
+if(!$password)
+{
+echo json_encode(["status" => "error", "message" => "Heslo pro šifrování tokenu nebylo načteno!"]); // Odesíláme chybovou odpověď
+exit;
+}
 
 $encryption_key = hash('sha256', $password, true); // Vytvoření 256-bitového klíče
 

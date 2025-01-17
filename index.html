@@ -287,6 +287,34 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </div>
 </dialog>
 
+<dialog id="zrusit_rezervaci">
+<p>Opravdu si přejete zrušit rezervaci?</p>
+<p><span id="slovne_den_rezervace2">Úterý</span>, <span id="ciselne_den_v_mesici_rezervace2">24</span>.&#8239;<span id="slone_mesic_rezervace2">prosince</span>&#8239;<span id="ciselne_rok_rezervace2">2024</span>, <span id="slovne_cas_rezervace2" class="nw">15:00-15:30&#8239;hod.</span></p>
+<div>
+<div class="dabl">
+<button id="butt_zavinac2" type="button" title="Napiš mi @">@</button>
+<input id="email2" type="email" placeholder="Váš email" title="zadejte vasi emailovou adresu" required>
+</div>
+</div>
+<p>Email, kam bude potvrzrní o zrušení zasláno.</p>
+
+<div>
+<button id="butt_potvrdit_zruseni" type="button" title="Chci zrušit rezervaci">Zrušit rezervaci</button>
+</div>
+
+<div>
+<button id="butt_zrusit_rezervaci" type="button" title="Zavřít">Zavřít okno</button>
+</div>
+</dialog>
+
+
+<dialog id="zruseno">
+<p>Rezervace byla zrusena!</p>
+<p>Do 30 minut bude na Váš email doručeno potvrzení o zrušení rezervace.</p>
+<div>
+<button id="butt_zruseno" type="button">Zavřít okno</button>
+</div>
+</dialog>
 
 <script src="script/booking.js?v=5"></script>
 </body>

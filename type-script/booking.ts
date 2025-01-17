@@ -1607,6 +1607,8 @@ sendRequest();
 };
 
 
+
+
 spustit_aplikaci()
 {
 // metoda zajišťuje spuštění základních procesů pro chod aplikace rezervace
@@ -1625,10 +1627,85 @@ cas_rezervace.load_rezervace(); // nahraje JSON soubor a data rezervace časů, 
 
 };
 
+
+class Zrusit_rezervaci{
+// třída se postará o všechny kroky potřebné pro zrušení rezervace
+
+zaznam_encrypted_token=""; // proměnná do sebe vloží zakódovaný token záznamu, pokud existuje
+
+vytvor_zadost_na_zruseni()
+{
+// metoda zajistí zobrazení dialogového okna pro zrušení rezervace
+
+};
+
+
+inicializace()
+{
+// metoda zahájí procesy pro zjištění, zda chce uživatel zrušit rezervaci
+
+console.log("délka pole search: "+location.search.length);
+
+if(location.search)
+{
+const search=location.search.slice(1); // proměnná načte location.search a odstraní z něj první znak, kterým je ? (otazník)
+console.log("obsah search bez?: "+search);
+
+
+// Asynchronní funkce pro odeslání textu na server
+const sendTextToServer=async(text:string):Promise<void>=>{
+try {
+// Vytvoření objektu pro odeslání POST požadavku
+const options = {
+method: 'POST',
+headers: {
+'Content-Type': 'application/x-www-form-urlencoded'
+},
+body: `search=${encodeURIComponent(text)}` // Převod textu na URL-encoded formát
+};
+
+
+await new Promise(res => setTimeout(res, 0)); // Vytvoření čekacího úseku s Timeoutem 0 ms k zajištění asynchronního prostředí
+
+// Odeslání požadavku na PHP soubor
+const response = await fetch('config/overit-rezervaci.php', options); // soubor, který bude příjmat search
+const result = await response.json(); // Převedení odpovědi na JSON
+
+// Kontrola stavu odpovědi a výpis příslušné zprávy do konzole
+if (response.ok) {
+console.log('Success:', result.message); // Odpověď byla úspěšná
+
+this.zaznam_encrypted_token=result.message; // proměnná do sebe zapíše zašifrovaný token záznamu, který se vrátil z php
+
+this.vytvor_zadost_na_zruseni(); // metoda zajistí zobrazení dotazu na zrušení rezervace
+
+} else {
+console.error('Error:', result.message); // Něco se pokazilo
+}
+} catch (error) {
+// Zachycení a výpis případné chyby
+console.error('Fetch failed:', error);
+}
+};
+
+
+sendTextToServer(search); // Zavolání funkce pro odeslání search na server
+
+
+
+}
+};
+
+
+
+};
+
 const boss=new Boss; // vytvoří objekt, který má nastarosti hlavní chod aplikace rezervace
 const cas_rezervace=new Cas_rezervace(); // vytvoří objekt pro operace kolem volby času k rezervaci uživatelem
 const datum = new Datum(); // vytvoření objektu datum
 const kalendar = new Kalendar(); // pomocí class Kalendar vytvoří objekt kalendar
 const mesic_a_rok = new Mesic_a_rok(); // pomocí class Mesic_a_rok vytvoří objekt mesic_a_rok
 const dia=new Dia(); // pomocí class Dia se řídí otevírání a zavírání dialogových oken
+const zrusit_rezervaci=new Zrusit_rezervaci(); // pomocí class Zrusit_rezervaci vytvoří objekt zrušit rezervaci
 boss.spustit_aplikaci(); // metoda zajistí spuštění hlavních funkcí aplikace
+zrusit_rezervaci.inicializace(); // zajistí základní procesy pro zrušení rezervace
