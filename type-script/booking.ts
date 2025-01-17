@@ -3,6 +3,7 @@ class Kalendar {
 readonly p_id:string="b"; // počáteční id každého buttonu ke kterému je přiřazeno v HTML číslo 1-31 ... b1.b2->b31
 readonly m_a_r_id:string="mesic_a_rok"; // id inputu s měsícem a rokem
 readonly den_id:string="d"; // počáteční id každého dne v týdnu v kalendáři <p> Po,Út,St,Čt,Pá,So,Ne
+readonly kryt_id="krit_dny"; // id DIV krytu, překrývající možnozst klikat do kalendáře
 private poloha:number=0; // proměnná určuje polohu kalendáře 0===default, 1-krok o měsíc dále , 2-krok o dva měsíce dále
 private book_den:[number,number,number]=[0,0,0]; // zápis booklého dne uživatelem : rok, měsíc, den
 readonly facke_checked_id:string="fake-checked"; // id input type chacked - fake chacked, který nedošle formulář, dokud není od uživatele označený konkrétní den
@@ -300,6 +301,28 @@ if(p_b)
 }
 };
 
+odemkni_dny()
+{
+// metoda odstraní rozmazání volby dnů v klaendáři a změní DIV kryt, který ho překrývá na z-index="-1", tímto umožní klikání uživatele do dnů v kalendáři a jejich volbu
+
+
+const plocha_dny=document.getElementById(mesic_a_rok.id_kalendar); // načte HTML element v kterém jsou zobrazení dny v měsíci 1-31
+   
+
+if(plocha_dny)
+{
+// pokud HTML element existuje
+plocha_dny.style.filter="blur(0px)"; // odstraní blur, který je HTML elementu udělen v CSS
+}
+
+const kryt=document.getElementById(this.kryt_id); // načte HTML DIV element krytu, který má z-index:5 a je přes celou šířku a výšku dnů v kalendáři 1-31, má background-color:transparent
+if(kryt)
+{
+// pokud HTML element existuje
+kryt.style.zIndex="-1"; // nastaví KRYT na z-index:-1, tímto umožní uživateli klikat do dnů v měsíci 1-31
+}
+};
+
 book_block_day(){
 // metoda fakticky blokuje dny, které jsou uvedeny v JSON souboru
 if(!this.load_data_book_block_day)
@@ -363,6 +386,8 @@ if(button_i)
 (button_i as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonu
 (button_i as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }}}
+
+this.odemkni_dny(); // metoda odstraní rozmazání volby dnů v klaendáři a změní DIV kryt, který ho překrývá na z-index="-1", tímto umožní klikání uživatele do dnů v kalendáři a jejich volbu
 
 };
 
@@ -487,6 +512,8 @@ this.oznacit_den(); // funkce zajišťuje označení konkrétního dne
 
 cas_rezervace.aktivace(); // aktivuje všechny radia a li na možnost zarezervování
 cas_rezervace.data_rezervace_blok_time(); // zablokuje časy rezervace, které již byly rezervovány, data ze souboru JSON
+cas_rezervace.zobrazit_casy(); // funkce hlavní kontejner s časy zobrazí z opacity:0; z-index:-1; na opacity:1; z-index:0;
+cas_rezervace.problik_casy(); // metoda provede probliknutí hlavního kontejneru s časy rezervace
 };
 oznacit_den(){
 // funkce zajistí označení konkrétního dne uživatelem
@@ -675,6 +702,7 @@ return new Date(rok,mesic+1,0).getDate(); // vrátí počet dnů v aktuálním m
 class Cas_rezervace
 {
 // objekt zajišťuje potřebné funkcionality pro volbu času rezervace
+readonly id_con="con_cas"; // ID hlavního kontejneru s časy rezervace
 readonly id_radio:string="cas"; // počátek ID input type radio cas1-cas14
 readonly id_li:string="lic"; // počátek ID li v kterém je input type radio lic1-lic14
 private vybrany_cas:number=0; // vybraný čas uživatelem, kde 0 znamená, že čas nebyl vybrán a 1 je první čas
@@ -787,8 +815,8 @@ const pocet_shod=cas_shody.length; // počet shodných časů odpovídá délce 
 for(let i=0;i<pocet_shod;i++)
 {
 
-const radio=document.getElementById(`${this.id_radio}${i+1}`); // input type radio, číslování je od 1, proto i+1
-const li=document.getElementById(`${this.id_li}${i+1}`); // li, které přísluší k input type radio
+const radio=document.getElementById(`${this.id_radio}${cas_shody[i]}`); // input type radio, vezme svoje číslo z pole, kde byly zapsány všechny bookované časy
+const li=document.getElementById(`${this.id_li}${cas_shody[i]}`); // li, které přísluší k input type radio, vezme svoje číslo z pole, kde byly zapsány všechny bookované časy
 
 if(radio)
 {
@@ -930,10 +958,39 @@ if(radio)
 this.vybrany_cas=number; // do proměnné uloží informaci s číslem, podle které je možné zjistit jaký čas byl uživatelem vybrán (1-14)
 }
 
+};
+
+zobrazit_casy(){
+// funkce hlavní kontejner s časy zobrazí z opacity:0; z-index:-1; na opacity:1; z-index:0;
+const hl_con=document.getElementById(this.id_con); // hlavní kontejner, kde jsou chronologicky seřazeny časy
+
+if(hl_con)
+{
+// Pokud HTML element existuje
+(hl_con as HTMLElement).classList.add("zobraz_objekt"); // přidá CSS třídu s animací opacity z 0 na 1
 }
 
 };
 
+problik_casy(){
+// metoda provede probliknutí hlavního kontejneru s časy rezervace
+const hl_con=document.getElementById(this.id_con); // hlavní kontejner, kde jsou chronologicky seřazeny časy
+
+if(hl_con)
+{
+// Pokud HTML element existuje
+(hl_con as HTMLElement).style.filter="blur(5px)"; // nastaví mu rozmazání
+(hl_con as HTMLElement).style.transform = "scale(0.9)" // nastaví zmenšení
+
+setTimeout(()=>{
+(hl_con as HTMLElement).style.filter="blur(0px)"; // nastaví na default
+(hl_con as HTMLElement).style.transform = "scale(1)" // nastaví na default
+},250); // zpoždění kopíruje css vlastnost transmition
+
+}
+
+}
+};
 
 interface Dialog_okno
 {

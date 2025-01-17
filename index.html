@@ -52,7 +52,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </fieldset>
 
 <fieldset id="plocha_kalendar" class="b-dny">
-
+<div id="krit_dny" class="kryt"> </div>
 <p class="bw">Po</p>
 <p class="bw">Út</p>
 <p class="bw">St</p>
@@ -107,7 +107,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 
 <fieldset>
 
-<ol class="b-hod">
+<ol id="con_cas" class="b-hod">
 <li id="lic1"><input id="cas1" type="radio" name="cas" title="v čase 9:00-9:30 hod." required>9:00-9:30&#8239;h</li>
 <li id="lic2"><input id="cas2" type="radio" name="cas" title="v čase 9:30-10:00 hod.">9:30-10:00&#8239;h</li>
 <li id="lic3"><input id="cas3" type="radio" name="cas" title="v čase 10:00-10:30 hod.">10:00-10:30&#8239;h</li>
