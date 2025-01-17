@@ -2,32 +2,35 @@
 /* ODESÍLÁNÍ EMAILU */
 
 // Příjem dat z POST požadavku
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['data_email'])) {
-    $received_data = json_decode(urldecode($_POST['data_email']), true);
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["data_email"]))
+{
 
-    if ($received_data && count($received_data) === 8) {
-        // Zkrácení všech stringů na 100 znaků
-        $jmeno = substr($received_data[0], 0, 100);
-        $email = substr($received_data[1], 0, 100);
-        $phone = substr($received_data[2], 0, 100);
-        $predmet = substr($received_data[3], 0, 100);
-        $datum_rezervace_slovne = substr($received_data[4], 0, 100);
-        $cas_rezervace_slovne = substr($received_data[5], 0, 100);
-        $cleanUrl = substr($received_data[6], 0, 100);
-        $token = substr($received_data[7], 0, 100);
-    } else {
-        $status = 'error';
-        $message = 'Chybné data pro edesílání emailu.';
-        http_response_code($httpCode);
-        echo json_encode(['status' => $status, 'message' => $message]);
-        exit;
-    }
+$received_data = json_decode(urldecode($_POST["data_email"]), true); // dekóduje data, která byla zaslána jako JSON
+
+if ($received_data && count($received_data) === 8)
+{
+// Zkrácení všech stringů na 100 znaků
+$jmeno = substr($received_data[0], 0, 100);
+$email = substr($received_data[1], 0, 100);
+$phone = substr($received_data[2], 0, 100);
+$predmet = substr($received_data[3], 0, 100);
+$datum_rezervace_slovne = substr($received_data[4], 0, 100);
+$cas_rezervace_slovne = substr($received_data[5], 0, 100);
+$cleanUrl = substr($received_data[6], 0, 100);
+$token = substr($received_data[7], 0, 100);
 } else {
-    $status = 'error';
-    $message = 'Chybný požadavek pro odesílání emailů.';
-    http_response_code($httpCode);
-    echo json_encode(['status' => $status, 'message' => $message]);
-    exit;
+$status = "error";
+$message = "Chybné data pro edesílání emailu. Nejsou všechna! ";
+http_response_code($httpCode);
+echo json_encode(["status" => $status, "message" => $message]);
+exit;
+}
+} else {
+$status = "error";
+$message = "Nebyly zaslány data pro odesílání emailů.";
+http_response_code($httpCode);
+echo json_encode(["status" => $status, "message" => $message]);
+exit;
 }
 
 $adresat = "raus.michal@email.cz"; // emailová adresa, kam se má obsah zaslat
@@ -49,12 +52,11 @@ body{font-family: Arial,sans-serif;}
 </head>
 <body>
 <div class="header">
-<h1>Rezervace telefonního hovoru</h1>
+<h1>Potvrzení rezervace telefonního hovoru</h1>
 </div>
 <div class="content">
-<p>Rezervace telefonního hovoru s Michalem Rausem.</p>
-<p>Na den</p>
-<p><strong>{$datum_rezervace_slovne}</strong></p>
+<p>Máte rezervaci telefonního hovoru s Michalem Rausem.</p>
+<p>Na den: <strong>{$datum_rezervace_slovne}</strong></p>
 <p>V čase: {$cas_rezervace_slovne}</p>
 <h2>Vámi poskytnuté údaje</h2>
 <p>Jméno a příjmení: {$jmeno}</p>
@@ -63,7 +65,7 @@ body{font-family: Arial,sans-serif;}
 <p>O čem bude hovor: {$predmet}</p>
 <h2>Zrušení rezervace</h2>
 <p>Pro zrušení této rezervace použijte odkaz níže:</p>
-<a href="{$cleanUrl}?{$token}" title="Chci zrušit tuto rezervaci">ZRUŠENÍ REZERVACE</a>
+<p><a href="{$cleanUrl}?{$token}" title="Chci zrušit tuto rezervaci">ZRUŠENÍ REZERVACE</a></p>
 </div>
 <div class="footer">
 <p>&copy;2025 Boar-cz</p>
@@ -84,18 +86,18 @@ $zasli_email = mail($adresat, "Rezervace telefonního hovoru", $celkovy_email, $
 $zasli_email2 = mail($email, "Rezervace telefonního hovoru", $celkovy_email, $headers); // Odeslání e-mailu uživateli
 
 if ($zasli_email && $zasli_email2) {
-    $status = 'success';
-    $message = 'Oba e-maily byly úspěšně odeslány.';
+$status = "success";
+$message = "Oba e-maily byly úspěšně odeslány.";
 } else {
-    $status = 'error';
-    $message = 'E-mail se nepodařilo odeslat.';
+$status = "error";
+$message = "E-mail se nepodařilo odeslat.";
 }
 
-if ($status === 'error') {
-    // Pokud došlo k chybě při odesílání emailů, ukončíme požadavek a pošleme odpověď
-    http_response_code($httpCode);
-    echo json_encode(['status' => $status, 'message' => $message]);
-    exit;
+if ($status === "error") {
+// Pokud došlo k chybě při odesílání emailů, ukončíme požadavek a pošleme odpověď
+http_response_code($httpCode);
+echo json_encode(["status" => $status, "message" => $message]);
+exit;
 }
 
 ?>

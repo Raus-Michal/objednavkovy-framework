@@ -696,6 +696,11 @@ display:none;
 margin:auto;
 }
 
+.mb1
+{
+margin-bottom:1rem;
+}
+
 .nw
 {
 white-space:nowrap;

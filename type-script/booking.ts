@@ -70,13 +70,13 @@ restart_dnu_v_kalendari()
 // metoda - povolí posluchače všem buttonům od 1-31, pokud tento posluchač nemají a všem nastaví disbled===false
 for(let i = 1; i < 32; i++) {
 // smyška postupně "projede" všechny buttony 1-31 dnů v kalendáři, jelikož jejich id začíná od 1 a je jich 31 >>> i = 1 a i < 32
-const button_i = document.getElementById(`${this.p_id}${i}`); // Získá konkrétní HTML button s číslem dne v měsíci 1-31
+const button_i = document.getElementById(`${this.p_id}${i}`) as HTMLButtonElement; // Získá konkrétní HTML button s číslem dne v měsíci 1-31
 if(button_i){
 // Pokud HTML objekt pod Id existuje
 const hasListener=button_i.getAttribute("data-has-listener")==="true"; // Zkontroluje, zda už má button atribut 'data-has-listener' nastavený na 'true'
 if(!hasListener){
 // Pokud button ještě nemá posluchače událostí
-(button_i as HTMLButtonElement).addEventListener("click", this); // Přidělí posluchač událostí buttonu konkrétnímu buttonu 
+button_i.addEventListener("click", this); // Přidělí posluchač událostí buttonu konkrétnímu buttonu 
 button_i.setAttribute("data-has-listener","true"); // Nastaví atribut 'data-has-listener' na 'true' pro označení, že button má posluchače
 }
 (button_i as HTMLButtonElement).disabled=false; // Odblokuje všechny buttony
@@ -95,7 +95,7 @@ if(this.poloha===0)
 if(a_d!==1)
 {
 // pokud se právě aktuální den v měsíci !== 1 (tedy to není první den v měsící), budou se odebírat buttony pro objenání do tohoto dne v měsíci
-const hours = new Date().getHours(); // Získání aktuální hodiny
+const hours=new Date().getHours(); // Získání aktuální hodiny
 if(hours>17)
 {
 // pokud je po 18 hod - zablokuje se booking i následujícího dne
@@ -104,24 +104,24 @@ a_d++; // +1 === blokace ještě dalšího dne
 
 for(let i=1;i<a_d+1;i++)
 {
-const button_i=document.getElementById(`${this.p_id}${i}`); // konkrétní button s číslem dne v měsíci
+const button_i=document.getElementById(`${this.p_id}${i}`) as HTMLButtonElement; // konkrétní button s číslem dne v měsíci
 if(button_i)
 {
 // pokud HTML objekt pod Id existuje
-(button_i as HTMLButtonElement).disabled=true; // udělá disabled na buttonu na dny, které už v měsíci uplynuly včetně dnešního
-(button_i as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonům, které ho nepotřebují
-(button_i as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
+button_i.disabled=true; // udělá disabled na buttonu na dny, které už v měsíci uplynuly včetně dnešního
+button_i.removeEventListener("click",this); // odebere posluchač buttonům, které ho nepotřebují
+button_i.removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }}
 }
 else
 {
 // pokud právě aktuální den v měsíci je prvního - bude se odebírat tento den
-const button_i=document.getElementById(`${this.p_id}${a_d}`); // konkrétní button s číslem dne v měsíci
+const button_i=document.getElementById(`${this.p_id}${a_d}`) as HTMLButtonElement; // konkrétní button s číslem dne v měsíci
 if(button_i)
 {
-(button_i as HTMLButtonElement).disabled=true; // udělá disabled na buttonu 1. v měsíci
-(button_i as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonům, které ho nepotřebují
-(button_i as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
+button_i.disabled=true; // udělá disabled na buttonu 1. v měsíci
+button_i.removeEventListener("click",this); // odebere posluchač buttonům, které ho nepotřebují
+button_i.removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }
 
 const hours = new Date().getHours(); // Získání aktuální hodiny
@@ -129,11 +129,11 @@ if(hours>17)
 {
 // pokud je po 18 hod - zablokuje se booking i následujícíiho dne
 a_d++; // +1 === blokace ještě dalšího dne
-const button_i2=document.getElementById(`${this.p_id}${a_d}`); // konkrétní button s číslem dne v měsíci
+const button_i2=document.getElementById(`${this.p_id}${a_d}`) as HTMLButtonElement; // konkrétní button s číslem dne v měsíci
 if(button_i2){
-(button_i2 as HTMLButtonElement).disabled=true; // udělá disabled na buttonu 2. v měsíci
-(button_i2 as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonům, které ho nepotřebují
-(button_i2 as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
+button_i2.disabled=true; // udělá disabled na buttonu 2. v měsíci
+button_i2.removeEventListener("click",this); // odebere posluchač buttonům, které ho nepotřebují
+button_i2.removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }}
 }
 }
@@ -149,8 +149,8 @@ const hours=new Date().getHours(); // Získání aktuální hodiny
 const today = new Date(); // do proměnné načte objekt Date
 const nextDay=new Date(today.getFullYear(),today.getMonth(),today.getDate()+1); // zjistí datum, které je jeden den po dnešním dni
 
-const button_1=document.getElementById(`${this.p_id}1`); // 1. button s číslem dne v měsíci (tedy 1. den toho měsíce)
-const button_2=document.getElementById(`${this.p_id}2`); // 2. button s číslem dne v měsíci (tedy 2. den toho měsíce)
+const button_1=document.getElementById(`${this.p_id}1`) as HTMLButtonElement; // 1. button s číslem dne v měsíci (tedy 1. den toho měsíce)
+const button_2=document.getElementById(`${this.p_id}2`) as HTMLButtonElement; // 2. button s číslem dne v měsíci (tedy 2. den toho měsíce)
 
 if(nextDay.getDate()===1)
 {
@@ -159,16 +159,16 @@ if(nextDay.getDate()===1)
 if(button_1)
 {
 // pokud HTML element existuje
-(button_1 as HTMLButtonElement).disabled=true; // udělá disabled na buttonu 1. v měsíci
-(button_1 as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonu 1. v měsíci
-(button_1 as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
+button_1.disabled=true; // udělá disabled na buttonu 1. v měsíci
+button_1.removeEventListener("click",this); // odebere posluchač buttonu 1. v měsíci
+button_1.removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }
 
 if(hours>17){
 // pokud je po 18 hod - zablokuje se booking i následujícího dne
-(button_2 as HTMLButtonElement).disabled=true; // udělá disabled na buttonu 2. v měsíci
-(button_2 as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonu 2. v měsíci
-(button_2 as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
+button_2.disabled=true; // udělá disabled na buttonu 2. v měsíci
+button_2.removeEventListener("click",this); // odebere posluchač buttonu 2. v měsíci
+button_2.removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }}
 
 const every_other_day=new Date(today.getFullYear(),today.getMonth(),today.getDate()+2); // zjistí datum, který je dva dny po dnešním dni
@@ -179,9 +179,9 @@ if(every_other_day.getDate()===1&&hours>17)
 if(button_1)
 {
 // pokud HTML element existuje
-(button_1 as HTMLButtonElement).disabled=true; // udělá disabled na buttonu 1. v měsíci
-(button_1 as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonu 1. v měsíci
-(button_1 as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
+button_1.disabled=true; // udělá disabled na buttonu 1. v měsíci
+button_1.removeEventListener("click",this); // odebere posluchač buttonu 1. v měsíci
+button_1.removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }}
 }}
 };
@@ -204,29 +204,29 @@ const pdva=datum.dnu_v_mesici(a_r,cmp); // funkce vrací počet dní v aktuáln�
 for(let i=1;i<32;i++)
 {
 // smyčka zneviditelní všechny budttony v měsíci
-const button_i=document.getElementById(`${this.p_id}${i}`); // konkrétní button s číslem dne v měsíci
+const button_i=document.getElementById(`${this.p_id}${i}`) as HTMLButtonElement; // konkrétní button s číslem dne v měsíci
 if(button_i){
 // pokud HTML objekt pod Id existuje
-(button_i as HTMLButtonElement).style.visibility="hidden"; // zneviditelní button s dnem v měsíci
+button_i.style.visibility="hidden"; // zneviditelní button s dnem v měsíci
 }}
 
 for(let i=1;i<pdva+1;i++)
 {
 // smyčka nechá vidět jen počet konkrétních buttonů v měsíci
-const button_i=document.getElementById(`${this.p_id}${i}`); // konkrétní button s číslem dne v měsíci
+const button_i=document.getElementById(`${this.p_id}${i}`) as HTMLButtonElement; // konkrétní button s číslem dne v měsíci
 if(button_i){
 // pokud HTML objekt pod Id existuje
-(button_i as HTMLButtonElement).style.visibility="visible"; // zviditelní button s dnem v měsíci
+button_i.style.visibility="visible"; // zviditelní button s dnem v měsíci
 }}
 
 for(let i=pdva+1;i<32;i++)
 {
 // smyška odebere posluchače všem odebraným buttonům
-const button_i=document.getElementById(`${this.p_id}${i}`); // konkrétní button s číslem dne v měsíci
+const button_i=document.getElementById(`${this.p_id}${i}`) as HTMLButtonElement; // konkrétní button s číslem dne v měsíci
 if(button_i){
 // pokud HTML objekt pod Id existuje
-(button_i as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač konkrétnímu buttonu
-(button_i as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
+button_i.removeEventListener("click",this); // odebere posluchač konkrétnímu buttonu
+button_i.removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }
 }
 
@@ -249,10 +249,10 @@ a_r++; // rok se zvětší o 1
 
 const a_m_nazev=datum.mesice[a_m]; // název aktuálního měsíce slovně jako string: leden, únor, březen, duben, květen, červen, červenec, srpen, září, říjen, listopad, prosinec
 
-const text=document.getElementById(this.m_a_r_id); // input s měsícem a rokem
+const text=document.getElementById(this.m_a_r_id) as HTMLInputElement; // input s měsícem a rokem
 if(text)
 {
-(text as HTMLInputElement).value=`${a_m_nazev} ${a_r}`; // změní value inputu s měsícem a rokem
+text.value=`${a_m_nazev} ${a_r}`; // změní value inputu s měsícem a rokem
 }
 
 };
@@ -272,11 +272,11 @@ a_r++; // rok se zvětší o 1
 for(let i=0;i<6;i++)
 {
 // smyčka zruší všechny posouvací bloky: 6 === počet posouvacích bloků (ib1-pb6)
-const p_b=document.getElementById(`${this.z_posun_id}${i+1}`); // HTML P element zastupující posun dny v týdnu Po-Ne: id je číslováno od 1 proto i+1
+const p_b=document.getElementById(`${this.z_posun_id}${i+1}`) as HTMLElement; // HTML P element zastupující posun dny v týdnu Po-Ne: id je číslováno od 1 proto i+1
 if(p_b)
 {
 // pokud HTML element existuje
-(p_b as HTMLElement).style.display="none"; // schová HTML P element
+p_b.style.display="none"; // schová HTML P element
 }
 }
 
@@ -292,11 +292,11 @@ posunovaci_bloky=6; // posun o 6
 
 for(let i=0;i<posunovaci_bloky;i++)
 {
-const p_b=document.getElementById(`${this.z_posun_id}${i+1}`); // HTML P element zastupující posun dny v týdnu Po-Ne
+const p_b=document.getElementById(`${this.z_posun_id}${i+1}`) as HTMLElement; // HTML P element zastupující posun dny v týdnu Po-Ne
 if(p_b)
 {
 // pokud HTML Element existuje
-(p_b as HTMLElement).style.display="flex"; // zobrazí vyplňovací HTML P element
+p_b.style.display="flex"; // zobrazí vyplňovací HTML P element
 }
 }
 };
@@ -315,7 +315,7 @@ if(plocha_dny)
 plocha_dny.style.filter="blur(0px)"; // odstraní blur, který je HTML elementu udělen v CSS
 }
 
-const kryt=document.getElementById(this.kryt_id); // načte HTML DIV element krytu, který má z-index:5 a je přes celou šířku a výšku dnů v kalendáři 1-31, má background-color:transparent
+const kryt=document.getElementById(this.kryt_id) as HTMLElement; // načte HTML DIV element krytu, který má z-index:5 a je přes celou šířku a výšku dnů v kalendáři 1-31, má background-color:transparent
 if(kryt)
 {
 // pokud HTML element existuje
@@ -378,13 +378,13 @@ if(d2!==0)
 for(let i=0;i<d2;i++)
 {
 // smyčka zablokuje včechny buttony dnů, které se nacházejí v poli: dny_k_blokaci
-const button_i=document.getElementById(`${this.p_id}${dny_k_blokaci[i]}`); // konkrétní button s číslem dne v měsíci
+const button_i=document.getElementById(`${this.p_id}${dny_k_blokaci[i]}`) as HTMLButtonElement; // konkrétní button s číslem dne v měsíci
 if(button_i)
 {
 // pokud HTML element existuje
-(button_i as HTMLButtonElement).disabled=true; // udělá disabled na buttonu
-(button_i as HTMLButtonElement).removeEventListener("click",this); // odebere posluchač buttonu
-(button_i as HTMLButtonElement).removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
+button_i.disabled=true; // udělá disabled na buttonu
+button_i.removeEventListener("click",this); // odebere posluchač buttonu
+button_i.removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }}}
 
 this.odemkni_dny(); // metoda odstraní rozmazání volby dnů v klaendáři a změní DIV kryt, který ho překrývá na z-index="-1", tímto umožní klikání uživatele do dnů v kalendáři a jejich volbu
@@ -501,11 +501,11 @@ this.book_den[0]=a_r; // zapíše do pole book_den - rok
 this.book_den[1]=a_m; // zapíše do pole book_den - měsíc
 this.book_den[2]=cislo_dne; // zapíše do pole book_den - den
 
-const fake_check=document.getElementById(this.facke_checked_id); // HTML input type checked, který se zatrhne, aby se formuzlář mohl odeslat
+const fake_check=document.getElementById(this.facke_checked_id) as HTMLInputElement; // HTML input type checked, který se zatrhne, aby se formuzlář mohl odeslat
 if(fake_check)
 {
 // pokud HTML element existuje
-(fake_check as HTMLInputElement).checked=true; // zatrhne checked u input type checked - fake checked
+fake_check.checked=true; // zatrhne checked u input type checked - fake checked
 }
 
 this.oznacit_den(); // funkce zajišťuje označení konkrétního dne
@@ -562,8 +562,8 @@ private touchEndY:number=0; // zachycení konce pohybu uživatele prstem na obra
 aktivace(){
 // funkce aktivuje posluchače šipek měsíc vzad a vpřed
 
-const butt_1=document.getElementById(this.id_posun[0]); // button šipka vzad
-const butt_2=document.getElementById(this.id_posun[1]); // button šipka vpřed
+const butt_1=document.getElementById(this.id_posun[0]) as HTMLButtonElement; // button šipka vzad
+const butt_2=document.getElementById(this.id_posun[1]) as HTMLButtonElement; // button šipka vpřed
 
 if(butt_1)
 {
@@ -576,24 +576,24 @@ if(butt_2)
 // pokud existuhe HTML objekt button šipka vpřed
 butt_2.addEventListener("click",this); // posluchač click pro šipku vpřed
 }
-const plocha_dny=document.getElementById(this.id_kalendar); // Fielset - plocha kalendáře
+const plocha_dny=document.getElementById(this.id_kalendar) as HTMLFieldSetElement; // Fielset - plocha kalendáře
 
 if(plocha_dny)
 {
 // Posluchač pro začátek dotyku
-(plocha_dny as HTMLFieldSetElement).addEventListener("touchstart",(e)=>{
+plocha_dny.addEventListener("touchstart",(e)=>{
 this.touchStartX=e.touches[0].clientX; // počáteční souřadnice pohybu po ose X
 this.touchStartY=e.touches[0].clientY; // počáteční souřadnice pohybu po ose Y
 },{passive:true}); // Pokud je event listener označen jako pasivní ({ passive: true }), znamená to, že prohlížeč ví, že event handler nebude volat preventDefault(). To umožňuje prohlížeči optimalizovat chování stránky, což může vést ke zvýšení výkonu, zejména při posouvání na dotykových zařízeních. Jinými slovy, pasivní event listener říká prohlížeči: "Nebudu měnit výchozí chování této události, můžeš ji tedy zpracovat okamžitě."
 
 // Posluchač pro pohyb prstu
-(plocha_dny as HTMLFieldSetElement).addEventListener("touchmove",(e)=>{
+plocha_dny.addEventListener("touchmove",(e)=>{
 this.touchEndX=e.touches[0].clientX;  // konečné souřadnice pohybu po ose X
 this.touchEndY=e.touches[0].clientY; // konečné souřadnice pohybu po ose Y
 },{passive:true}); // Pokud je event listener označen jako pasivní ({ passive: true }), znamená to, že prohlížeč ví, že event handler nebude volat preventDefault(). To umožňuje prohlížeči optimalizovat chování stránky, což může vést ke zvýšení výkonu, zejména při posouvání na dotykových zařízeních. Jinými slovy, pasivní event listener říká prohlížeči: "Nebudu měnit výchozí chování této události, můžeš ji tedy zpracovat okamžitě."
 
 // Posluchač pro konec dotyku
-(plocha_dny as HTMLFieldSetElement).addEventListener("touchend",(e)=>{
+plocha_dny.addEventListener("touchend",(e)=>{
 this.handleGesture(e); // funkce vyhodnotí zda uživatel udělal pohyb prstem na obrazovce vpravo nebo vlevo
 },{passive:true});} // Pokud je event listener označen jako pasivní ({ passive: true }), znamená to, že prohlížeč ví, že event handler nebude volat preventDefault(). To umožňuje prohlížeči optimalizovat chování stránky, což může vést ke zvýšení výkonu, zejména při posouvání na dotykových zařízeních. Jinými slovy, pasivní event listener říká prohlížeči: "Nebudu měnit výchozí chování této události, můžeš ji tedy zpracovat okamžitě."
 };
@@ -614,13 +614,13 @@ const k:string=e.currentTarget.id; // id odkazuje na prvek, na který je naváz�
 
 let problik_posunu=()=>{
 // interní funkce zajistí probliknutí plochy kalendáře se dny 1-31, aby uživatele vizuělné upozornil na posun, který nastal
-const plocha_kalendare=document.getElementById(mesic_a_rok.id_kalendar); // načte objekt, kde je zobrazena plocha kalendáře dny v měsící 1-31
+const plocha_kalendare=document.getElementById(mesic_a_rok.id_kalendar) as HTMLElement; // načte objekt, kde je zobrazena plocha kalendáře dny v měsící 1-31
 if(plocha_kalendare)
 {
 // pokud HTML element existuje
-(plocha_kalendare as HTMLElement).style.opacity="0"; // opasity nastaví bez prodlení na 0
+plocha_kalendare.style.opacity="0"; // opasity nastaví bez prodlení na 0
 setTimeout(()=>{
-(plocha_kalendare as HTMLElement).style.opacity="1"; // opacity nastaví s prodlením na 1, aby se zobrazil efekt postuopného transition opacity
+plocha_kalendare.style.opacity="1"; // opacity nastaví s prodlením na 1, aby se zobrazil efekt postuopného transition opacity
 },250);
 }};
 
@@ -746,24 +746,24 @@ for(let i=0;i<pocet_casu;i++)
 {
 // smička zajistí přidělení posluchačú událostí CLICK všem li elementům s volbou času
 
-const radio=document.getElementById(`${this.id_radio}${i+1}`); // input type radio, číslování je od 1, proto i+1
+const radio=document.getElementById(`${this.id_radio}${i+1}`) as HTMLInputElement; // input type radio, číslování je od 1, proto i+1
 if(radio)
 {
-(radio as HTMLInputElement).disabled=false; // vypne disabled, pokud by byl zaplý
-(radio as HTMLInputElement).checked=false; // nastaví checked na false, čímž ho vypne, pokud by bylo zaplé
+radio.disabled=false; // vypne disabled, pokud by byl zaplý
+radio.checked=false; // nastaví checked na false, čímž ho vypne, pokud by bylo zaplé
 }
 
-const li=document.getElementById(`${this.id_li}${i+1}`); // Element li je číslován od 1 : proto i+1
+const li=document.getElementById(`${this.id_li}${i+1}`) as HTMLElement; // Element li je číslován od 1 : proto i+1
 if(li)
 {
 // pokud existuje HTML element
-const hasListener=(li as HTMLElement).getAttribute('data-has-listener')==='true'; // Pokud button ještě nemá posluchače událostí
+const hasListener=li.getAttribute('data-has-listener')==='true'; // Pokud button ještě nemá posluchače událostí
 if (!hasListener){
-(li as HTMLElement).addEventListener("click",this); // přidělí posluchač událosi elementu li
-(li as HTMLElement).style.color="black"; // nastaví konkrétní časem shodné  li na color black
-(li as HTMLElement).style.backgroundColor="white"; // nastaví konkrétní časem shodné li na background-color white
-(li as HTMLElement).style.cursor="pointer"; // nastaví konkrétní časem shodné li na cursor pointer
-(li as HTMLElement).setAttribute("data-has-listener","true"); // přidá prvku atribut s hodnotou true
+li.addEventListener("click",this); // přidělí posluchač událosi elementu li
+li.style.color="black"; // nastaví konkrétní časem shodné  li na color black
+li.style.backgroundColor="white"; // nastaví konkrétní časem shodné li na background-color white
+li.style.cursor="pointer"; // nastaví konkrétní časem shodné li na cursor pointer
+li.setAttribute("data-has-listener","true"); // přidá prvku atribut s hodnotou true
 }}
 }
 this.vybrany_cas=0; // nastaví čas vybraného času na default hodnotu - čas nebyl vybrán
@@ -814,32 +814,22 @@ const pocet_shod=cas_shody.length; // počet shodných časů odpovídá délce 
 
 for(let i=0;i<pocet_shod;i++)
 {
-
-const radio=document.getElementById(`${this.id_radio}${cas_shody[i]}`); // input type radio, vezme svoje číslo z pole, kde byly zapsány všechny bookované časy
-const li=document.getElementById(`${this.id_li}${cas_shody[i]}`); // li, které přísluší k input type radio, vezme svoje číslo z pole, kde byly zapsány všechny bookované časy
+const radio=document.getElementById(`${this.id_radio}${cas_shody[i]}`) as HTMLInputElement; // input type radio, vezme svoje číslo z pole, kde byly zapsány všechny bookované časy
+const li=document.getElementById(`${this.id_li}${cas_shody[i]}`) as HTMLElement; // li, které přísluší k input type radio, vezme svoje číslo z pole, kde byly zapsány všechny bookované časy
 
 if(radio)
 {
-(radio as HTMLInputElement).disabled=true; // nastaví konkrétní časem shodné radio na disabled
+radio.disabled=true; // nastaví konkrétní časem shodné radio na disabled
 }
 
 if(li)
 {
-(li as HTMLElement).style.color="grey"; // nastaví konkrétní časem shodné  li na color grey
-(li as HTMLElement).style.backgroundColor="lightgray"; // nastaví konkrétní časem shodné li na background-color lightgray
-(li as HTMLElement).style.cursor="not-allowed"; // nastaví konkrétní časem shodné li na cursor přeškrklý
-(li as HTMLElement).removeEventListener("click",this); // odebere posluchač klik
-(li as HTMLElement).removeAttribute('data-has-listener'); // odebere prvku atribut, pokud ho má
-}
-
-}
-
-}
-
-
-
-
-
+li.style.color="grey"; // nastaví konkrétní časem shodné  li na color grey
+li.style.backgroundColor="lightgray"; // nastaví konkrétní časem shodné li na background-color lightgray
+li.style.cursor="not-allowed"; // nastaví konkrétní časem shodné li na cursor přeškrklý
+li.removeEventListener("click",this); // odebere posluchač klik
+li.removeAttribute('data-has-listener'); // odebere prvku atribut, pokud ho má
+}}}
 };
 
 load_rezervace()
@@ -897,33 +887,29 @@ load_rezervace()
 // KONEC SIMLACE
   
 // Asynchronní funkce pro načtení JSON souboru pomocí fetch
-const fetchJSON = async (): Promise<any> => {
-    const jsonFilePath = "config/cti-rezervace.php"; // cesta k PHP souboru
-    try {
-        const response = await fetch(jsonFilePath); // načítání dat ze souboru JSON
-        if (!response.ok) {
-            throw new Error('Síťová odpověď nebyla v pořádku'); // chyba při načítání
-        }
+const fetchJSON=async():Promise<any> => {
+const jsonFilePath="config/cti-rezervace.php"; // cesta k PHP souboru
+try{
+const response=await fetch(jsonFilePath); // načítání dat ze souboru JSON
+if(!response.ok){
+throw new Error("Síťová odpověď nebyla v pořádku"); // chyba při načítání
+}
+let jsonData=await response.json(); // převzetí dat do proměnné
 
-        let jsonData = await response.json(); // převzetí dat do proměnné
-
-        // Pokud JSON neobsahuje pole 'data' nebo pokud je prázdné, nastavíme prázdné pole
-        if (!jsonData || !jsonData.data || !Array.isArray(jsonData.data)) {
-            jsonData = { data: [] };  // Zajistíme, že data budou vždy pole
-        }
-
-        console.log('Načtená data (reálně):', jsonData);
-        return jsonData; // vrací načtená data
-    } catch (error) {
-        console.error('Chyba při načítání JSON (reálně):', error);
-        return { data: [] }; // Vrátí prázdný objekt, pokud dojde k chybě
-    }
+// Pokud JSON neobsahuje pole 'data' nebo pokud je prázdné, nastavíme prázdné pole
+if(!jsonData||!jsonData.data||!Array.isArray(jsonData.data))
+{
+jsonData={data:[]};  // Zajistíme, že data budou vždy pole
+}
+console.log("Načtená data (reálně):", jsonData);
+return jsonData; // vrací načtená data
+}catch(error) {
+console.error("Chyba při načítání JSON (reálně):", error);
+return {data:[]}; // Vrátí prázdný objekt, pokud dojde k chybě
+}
 };
 
-
-  
-
-setTimeout(async ()=>{
+setTimeout(async()=>{
 // Načtení JSON dat ze serveru anebo simulačně dle potřeby
 
 const jsonData=await fetchJSON(); // Načtení JSON dat z servru -- NAOSTRO !!!
@@ -949,12 +935,12 @@ const k:string=e.target.id; // zjistí ID prvku na který byl klik proveden
 
 const number:number=parseInt(k.replace(/\D/g,'')); // .replace(/\D/g, '') odstraní všechny nečíselné znaky (což jsou ty, které nejsou číslice) z řetězce a parseInt() převádí tento řetězec na celé číslo.
 
-const radio=document.getElementById(`${this.id_radio}${number}`); // příslušný input type radio nacházející se v stejnél li elementu na který bylo kliknuto
+const radio=document.getElementById(`${this.id_radio}${number}`) as HTMLInputElement; // příslušný input type radio nacházející se v stejnél li elementu na který bylo kliknuto
 
 if(radio)
 {
 // pokud existuje HTML element
-(radio as HTMLInputElement).checked=true; // zatrhne konkrétní input type radio
+radio.checked=true; // zatrhne konkrétní input type radio
 this.vybrany_cas=number; // do proměnné uloží informaci s číslem, podle které je možné zjistit jaký čas byl uživatelem vybrán (1-14)
 }
 
@@ -962,34 +948,31 @@ this.vybrany_cas=number; // do proměnné uloží informaci s číslem, podle kt
 
 zobrazit_casy(){
 // funkce hlavní kontejner s časy zobrazí z opacity:0; z-index:-1; na opacity:1; z-index:0;
-const hl_con=document.getElementById(this.id_con); // hlavní kontejner, kde jsou chronologicky seřazeny časy
+const hl_con=document.getElementById(this.id_con) as HTMLElement; // hlavní kontejner, kde jsou chronologicky seřazeny časy
 
 if(hl_con)
 {
 // Pokud HTML element existuje
-(hl_con as HTMLElement).classList.add("zobraz_objekt"); // přidá CSS třídu s animací opacity z 0 na 1
+hl_con.classList.add("zobraz_objekt"); // přidá CSS třídu s animací opacity z 0 na 1
 }
 
 };
 
 problik_casy(){
 // metoda provede probliknutí hlavního kontejneru s časy rezervace
-const hl_con=document.getElementById(this.id_con); // hlavní kontejner, kde jsou chronologicky seřazeny časy
+const hl_con=document.getElementById(this.id_con) as HTMLElement; // hlavní kontejner, kde jsou chronologicky seřazeny časy
 
 if(hl_con)
 {
 // Pokud HTML element existuje
-(hl_con as HTMLElement).style.filter="blur(5px)"; // nastaví mu rozmazání
-(hl_con as HTMLElement).style.transform = "scale(0.9)" // nastaví zmenšení
+hl_con.style.filter="blur(5px)"; // nastaví mu rozmazání
+hl_con.style.transform = "scale(0.9)" // nastaví zmenšení
 
 setTimeout(()=>{
-(hl_con as HTMLElement).style.filter="blur(0px)"; // nastaví na default
-(hl_con as HTMLElement).style.transform = "scale(1)" // nastaví na default
+hl_con.style.filter="blur(0px)"; // nastaví na default
+hl_con.style.transform = "scale(1)" // nastaví na default
 },250); // zpoždění kopíruje css vlastnost transmition
-
-}
-
-}
+}}
 };
 
 interface Dialog_okno
@@ -1038,6 +1021,25 @@ id_okna:"neuspech",
 id_buton_pro_zavreni:"butt_neuspech"
 };
 
+dia_dotaz_zruseni:Dialog_okno={
+// objekt s id pro dialogové okno: Zrušit rezervaci?
+id_okna:"zrusit_rezervaci",
+id_buton_pro_zavreni:"butt_zrusit_rezervaci"
+};
+
+dia_zruseno:Dialog_okno={
+// objekt s id pro dialogové okno: Rezervace zrušena
+id_okna:"zruseno",
+id_buton_pro_zavreni:"butt_zruseno"
+};
+
+dia_nezruseno:Dialog_okno={
+// objekt s id pro dialogové okno: Rezervace nezrušena
+id_okna:"nezruseno",
+id_buton_pro_zavreni:"butt_nezruseno"
+};
+
+
 get addDia_zasady()
 {
 // getter vrátí všechny parametry nutné ke spuštění funkcionalit dialogového okna: Zásady ochrany osobních údajů
@@ -1047,23 +1049,23 @@ return Object.values(this.dia_zasady) as [string,string?,string?,string?,string?
 on(id_dialog:string,id_button_z:string="",id_kotva_top:string="",id_button_scroll:string="",id_kotva_bottom:string="")
 {
 
-const okno=document.getElementById(id_dialog); // načte HTML element dialogového okna
+const okno=document.getElementById(id_dialog) as HTMLDialogElement; // načte HTML element dialogového okna
 if(okno)
 {
 // pokud HTML objekt existuje
-(okno as HTMLDialogElement).showModal(); // otevře dialogové okno
+okno.showModal(); // otevře dialogové okno
 }
 
 if(id_button_z!=="")
 {
 // pokud bude zaslán id butonu pro zavření dialogového okna
-const button_close=document.getElementById(id_button_z); // načte HTML element buttonu pro zavření dialogového okna
+const button_close=document.getElementById(id_button_z) as HTMLButtonElement; // načte HTML element buttonu pro zavření dialogového okna
 if(button_close)
 {
 // pokud HTML objekt existuje
 const boundOff = this.off.bind(this,id_dialog,id_button_z,id_button_scroll); // proměnná, do které se uloží bind funkce, aby mohla být správně pomocí removeEventlistener odstraněna
 this.boundOffs[id_button_z]=boundOff; // proměná bude uložena do globální proměnné pod klíčem id_button_z
-(button_close as HTMLButtonElement).addEventListener("click",boundOff); // přidá posluchač buttonu pro zavření dialogového okna
+button_close.addEventListener("click",boundOff); // přidá posluchač buttonu pro zavření dialogového okna
 }}
 
 if(id_kotva_top!=="")
@@ -1083,14 +1085,14 @@ kotva.scrollIntoView({behavior:"smooth",block:"start"}); // provede scroll TO na
 if(id_button_scroll!==""&&id_kotva_bottom!=="")
 {
 // pokud byla metoda volána s id_button_scroll a id_kotva_bottom
-const butt_kotva=document.getElementById(id_button_scroll); // načte HTML element buttonem pro scroll
+const butt_kotva=document.getElementById(id_button_scroll) as HTMLButtonElement; // načte HTML element buttonem pro scroll
 
 if(butt_kotva)
 {
 // pokud existuje HTML element
 const boundOff_k=this.scroll.bind(this,id_kotva_bottom); // vytvoří referenci pro volání a následné odstranění posluchače bind
 this.boundOffs[id_button_scroll]=boundOff_k; // zapíše refernci do objektu pod klíčem: d_button_scroll
-(butt_kotva as HTMLButtonElement).addEventListener("click",boundOff_k); // přidá posluchač události
+butt_kotva.addEventListener("click",boundOff_k); // přidá posluchač události
 }}
 };
 off(id_dialog:string,id_button_z:string="",id_button_scroll:string="")
@@ -1100,38 +1102,38 @@ off(id_dialog:string,id_button_z:string="",id_button_scroll:string="")
 if(id_button_z!=="")
 {
 // pokud bude zaslán do funkce parametr s id buttonu pro zavření dialofového okna
-const button_close=document.getElementById(id_button_z); // načte HTML element buttonu pro zavření dialogového okna
+const button_close=document.getElementById(id_button_z) as HTMLButtonElement; // načte HTML element buttonu pro zavření dialogového okna
 if(button_close)
 {
 // pokud HTML objekt existuje
-(button_close as HTMLButtonElement).removeEventListener("click",this.boundOffs[id_button_z]); // odebere posluchač buttonu pro zavření dialogového okna
+button_close.removeEventListener("click",this.boundOffs[id_button_z]); // odebere posluchač buttonu pro zavření dialogového okna
 delete this.boundOffs[id_button_z]; // odstraní referenci z objektu
 }
 }
 
-const okno=document.getElementById(id_dialog); // načte HTML element dialogového okna
+const okno=document.getElementById(id_dialog) as HTMLDialogElement; // načte HTML element dialogového okna
 
 if(okno)
 {
 // pokud HTML objekt existuje
-(okno as HTMLDialogElement).style.opacity="0"; // zneviditelní dialogové okno, díky transitions v css vytvoří animaci
-(okno as HTMLDialogElement).style.transform="scale(.5)"; // začne dialogové okno zmenšovat, díky transitions v css vytvoří animaci
+okno.style.opacity="0"; // zneviditelní dialogové okno, díky transitions v css vytvoří animaci
+okno.style.transform="scale(.5)"; // začne dialogové okno zmenšovat, díky transitions v css vytvoří animaci
 setTimeout(()=>{
-(okno as HTMLDialogElement).close(); // zavře dialogové okno
-(okno as HTMLDialogElement).style.opacity="1"; // nastaví hodnotu na default
-(okno as HTMLDialogElement).style.transform="scale(1)"; // nastaví hodnotu na default
+okno.close(); // zavře dialogové okno
+okno.style.opacity="1"; // nastaví hodnotu na default
+okno.style.transform="scale(1)"; // nastaví hodnotu na default
 },200); // zpoždění odpovídá transition 0.2s v CSS
 }
 
 if(id_button_scroll!=="")
 {
-const butt_kotva=document.getElementById(id_button_scroll); // načte HTML element buttonem pro scroll
+const butt_kotva=document.getElementById(id_button_scroll) as HTMLButtonElement; // načte HTML element buttonem pro scroll
 
 if(butt_kotva)
 {
 // pokud existuje HTML element
 const boundOff_k=this.boundOffs[id_button_scroll]; // načte referenci, která byla přidána posluchačí funke bind, klíč je: id_button_scroll
-(butt_kotva as HTMLButtonElement).removeEventListener("click",boundOff_k); // odebere posluchač události buttonu pro scroll bottom
+butt_kotva.removeEventListener("click",boundOff_k); // odebere posluchač události buttonu pro scroll bottom
 delete this.boundOffs[id_button_scroll]; // odstraní referenci z objektu
 }
 
@@ -1142,18 +1144,16 @@ console.log("CLOSE");
 
 scroll(id_kotva_bottom:string)
 {
-const kotva=document.getElementById(id_kotva_bottom); // načte HTML objekt kotvy
+const kotva=document.getElementById(id_kotva_bottom) as HTMLElement; // načte HTML objekt kotvy
 if(kotva)
 {
 // pokud HTML objekt existuje
-(kotva as HTMLElement).scrollIntoView({behavior:"smooth",block:"end"}); // provede scrollTo na HTML kotvu
+kotva.scrollIntoView({behavior:"smooth",block:"end"}); // provede scrollTo na HTML kotvu
 }
-console.log("scroll bottom");
 };
 wait_activ()
 {
 // metoda aktivuje dialogové okno: Čekejte prosím! Zpracovává se požadavek ... 
-
 this.on(this.dia_waiting.id_okna); // otevře dialogové okno
 const id_an=this.dia_waiting.id_animace ?? "cir_1"; // operátor nulového slučování (nullish coalescing operator), který poskytne výchozí hodnotu, pokud je hodnota undefined nebo null
 const animace=document.getElementById(id_an); // HTML elemnt prvku s první animací
@@ -1167,11 +1167,9 @@ animace.beginElement(); // pustí animaci
 }
 };
 
-
 wait_deactiv()
 {
 // metoda deaktivuje dialogové okno: Čekejte prosím! Zpracovává se požadavek ... 
-
 if(this.casovac_animace!=null)
 {
 // pokud je časovač aktivován
@@ -1179,9 +1177,6 @@ clearInterval(this.casovac_animace); // vynuluje časovač
 }
 this.off(this.dia_waiting.id_okna); // zavře dialogové okno
 }
-
-
-
 };
 
 class Boss
@@ -1197,8 +1192,11 @@ readonly id_den="slovne_den_rezervace"; // id SPAN ve formuláři Dokončit reze
 readonly id_den_v_mesici="ciselne_den_v_mesici_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje den v měsíci rezervace 1-31
 readonly id_mesic="slone_mesic_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje měsíc rezervace leden-prosinec
 readonly id_rok="ciselne_rok_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje rok rezervace např. 2024
+readonly id_token="token"; // id HTML input s tokenem
 private slovne_datum=""; // v proměnné je slovně uložené celé datum rezervace
 private slovne_cas=""; // v proměnné je uloženo slovně konkrétní čas rezervace
+readonly dny:string[]=["Neděle","Pondělí","Úterý","Středa","Čtvrtek","Pátek","Sobota"]; // dny v týdnu
+readonly mesice:string[]=["ledna","února","března","dubna","květena","června","července","srpna","září","října","listopadu","prosince"]; // měsíce v roce
 posluchace()
 {
 // posluchače formulářů a hlavních buttonů formulářů
@@ -1206,10 +1204,10 @@ const d1=this.id_form.length; // délka pole
 for(let i=0;i<d1;i++)
 {
 // smička zajistí blokaci formulářů odesláním submit
-const form=document.getElementById(this.id_form[i]); // HTML element FORM
+const form=document.getElementById(this.id_form[i]) as HTMLFormElement; // HTML element FORM
 if(form){
 // pokud existuje HTML element FORM
-(form as HTMLFormElement).addEventListener("submit",this); // přiřadí posluchač k formuláři
+form.addEventListener("submit",this); // přiřadí posluchač k formuláři
 };
 }
 
@@ -1217,22 +1215,22 @@ const d2=this.id_button.length; // délka pole
 for(let i=0;i<d2;i++)
 {
 // smička zajistí posluchače pro hlavní butony formulářů: Změnit rezervaci
-const button=document.getElementById(this.id_button[i]); // HTML element Button
+const button=document.getElementById(this.id_button[i]) as HTMLButtonElement; // HTML element Button
 if(button)
 {
-(button as HTMLButtonElement).addEventListener("click",this); // přiřadí posluchač click k buttonu na this
+button.addEventListener("click",this); // přiřadí posluchač click k buttonu na this
 }
 }
 
-const input_predvolba=document.getElementById(this.id_predvolba_phone); // HTML input s předvolbou telefoního čísla +420
+const input_predvolba=document.getElementById(this.id_predvolba_phone) as HTMLInputElement; // HTML input s předvolbou telefoního čísla +420
 if(input_predvolba)
 {
 // pokud HTML element existuje
-(input_predvolba as HTMLInputElement).addEventListener("focus",()=>{
-const input_telefon=document.getElementById(this.id_inputHost[2]); // načte HTML input s telefoním číslem
+input_predvolba.addEventListener("focus",()=>{
+const input_telefon=document.getElementById(this.id_inputHost[2]) as HTMLInputElement; // načte HTML input s telefoním číslem
 if(input_telefon)
 {
-(input_telefon as HTMLInputElement).focus(); // focus na input zadání telefonního čísla
+input_telefon.focus(); // focus na input zadání telefonního čísla
 }
 }); // přidá posluchač focus - pokud někdo focusne předvolbu +420 hned ho to focusne na zadání telefoního čísla, předvolba +420 je readonly
 }
@@ -1242,8 +1240,8 @@ if(input_telefon)
 zobrazeni_datumu(){
 // funkce zajistí správné zobrazení datumu rezervace ve formuláři Dokončit rezervaci
 
-const dny:string[]=["Neděle","Pondělí","Úterý","Středa","Čtvrtek","Pátek","Sobota"]; // dny v týdnu
-const mesice:string[]=["ledna","února","března","dubna","květena","června","července","srpna","září","října","listopadu","prosince"]; // měsíce v roce
+const dny:string[]=this.dny; // dny v týdnu
+const mesice:string[]=this.mesice; // měsíce v roce
 
 const den_rezervace_uzivatel:number[]=kalendar.rezervovane_datum; // getter vrátí datum zadané uživatelem [rok, měsíc(0-11), den]:number[]
 
@@ -1261,33 +1259,33 @@ const den_v_mesici:string=den_rezervace_uzivatel[2].toString(); // den v měsíc
 const mesic_v_roce_slovne:string=mesice[den_rezervace_uzivatel[1]]; // měsíc v roce slovně
 const rok:string=den_rezervace_uzivatel[0].toString(); // rok převeden na string
 
-const span_den_slovne=document.getElementById(this.id_den);  // HTML SPAN ve formuláři Dokončit rezervaci, kde se zapisuje den rezervace Pondělí-Neděle
-const span_cislo_dne=document.getElementById(this.id_den_v_mesici); // HTML SPAN ve formuláři Dokončit rezervaci, kde se zapisuje den v měsíci rezervace 1-31
-const span_mesic=document.getElementById(this.id_mesic); // HTML SPAN ve formuláři Dokončit rezervaci, kde se zapisuje měsíc rezervace leden-prosinec
-const span_rok=document.getElementById(this.id_rok); //  HTML SPAN ve formuláři Dokončit rezervaci, kde se zapisuje rok rezervace např. 2024
+const span_den_slovne=document.getElementById(this.id_den) as HTMLSpanElement;  // HTML SPAN ve formuláři Dokončit rezervaci, kde se zapisuje den rezervace Pondělí-Neděle
+const span_cislo_dne=document.getElementById(this.id_den_v_mesici) as HTMLSpanElement; // HTML SPAN ve formuláři Dokončit rezervaci, kde se zapisuje den v měsíci rezervace 1-31
+const span_mesic=document.getElementById(this.id_mesic) as HTMLSpanElement; // HTML SPAN ve formuláři Dokončit rezervaci, kde se zapisuje měsíc rezervace leden-prosinec
+const span_rok=document.getElementById(this.id_rok) as HTMLSpanElement; //  HTML SPAN ve formuláři Dokončit rezervaci, kde se zapisuje rok rezervace např. 2024
 
 if(span_den_slovne)
 {
 // pokud HTML objekt existuje
-(span_den_slovne as HTMLSpanElement).innerText=den_v_tydnu_slovne; // přepíše den v týdnu
+span_den_slovne.innerText=den_v_tydnu_slovne; // přepíše den v týdnu
 }
 
 if(span_cislo_dne)
 {
 // pokud HTML objekt existuje
-(span_cislo_dne as HTMLSpanElement).innerText=den_v_mesici; // přepíše číslo dne
+span_cislo_dne.innerText=den_v_mesici; // přepíše číslo dne
 }
 
 if(span_mesic)
 {
 // pokud HTML objekt existuje
-(span_mesic as HTMLSpanElement).innerText=mesic_v_roce_slovne; // přepíše měsíc v roce
+span_mesic.innerText=mesic_v_roce_slovne; // přepíše měsíc v roce
 }
 
 if(span_rok)
 {
 // pokud HTML objekt existuje
-(span_rok as HTMLSpanElement).innerText=rok; // přepíše rok
+span_rok.innerText=rok; // přepíše rok
 }
 
 this.slovne_datum=`${den_v_tydnu_slovne}, ${den_v_mesici}.${mesic_v_roce_slovne} ${rok}`; // do proměnné bude vložen kompletní datum rezervace
@@ -1299,7 +1297,7 @@ zobrazeni_casu(){
 const span_cas=document.getElementById(this.id_cas); // HTML span pro čas rezervace
 if(span_cas)
 {
-(span_cas as HTMLSpanElement).innerText=cas_rezervace.zobrazit_vybrany_cas; // přepíše čas rezervace na čas vybraný uživatelem
+span_cas.innerText=cas_rezervace.zobrazit_vybrany_cas; // přepíše čas rezervace na čas vybraný uživatelem
 }
 
 this.slovne_cas=cas_rezervace.zobrazit_vybrany_cas; // do proměnné zapíše slovně čas rezerace
@@ -1308,12 +1306,12 @@ this.slovne_cas=cas_rezervace.zobrazit_vybrany_cas; // do proměnné zapíše sl
 napis_zavinac()
 {
 // metoda napíše @ do input email
-const input_email=document.getElementById(this.id_inputHost[1]); // načete HTML element input email
+const input_email=document.getElementById(this.id_inputHost[1]) as HTMLInputElement; // načete HTML element input email
 if(input_email)
 {
 // pokud HTML element existuje
-(input_email as HTMLInputElement).value+="@"; // přidá @ do input email
-(input_email as HTMLInputElement).focus(); // přehodí uživatele hbytě za vepsaný @ v inputu s emailem
+input_email.value+="@"; // přidá @ do input email
+input_email.focus(); // přehodí uživatele hbytě za vepsaný @ v inputu s emailem
 }
 };
 
@@ -1372,22 +1370,22 @@ form_posun(old_form:string,new_form:string)
 {
 // metoda zajistí posun formuláře z Rezervovat na Dokončit Rezervaci a opačně (old_form=== ID formuláře, který hceme zavřít), (new_form=== ID formuláře,který chceme otevřít)
 
-const form_old=document.getElementById(old_form); // HTML element FORM
-const form_new=document.getElementById(new_form); // HTML element FORM
+const form_old=document.getElementById(old_form) as HTMLFormElement; // HTML element FORM
+const form_new=document.getElementById(new_form) as HTMLFormElement; // HTML element FORM
 
 if(form_old&&form_new)
 {
-(form_old as HTMLFormElement).style.display="none"; /* vypne starý formulář */
-(form_new as HTMLFormElement).style.opacity="0"; /* nastavý nový formulář na opacity 0 */
-(form_new as HTMLFormElement).style.display="flex"; /* aktivuje na novém formuláři display:flex */
+form_old.style.display="none"; /* vypne starý formulář */
+form_new.style.opacity="0"; /* nastavý nový formulář na opacity 0 */
+form_new.style.display="flex"; /* aktivuje na novém formuláři display:flex */
 setTimeout(()=>
 {
-(form_new as HTMLFormElement).style.opacity="1"; // nastavý novému formuláři opacity na 1
-const h_c=document.getElementById(this.id_boss_con); // HTML element - hlavní kontejner aplikace
+form_new.style.opacity="1"; // nastavý novému formuláři opacity na 1
+const h_c=document.getElementById(this.id_boss_con) as HTMLElement; // HTML element - hlavní kontejner aplikace
 if(h_c)
 {
 // pokud HTML Element existuje
-(h_c as HTMLElement).scrollIntoView({behavior:"smooth",block:"start"}); // v případě pohybu ve formuláři zajistí posun na počátek-top hlavního kontejneru
+h_c.scrollIntoView({behavior:"smooth",block:"start"}); // v případě pohybu ve formuláři zajistí posun na počátek-top hlavního kontejneru
 }
 },100); // drobné zpoždění zajistí bezproblémový průběh animace opacity
 }};
@@ -1395,7 +1393,7 @@ if(h_c)
 kontola_verze_javaScript()
 {
 const id_div="no_es2017"; // id div, který obsahuje informaci o tom, že uživatel nemá alespoň veri Java Scriptu es2017
-const error_div=document.getElementById(id_div); // načte HTML element do proměnné
+const error_div=document.getElementById(id_div) as HTMLElement; // načte HTML element do proměnné
     
 let kontrola1=false; // proměnná pro první kontrolu Object.values
 let kontrola2=false; // proměnná pro druhou kontrolu (async/await)
@@ -1427,7 +1425,7 @@ if(!kontrola1||!kontrola2)
 if(error_div)
 {
 // pokud HTML element existuje
-(error_div as HTMLElement).style.display="flex"; // nastaví DIV, tak aby byl pro uživatele viditelný
+error_div.style.display="flex"; // nastaví DIV, tak aby byl pro uživatele viditelný
 }}
 };
 
@@ -1440,11 +1438,11 @@ const cas_rezervace_uzivatel:number=cas_rezervace.cislo_vybraneho_casu; // gette
 
 
 
-const input_hidden=document.getElementById("token");
+const input_hidden=document.getElementById(this.id_token) as HTMLInputElement;
 let token=""; // v proměnné bude uložen token, který bude zároveň heslem ke každé rezervaci - bude mít pokaždé stejnou délku 32 znaků!!!
 if(input_hidden)
 {
-token=(input_hidden as HTMLInputElement).value; // načte token z HTML elementu input type hidden
+token=input_hidden.value; // načte token z HTML elementu input type hidden
 console.log("TOKEN: "+token);
 }
 
@@ -1454,10 +1452,10 @@ const data_pro_JSON:[number,number,number,number,string]=[...den_rezervace_uziva
 
 console.log(data_pro_JSON);
 
-const in_jmeno_uzivatel=document.getElementById(this.id_inputHost[0]); // input s jménem a příjmením uživatel
-const in_email_uzivatel=document.getElementById(this.id_inputHost[1]); // input s emailem uživatele
-const in_phone_uzivatel=document.getElementById(this.id_inputHost[2]); // input s telefonem uživatele
-const in_predmet_uzivatel=document.getElementById(this.id_inputHost[3]); // input s předmětem uživatele (O čem bude hovor?)
+const in_jmeno_uzivatel=document.getElementById(this.id_inputHost[0]) as HTMLInputElement; // input s jménem a příjmením uživatel
+const in_email_uzivatel=document.getElementById(this.id_inputHost[1]) as HTMLInputElement; // input s emailem uživatele
+const in_phone_uzivatel=document.getElementById(this.id_inputHost[2]) as HTMLInputElement; // input s telefonem uživatele
+const in_predmet_uzivatel=document.getElementById(this.id_inputHost[3]) as HTMLInputElement; // input s předmětem uživatele (O čem bude hovor?)
 
 
 const data_pro_Email:[string,string,string,string,string,string,string,string]=["","","","","","","",""]; // do pole budou zapsána všechna data, která jsou pro odesílání emailu
@@ -1473,28 +1471,28 @@ predmet:string=""; // předmět uživatele (O čem bude hovor)
 if(in_jmeno_uzivatel)
 {
 // pokud HTML element existuje
-jmeno=(in_jmeno_uzivatel as HTMLInputElement).value; // z input načte jméno a příjmení
+jmeno=in_jmeno_uzivatel.value.trim(); // z input načte jméno a příjmení
 data_pro_Email[0]=jmeno;
 }
 
 if(in_email_uzivatel)
 {
 // pokud HTML element existuje
-email=(in_email_uzivatel as HTMLInputElement).value; // z input načte email
+email=in_email_uzivatel.value.trim(); // z input načte email
 data_pro_Email[1]=email;
 }
 
 if(in_phone_uzivatel)
 {
 // pokud HTML element existuje
-phone=(in_phone_uzivatel as HTMLInputElement).value; // z input načte telefon
+phone=in_phone_uzivatel.value.trim(); // z input načte telefon
 data_pro_Email[2]=phone;
 }
 
 if(in_predmet_uzivatel)
 {
 // pokud HTML element existuje
-predmet=(in_predmet_uzivatel as HTMLInputElement).value; // z input načte O čem bude hovor
+predmet=in_predmet_uzivatel.value.trim(); // z input načte O čem bude hovor
 data_pro_Email[3]=predmet;
 }
 
@@ -1522,92 +1520,65 @@ console.log(data_pro_Email);
 
 const data=`csrf_token=${encodeURIComponent(token)}&data_json=${encodeURIComponent(JSON.stringify(data_pro_JSON))}&data_email=${encodeURIComponent(JSON.stringify(data_pro_Email))}`; // nachystá data na odeslání pro fetch API metodou post
 
-
 // Vytvoření AJAX požadavku
-const sendRequest = async () => {
-    try {
-        // Nastavení prodlevy před odesláním požadavku
-        
-        dia.wait_activ(); // zapne dialogové okno Čekejte prosím … Zpracovává se rezervace
-
-        setTimeout(async () => {
-            // Odeslání požadavku na server
-            const response: Response = await fetch("config/distributor-rezervace.php", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: data
-            });
-
-           
-            const result = await response.json(); // Převedení odpovědi na JSON
-
-            // Zkontrolujte, zda server odpověděl s 'status' a 'message'
-            if (response.ok) {
-                // Server vrátil odpověď se statusem 'success'
-                if (result.status === 'success') {
-                    console.log('Úspěch:', result.message);
-                    // Další logika pro úspěšné zpracování
-                // alert("REZERVACE PROBĚHLA ÚSPĚŠNĚ");
-                dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
-                dia.on(dia.dia_uspech.id_okna,dia.dia_uspech.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace proběhla úspěšně
-                
-
-                } else {
-                    // Server vrátil odpověď s chybou ('error')
-                    console.error('Chyba:', result.message); // Zobrazení chyby do konzole
-                    alert("CHYBA - REZERVECA SE NEZDAŘILA!");
-if(result.message==="Překročili jste limit požadavků. Zkuste to znovu za 24 hodin.")
+const sendRequest=async()=>{
+try{
+// Nastavení prodlevy před odesláním požadavku
+dia.wait_activ(); // zapne dialogové okno Čekejte prosím … Zpracovává se rezervace
+setTimeout(async()=>{
+// Odeslání požadavku na server
+try {
+const response:Response=await fetch("config/distributor-rezervace.php",{
+method:"POST",
+headers:{
+"Content-Type":"application/x-www-form-urlencoded"
+},
+body:data
+});
+const result=await response.json(); // Převedení odpovědi na JSON
+// Zkontrolujte, zda server odpověděl s 'status' a 'message'
+if(response.ok){
+// Server vrátil odpověď se statusem 'success'
+if(result.status==="success")
 {
-// pokud se překročí Rate Limit
-    alert("CHYBA - Překročili jste limit požadavků. Zkuste to znovu za 24 hodin.");
+console.log("Úspěch:",result.message);
+// logika pro úspěšné zpracování
+dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
+dia.on(dia.dia_uspech.id_okna,dia.dia_uspech.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace proběhla úspěšně
 }
 else
 {
-alert("CHYBA - PŘEKROČEN LIMIT REZERVACÍ!");
+// Server vrátil odpověď s chybou ('error')
+console.error("Chyba:", result.message); // Zobrazení chyby do konzole
+dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
+dia.on(dia.dia_neuspech.id_okna,dia.dia_neuspech.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace proběhla NEúspěšně
 }
-                    dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
-                    dia.on(dia.dia_neuspech.id_okna,dia.dia_neuspech.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace proběhla NEúspěšně
-                }
-            } else {
-                // Pokud odpověď serveru není v pořádku (např. 4xx nebo 5xx)
-                console.error('Chyba serveru:', result.message || 'Neznámá chyba');
-
-
- alert("CHYBA - SERVERU anebo Neznámá chyba!");
-
-               
-                dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
-                // Ošetření chyby serveru, např. zobrazení hlášení uživateli
-                dia.on(dia.dia_neuspech.id_okna,dia.dia_neuspech.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace proběhla NEúspěšně
-            }
-
-            
-
-        }, 0); // Nastavení 0 ms zpoždění pro vykonání funkce
-
-    }
-
-    
-    catch (error) {
-        // Pokud došlo k chybě při komunikaci s API (např. nevalidní JSON nebo síťová chyba)
-        console.error('Chyba při zpracování odpovědi:', error); // výpis chyb do konzole
-        // Ošetření chyb, např. zobrazení informace o problému s připojením
-        dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
-        dia.on(dia.dia_neuspech.id_okna,dia.dia_neuspech.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace proběhla NEúspěšně
-
-    }
+}
+else
+{
+// Pokud odpověď serveru není v pořádku
+console.error("Chyba serveru:",result.message||"Neznámá chyba");
+dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
+dia.on(dia.dia_neuspech.id_okna,dia.dia_neuspech.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace proběhla NEúspěšně
+}
+}
+catch(error){
+// Pokud došlo k chybě při zpracování požadavku před jeho odesláním
+console.error("Chyba při zpracování požadavku před jeho odesláním:",error); // výpis chyb do konzole
+dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
+dia.on(dia.dia_neuspech.id_okna,dia.dia_neuspech.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace proběhla NEúspěšně
+}          
+},0); // Nastavení 0 ms zpoždění pro vykonání funkce
+}
+catch(error){
+// Pokud došlo k chybě při komunikaci s API (např. nevalidní JSON nebo síťová chyba)
+console.error('Chyba při zpracování odpovědi:', error); // výpis chyb do konzole
+dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
+dia.on(dia.dia_neuspech.id_okna,dia.dia_neuspech.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace proběhla NEúspěšně
+}
 };
-
-// Zavolání asynchronní funkce pro odeslání požadavku
-sendRequest();
-
-
+sendRequest(); // Zavolání asynchronní funkce pro odeslání požadavku
 };
-
-
-
 
 spustit_aplikaci()
 {
@@ -1630,12 +1601,223 @@ cas_rezervace.load_rezervace(); // nahraje JSON soubor a data rezervace časů, 
 
 class Zrusit_rezervaci{
 // třída se postará o všechny kroky potřebné pro zrušení rezervace
+zaznam_encrypted_token:string=""; // proměnná do sebe vloží zakódovaný token záznamu, který má být zrušen, pokud existuje
+den_a_cas_rezervace:string=""; // proměnná do sebe vloží informaci o dnu a času rezervace, toto bude následně zasláno emailem tomu kdo rezervaci zrušil a mně, text bude vypadat např.: Čtvrtek, 20. února 2025, 13:30-14:00 hod.
+readonly id_form:string="zrusit_rezervaci"; // id formuláře v dialogovém okně: Zrušit rezervaci?
+readonly id_butt:string="butt_zavinac2"; // id buttonů v dialogovém okně: Zrušit rezervaci? button @ a button Zrušit rezervaci
+readonly id_input:string[]=["email2","duvod"]; // id input Email a Důvod zrušení v dialogovém okně: Zrušit rezervaci?
+readonly id_span_cas_r:string[]=["slovne_den_rezervace2","ciselne_den_v_mesici_rezervace2","slone_mesic_rezervace2","ciselne_rok_rezervace2","slovne_cas_rezervace2"]; // id SPAN HTML elementů kde se uvádí termín rezervace, která má být zrušena např: Úterý, 24. prosince 2024, 15:00-15:30 hod.
 
-zaznam_encrypted_token=""; // proměnná do sebe vloží zakódovaný token záznamu, pokud existuje
+zaslat_zadost_na_zruseni()
+{
+// metoda zajistí pomocí fetch a PHP, vymazání rezervace z JSON souboru
 
-vytvor_zadost_na_zruseni()
+
+const input_hidden=document.getElementById(boss.id_token) as HTMLInputElement; // HTML input type hidden s tokenem
+let token=""; // v proměnné bude uložen token, který bude zároveň heslem ke každé rezervaci - bude mít pokaždé stejnou délku 32 znaků!!!
+if(input_hidden)
+{
+token=input_hidden.value; // načte token z HTML elementu input type hidden
+console.log("TOKEN: "+token);
+}
+
+const encrypted_token=this.zaznam_encrypted_token; // načte zakódovaný token, který určuje o jakou rezervaci se jedná
+const den_a_cas_rezervace=this.den_a_cas_rezervace; // načte den a čas rezervace, tato informace se bude rozesílat emailem, např.: Čtvrtek, 20. února 2025, 13:30-14:00 hod.
+
+
+const inp_email=document.getElementById(this.id_input[0]) as HTMLInputElement; // HTML input s emailem
+
+let email=""; // proměnná do které se bude vkládat email, na který bude zasláno potvrzení o zrušení rezervace
+if(inp_email)
+{
+// pokud HTML element existuje
+email=inp_email.value.trim(); // načte email z inputu a ořízne u něj prázdné znaky před i za emailem
+}
+
+const inp_duvod=document.getElementById(this.id_input[1]) as HTMLInputElement; // HTML input s důvodem zrušení
+
+let duvod=""; // proměnná do které se bude zapisovat důvod
+if(inp_duvod)
+{
+// pokud HTML element existuje
+duvod=inp_duvod.value.trim(); // vezme value z inputu důvodu a odstraní na něm všechny prázdné znaky před i za textem
+if(duvod.length===0)
+{
+// pokud bude mít proměnná délku 0, znamená to, že důvod nebyl uveden
+duvod="Důvod zrušení nebyl uveden."; // doplní do proměnné, že důvod nebyl uveden
+}
+}
+
+const data=`csrf_token=${encodeURIComponent(token)}&encrypted_token=${encodeURIComponent(encrypted_token)}&email=${encodeURIComponent(email)}&duvod=${encodeURIComponent(duvod)}&den_a_cas_rezervace=${encodeURIComponent(den_a_cas_rezervace)}`; // nachystá data na odeslání pro fetch API metodou post
+
+// Vytvoření AJAX požadavku
+const sendRequest=async()=>{
+try{
+// Nastavení prodlevy před odesláním požadavku
+dia.wait_activ(); // zapne dialogové okno Čekejte prosím … Zpracovává se rezervace
+setTimeout(async()=>{
+// Odeslání požadavku na server
+try{
+const response:Response=await fetch("config/zadost-zruseni-rezervace.php",{
+method:"POST",
+headers:{
+"Content-Type":"application/x-www-form-urlencoded"
+},
+body:data
+});
+const result=await response.json(); // Převedení odpovědi na JSON
+// Zkontrolujte, zda server odpověděl s 'status' a 'message'
+if(response.ok){
+// Server vrátil odpověď se statusem 'success'
+if(result.status==="success")
+{
+console.log("Úspěch:",result.message);
+// logika pro úspěšné zpracování
+dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
+this.zaznam_encrypted_token=""; // nastaví proměnnou na default
+this.den_a_cas_rezervace=""; // nastaví proměnnou na default
+window.history.replaceState({},document.title,window.location.pathname); // Tento příkaz odstraní search z adresy včetně otazníku
+dia.on(dia.dia_zruseno.id_okna,dia.dia_zruseno.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace byla zrušena
+}
+else
+{
+// Server vrátil odpověď s chybou ('error')
+console.error("Chyba:", result.message); // Zobrazení chyby do konzole
+dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
+dia.on(dia.dia_nezruseno.id_okna,dia.dia_nezruseno.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace nebyla zrušena
+}
+}
+else
+{
+// Pokud odpověď serveru není v pořádku
+console.error("Chyba serveru:",result.message||"Neznámá chyba");
+dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
+dia.on(dia.dia_nezruseno.id_okna,dia.dia_nezruseno.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace nebyla zrušena
+}
+}
+catch(error){
+// Pokud došlo k chybě při zpracování požadavku před jeho odesláním
+console.error("Chyba při zpracování požadavku před jeho odesláním:",error); // výpis chyb do konzole
+dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
+dia.on(dia.dia_nezruseno.id_okna,dia.dia_nezruseno.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace nebyla zrušena
+}          
+},0); // Nastavení 0 ms zpoždění pro vykonání funkce
+}
+catch(error){
+// Pokud došlo k chybě při komunikaci s API (např. nevalidní JSON nebo síťová chyba)
+console.error('Chyba při zpracování odpovědi:', error); // výpis chyb do konzole
+dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
+dia.on(dia.dia_nezruseno.id_okna,dia.dia_nezruseno.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace nebyla zrušena
+}
+};
+sendRequest(); // Zavolání asynchronní funkce pro odeslání požadavku
+
+};
+
+handleEvent(e:any){
+const k:string=e.target.id; // zjistí id prvku, na který bylo kliknuto
+
+if(k===this.id_form)
+{
+// pokud vychází požadavek z formuláře (submit), který je v dialogovém okně: Zrušit rezervaci?
+e.preventDefault(); // Zabrání výchozímu chování (odeslání formuláře)
+this.zaslat_zadost_na_zruseni(); // metoda zajistí pomocí fetch a PHP, vymazání rezervace z JSON souboru
+}
+
+if(k===this.id_butt)
+{
+// kliknuto na button @ dialogové okno: Zrušit Rezervaci?
+const input_email=document.getElementById(this.id_input[0]) as HTMLInputElement; // načte HTML input email v dialogovém okně: Zrušit rezervaci?
+if(input_email)
+{
+input_email.value+="@"; // přidá do input email @ v dialogovém okně: Zrušit rezervaci?
+input_email.focus(); // provede zaměření na input email v dialogovém okně: Zrušit rezervaci?
+}}
+
+};
+
+posluchace_activ()
+{
+// metoda zapne potřebné posluchače pro dialogové okno: Zrušit Rezervaci?
+const form=document.getElementById(this.id_form) as HTMLFormElement; // načte HTML objekt formuláře
+
+if(form)
+{
+// pokud HTML objekt existuje
+form.addEventListener("submit",this); // Zabrání výchozímu chování (odeslání formuláře)
+}
+
+
+const butt=document.getElementById(this.id_butt) as HTMLButtonElement; // načte HTML element buttonu @
+if(butt)
+{
+// pokud HTML element existuje
+butt.addEventListener("click",this); // přiřadí buttonu @ posluchač click
+}
+
+};
+
+vytvor_zadost_na_zruseni(rok:number,mesic:number,den:number,cislo_casu:number) // (mesic 0-11, den 1-31 , cislo_casu 1-14)
 {
 // metoda zajistí zobrazení dialogového okna pro zrušení rezervace
+
+if(!rok||!mesic||!den||!cislo_casu)
+{
+// pokud nebyly do metody dodány potřebné proměnné
+console.error("do metody zrusit_rezervaci.vytvor_zadost_na_zruseni nebyly dodány všechny potřebné proměnné"); // error výpis do konzole
+return; // funkce bude ukončena
+}
+
+this.posluchace_activ(); // metoda zapne potřebné posluchače pro dialogové okno: Zrušit Rezervaci?
+
+const s_denS=document.getElementById(this.id_span_cas_r[0]) as HTMLSpanElement; // span, kde má být zapsán den rezervace slovně
+
+const s_denC=document.getElementById(this.id_span_cas_r[1]) as HTMLSpanElement; // span, kde má být zapsán den rezervace v měsíci 1-31
+
+const s_mesic=document.getElementById(this.id_span_cas_r[2]) as HTMLSpanElement; // span, kde má být zapsán měsíc rezervace slovně
+
+const s_rok=document.getElementById(this.id_span_cas_r[3]) as HTMLSpanElement; // span, kde má být zapsaán rok rezervace
+
+const s_cas=document.getElementById(this.id_span_cas_r[4]) as HTMLSpanElement; // span, kde má být zapsán slovně čas rezervace
+
+const dny:string[]=boss.dny; // dny v týdnu splovně Neděle-Pondělí
+const mesice:string[]=boss.mesice; // měsíce v roce slovně Leden-Prosinec
+const casy:string[]=cas_rezervace.casy; // časy rezervací slovně (1-14)
+
+if(s_denS)
+{
+// pokud HTML element existuje
+s_denS.innerText=dny[new Date(rok,mesic,den).getDay()]; // přepíše spam dnem v týdnu, datumu, který byl do metody zaslán
+}
+
+if(s_denC)
+{
+// pokud HTML element existuje
+s_denC.innerText=den.toString(); // přepíše spam dnem v měsíci, podle čísla dne, který byl do funkce zaslán
+}
+
+if(s_mesic)
+{
+// pokud HTML element existuje
+s_mesic.innerText=mesice[mesic]; // přepíše spam měsíce (slovně) , podle čísla měsíce, který byl do funkce zaslán
+}
+
+if(s_rok)
+{
+// pokud HTML element existuje
+s_rok.innerText=rok.toString(); // přepíše spam rok, podle čísla roku, který byl do funkce zaslán
+}
+
+if(s_cas)
+{
+// pokud HTML element existuje
+s_cas.innerText=casy[cislo_casu-1]; // přepíše spam času (slovně) , podle čísla času, který byl do funkce zaslán (časy jsou číslovány 1-14, ale pole začíná od 0, proto cislo_casu-1)
+}
+
+this.den_a_cas_rezervace=`${s_denS}, ${s_denC}.${s_mesic} ${s_rok}, ${s_cas}`; // do proměnné zapíše celkový den a čas rezervace, toto se použije pro rozeslání emailu o zrušení rezervace, řetězec bude vypadat např takto: Čtvrtek, 20. února 2025, 13:30-14:00 hod.
+
+dia.on(dia.dia_dotaz_zruseni.id_okna,dia.dia_dotaz_zruseni.id_buton_pro_zavreni); // otevře dialogové okno s dotazem: Zrušit rezervaci?
+
 
 };
 
@@ -1675,9 +1857,11 @@ const result = await response.json(); // Převedení odpovědi na JSON
 if (response.ok) {
 console.log('Success:', result.message); // Odpověď byla úspěšná
 
-this.zaznam_encrypted_token=result.message; // proměnná do sebe zapíše zašifrovaný token záznamu, který se vrátil z php
+const zaznam_pro_odstraneni:[number,number,number,number,string]=result.message; // odpověď, záznam, který má být odstraněn: [(int)$entry['rok'],(int)$entry['mesic'],(int)$entry['den'],(int)$entry['cas_rezervace'],$entry['encrypted_token']] = pole s rokem, mesíce 0-11, dne, číslo času 1-14 a zakódovaný token rezervace
 
-this.vytvor_zadost_na_zruseni(); // metoda zajistí zobrazení dotazu na zrušení rezervace
+this.zaznam_encrypted_token=zaznam_pro_odstraneni[4]; // proměnná do sebe zapíše zašifrovaný token záznamu, který se vrátil z php
+
+this.vytvor_zadost_na_zruseni(zaznam_pro_odstraneni[0],zaznam_pro_odstraneni[1],zaznam_pro_odstraneni[2],zaznam_pro_odstraneni[3]); // metoda zajistí zobrazení dotazu na zrušení rezervace
 
 } else {
 console.error('Error:', result.message); // Něco se pokazilo
@@ -1687,17 +1871,9 @@ console.error('Error:', result.message); // Něco se pokazilo
 console.error('Fetch failed:', error);
 }
 };
-
-
 sendTextToServer(search); // Zavolání funkce pro odeslání search na server
-
-
-
 }
 };
-
-
-
 };
 
 const boss=new Boss; // vytvoří objekt, který má nastarosti hlavní chod aplikace rezervace

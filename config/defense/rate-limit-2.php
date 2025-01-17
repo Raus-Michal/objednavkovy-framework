@@ -7,7 +7,7 @@ $limit = 3;  // Maximální počet požadavků
 $timeWindow = 86400; // Časové okno v sekundách (86400 sekund == 24hodin)
 
 $ipAddress = $_SERVER["REMOTE_ADDR"];
-$rateLimitFile = "defense/rate-limit-1.json";
+$rateLimitFile = "defense/rate-limit-2.json";
 
 // Načtení dat o předchozích požadavcích
 if (file_exists($rateLimitFile)){
