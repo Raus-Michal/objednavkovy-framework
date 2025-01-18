@@ -65,6 +65,13 @@ this.poloha=0; // poloha bude 0 - není možné se vrátit zpět
 }
 
 };
+
+reset_book_den(){
+// metoda anuluje den, který si uživatel zabookoval
+this.book_den=[0,0,0]; // zápis booklého dne uživatelem : rok, měsíc, den
+};
+
+
 restart_dnu_v_kalendari()
 {
 // metoda - povolí posluchače všem buttonům od 1-31, pokud tento posluchač nemají a všem nastaví disbled===false
@@ -1216,6 +1223,7 @@ readonly id_boss_con="boss_con"; // id hlavního kontejneru aplikace
 readonly id_form=["rezervace_form","dokoncit_form"]; // id formulářů
 readonly id_button=["zmenit","ukaz_zasady","butt_zavinac"]; // id hlavních buttonů formulářů
 readonly id_inputHost=["jmeno","email","phone","predmet"]; // id input, které vyplňoval návštěvník [návštěvník: jméno a příjmení, návštěvník: email, návštěvník: telefon, návštěvník: O čem bude hovor]
+readonly id_checked="checken_souhlas"; // id checked Souhlasím se zpracováním osobních údajů
 readonly id_predvolba_phone="predvolba"; // id input s predvolbou telefonní +420
 readonly id_cas="slovne_cas_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje čas rezervace
 readonly id_den="slovne_den_rezervace"; // id SPAN ve formuláři Dokončit rezervaci, kde se zapisuje den rezervace Pondělí-Neděle
@@ -1227,6 +1235,62 @@ private slovne_datum=""; // v proměnné je slovně uložené celé datum rezerv
 private slovne_cas=""; // v proměnné je uloženo slovně konkrétní čas rezervace
 readonly dny:string[]=["Neděle","Pondělí","Úterý","Středa","Čtvrtek","Pátek","Sobota"]; // dny v týdnu
 readonly mesice:string[]=["ledna","února","března","dubna","květena","června","července","srpna","září","října","listopadu","prosince"]; // měsíce v roce
+
+reset_aplikace(jak:string="")
+{
+// metoda vyresetuje aplikaci, jako by ji nikdo předtím nepoužil
+
+
+if(jak!="castecne")
+{
+// pokud nebyl jako parametr požadavek - resetovat aplikaci pouze částečně
+const id_inputy=this.id_inputHost; // inputy všech prvků formuláře pro dokončení rezervace
+const d=id_inputy.length;
+for(let i=0;i<d;i++)
+{
+// smyčka anuluje všechny input vyplněné uživatelem
+const input=document.getElementById(id_inputy[i]) as HTMLInputElement; // načte HTML input jeden po druhém
+
+if(input)
+{
+// pokud HTML element existuje
+input.value=""; // anuluje jeho value
+}
+}
+      
+const s_checked=document.getElementById(this.id_checked) as HTMLInputElement; // checked Souhlasím se zpracováním osobních údajů
+if(s_checked)
+{
+s_checked.checked=false; // zruší checked
+}
+}
+
+this.form_posun(this.id_form[1],this.id_form[0]);  // metoda zajistí posun formuláře z Dokončit Rezervaci na Rezervovat 
+
+kalendar.load_data_book_block_day=false; // proměnná na true ukazuje, že data o dnech, které se mají blokovat, jsou z JSON souboru načtena a false, že nejsou načtena
+
+kalendar.reset_book_den(); // metoda anuluje den, který si uživatel zabookoval
+kalendar.oznacit_den(); // tím, že byl anulován den pomocí výše funkce kalendar.reset_book_den(); - odbarví všechny dny v měsíci
+kalendar.restart_dnu_v_kalendari(); // metoda - povolí posluchače všem buttonům od 1-31, pokud tento posluchač nemají a všem nastaví disbled===false
+kalendar.upravit(); // upraví kalendář, tak. aby zobrazoval pouze dne v aktuálním měsíci mimo dnešního dne
+kalendar.load_book_block_day(); // funkce načte JSON soubor, kde jsou blokované dny pro rezervaci, po jeho načtení zapne blokaci dnů napsaných v JSON souboru
+
+const fake_checked=document.getElementById(kalendar.facke_checked_id) as HTMLInputElement; // checked fake, krerý slouží jen pro upozornění, aby uživatel zatrhl den 1-31, pokud tak neučinil
+
+if(fake_checked)
+{
+// pokud HTML element existuje
+fake_checked.checked=false; // odchecketuje tento fake checked
+}
+
+cas_rezervace.load_data_rezervace=false; // proměnná, která ukazuje, zda byly ze souboru JSON načteny rezervace, pokud ano===true, pokud ne===false
+cas_rezervace.load_rezervace(); // nahraje z JSON časy, které si už uživatelé zarezervovali
+cas_rezervace.aktivace(); // aktivuje všechny radia a li na možnost zarezervování
+cas_rezervace.zobrazit_casy(); // funkce hlavní kontejner s časy zobrazí z opacity:0; z-index:-1; na opacity:1; z-index:0;
+cas_rezervace.problik_casy(); // metoda provede probliknutí hlavního kontejneru s časy rezervace
+
+};
+
 posluchace()
 {
 // posluchače formulářů a hlavních buttonů formulářů
@@ -1575,6 +1639,7 @@ console.log("Úspěch:",result.message);
 // logika pro úspěšné zpracování
 dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
 dia.on(dia.dia_uspech.id_okna,dia.dia_uspech.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace proběhla úspěšně
+boss.reset_aplikace(); // provede resetování aplikace, jako by ji uživatel nikdy nepoužil, zde je to z důvodů, aby načetle aktuální data z JSON, kde už bude nově provedená rezervace propsána
 }
 else
 {
@@ -1708,6 +1773,7 @@ this.zaznam_encrypted_token=""; // nastaví proměnnou na default
 this.den_a_cas_rezervace=""; // nastaví proměnnou na default
 window.history.replaceState({},document.title,window.location.pathname); // Tento příkaz odstraní search z adresy včetně otazníku
 dia.on(dia.dia_zruseno.id_okna,dia.dia_zruseno.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace byla zrušena
+boss.reset_aplikace(); // provede resetování aplikace, jako by ji uživatel nikdy nepoužil, zde je to z důvodů, aby načetle aktuální data z JSON, kde už zrušená rezervace bude propsána
 }
 else
 {
@@ -1906,12 +1972,59 @@ sendTextToServer(search); // Zavolání funkce pro odeslání search na server
 };
 };
 
+class Hlidac_viditelnosti_aplikace{
+
+aktivace(){
+    
+let neviditelnost:string="undefined";
+let udalos_viditelnost:string="";
+    
+if("hidden" in document)
+{
+neviditelnost = "hidden";
+udalos_viditelnost = "visibilitychange";
+}
+else if("msHidden" in document)
+{
+neviditelnost = "msHidden";
+udalos_viditelnost = "msvisibilitychange";
+}
+else if("webkitHidden" in document)
+{
+neviditelnost = "webkitHidden";
+udalos_viditelnost = "webkitvisibilitychange";
+}
+// KONEC kontrola kompatibility
+
+if(typeof document.addEventListener === "undefined" || neviditelnost === "undefined")
+{
+console.error("API kontrola viditelnosti stránky nefunguje.");
+}
+else
+{
+// API viditelnosti je v pořádku
+document.addEventListener(udalos_viditelnost,this,false); // aktivuje posluchač
+}};
+
+handleEvent(){
+if(document.visibilityState !== "hidden") /* pokud www stránka přestane být viditelná */
+{
+// pokud začala být aplikace viditelná
+boss.reset_aplikace("castecne"); // provede reset aplikace, jako by ji uživatel nikdy nepoužil, ale pouze částečně, zachová případný vyplněný input uživatelem (jméno, email, telefon, důvod hovoru) a udělený souhlas
+}
+};
+
+
+};
+
 const boss=new Boss; // vytvoří objekt, který má nastarosti hlavní chod aplikace rezervace
 const cas_rezervace=new Cas_rezervace(); // vytvoří objekt pro operace kolem volby času k rezervaci uživatelem
-const datum = new Datum(); // vytvoření objektu datum
-const kalendar = new Kalendar(); // pomocí class Kalendar vytvoří objekt kalendar
-const mesic_a_rok = new Mesic_a_rok(); // pomocí class Mesic_a_rok vytvoří objekt mesic_a_rok
+const datum=new Datum(); // vytvoření objektu datum
+const kalendar=new Kalendar(); // pomocí class Kalendar vytvoří objekt kalendar
+const mesic_a_rok=new Mesic_a_rok(); // pomocí class Mesic_a_rok vytvoří objekt mesic_a_rok
 const dia=new Dia(); // pomocí class Dia se řídí otevírání a zavírání dialogových oken
 const zrusit_rezervaci=new Zrusit_rezervaci(); // pomocí class Zrusit_rezervaci vytvoří objekt zrušit rezervaci
+const hlidac_viditelnosti_aplikace=new Hlidac_viditelnosti_aplikace(); // pomocí class Hlidac_viditelnosti_aplikace vytvoří objekt hlidac_viditelnosti_aplikace
 boss.spustit_aplikaci(); // metoda zajistí spuštění hlavních funkcí aplikace
 zrusit_rezervaci.inicializace(); // zajistí základní procesy pro zrušení rezervace
+hlidac_viditelnosti_aplikace.aktivace(); // aktivuje hlídač visibilitychange API, pokud uživatel z aplikace odejde a znovu se vrátí, aplikace se vyresetuje, mimo vyplněných input vstupů (jméno, příjmení, telefón, souhlas)
