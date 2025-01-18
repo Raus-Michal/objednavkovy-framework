@@ -107,6 +107,12 @@ padding-top:2rem;
 line-height:1.2;
 }
 
+svg.wait
+{
+width:100%;
+height:auto;
+}
+
 .h-kon
 {
 width:100%;
@@ -171,8 +177,14 @@ word-spacing:.2rem;
 width:100%;
 }
 
+.f-zruseni
+{
+display:flex;
+flex-direction:column;
+align-items:center;
+}
 
-.f-kon fieldset, .spojovac
+.f-kon fieldset, .spojovac , .f-zruseni fieldset
 {
 border:none;
 padding:0;
@@ -180,7 +192,6 @@ margin:0;
 width:100%;
 max-width:28rem; /* 448 px */
 }
-
 
 /* > 448px */
 @media only screen and (min-width:28em)
@@ -272,6 +283,7 @@ margin-bottom:0;
 
 .bw
 {
+display:inline-block; /* nastavení, aby měl stejnou hodnotu jako html element button s kterým jsou v grid */
 color:white;
 font-weight:bold;
 }
@@ -324,7 +336,7 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-z-index:-1;
+z-index:-5;
 opacity:0;
 }
 
@@ -550,14 +562,9 @@ margin-top:.25rem;
 cursor:pointer;
 }
 
-dialog.dia-zasady
+dialog.dia
 {
 background-color:var(--b2);
-height:90%;
-height:90vh;
-height:90lvh;
-height:90dvh;
-max-height:31.25rem; /* 500px */
 width:90%;
 max-width:40rem; /* 640px */
 border:none;
@@ -566,12 +573,22 @@ padding:1rem;
 transition:.2s opacity,.2s transform;
 }
 
-dialog.dia-zasady::backdrop
+dialog.vyska90
+{
+height:90%;
+height:90vh;
+height:90lvh;
+height:90dvh;
+max-height:31.25rem; /* 500px */
+}
+
+
+dialog.dia::backdrop
 {
 background-color:rgba(0,0,0,.5); /* Nastaví poloprůhledné černé pozadí */ 
 }
 
-dialog.dia-zasady[open]
+dialog.dia[open]
 {
 animation:fadeIn .3s ease-in-out;
 }
@@ -582,7 +599,7 @@ from{opacity:0;transform:translateY(-30px);}
 to{opacity:1;transform:translateY(0);}
 }
 
-dialog.dia-zasady::-webkit-scrollbar{display:none;}
+dialog.dia::-webkit-scrollbar{display:none;}
 
 .dialog-kotva-top,.dialog-kotva-bottom
 {
@@ -641,6 +658,27 @@ background-color:white;
 color:black;
 }
 
+.butt-box
+{
+display:flex;
+justify-content:flex-end;
+width:100%;
+margin-top:1rem;
+}
+
+.butt-box button
+{
+font-family:"nadpis",sans-serif;
+font-size:1rem;
+font-weight:bold;
+text-align:center;
+padding:.5rem;
+border-radius:10px;
+border:2px solid var(--b4);
+background-color:white;
+color:black;
+}
+
 @keyframes growShrink
 {
 0%,100%{transform:rotateZ(90deg) scale(1);} /* počáteční a konečná velikost */ 
@@ -680,6 +718,20 @@ background-color:var(--b2);
 box-shadow:-1px -13px 10px 4px var(--b2);
 }
 
+.svg-box
+{
+display:flex;
+justify-content:center;
+width:100%;
+}
+
+.svg-width
+{
+width:100%;
+max-width:10rem;
+}
+
+
 .ods
 {
 text-align:justify;
@@ -701,7 +753,22 @@ margin:auto;
 margin-bottom:1rem;
 }
 
+.mb05
+{
+margin-bottom:.5rem;
+}
+
 .nw
 {
 white-space:nowrap;
+}
+
+.jc
+{
+justify-content:center;
+}
+
+.tc
+{
+text-align:center;
 }

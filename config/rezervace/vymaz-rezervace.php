@@ -59,6 +59,7 @@ function load_json_file($filename)
 if (file_exists($filename)) { // Zkontrolujeme, zda soubor existuje
 return json_decode(file_get_contents($filename), true); // Načteme a vrátíme data ze souboru
 } else {
+http_response_code(400); // Nastaví odpovídající HTTP kód
 echo json_encode(["status" => "error", "message" => "Soubor s rezervacemi neexistuje!"]); // Odesíláme chybovou odpověď
 exit; // Ukončíme skript
 }
@@ -70,6 +71,7 @@ function save_json_file($filename, $data)
 if (file_put_contents($filename, json_encode($data, JSON_PRETTY_PRINT))) { // Pokusíme se uložit data
 return true; // Pokud se podaří, vrátíme true
 } else {
+http_response_code(400); // Nastaví odpovídající HTTP kód
 echo json_encode(["status" => "error", "message" => "Nepodařilo se uložit data!"]); // Odesíláme chybovou odpověď
 exit; // Ukončíme skript
 }
@@ -97,12 +99,14 @@ exit; // Ukončíme skript
 }
 else
 {
+http_response_code(400); // Nastaví odpovídající HTTP kód
 echo json_encode(["status" => "error", "message" => "Žádný ze záznamů se neshoduje s požadavkem z webu!"]); // Odesíláme chybovou odpověď
 exit; // Ukončíme skript
 }
 }
 else 
 {
+http_response_code(400); // Nastaví odpovídající HTTP kód
 echo json_encode(["status" => "error", "message" => "Nedorazil encrypted_token do PHP!"]); // Odesíláme chybovou odpověď
 exit; // Ukončíme skript
 }

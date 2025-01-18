@@ -992,7 +992,8 @@ class Dia
 
 boundOffs:{[key:string]:any}={}; // objekt, který zajistí správný způsob je skutečně uložit bindovanou funkci do proměnné
 
-casovac_animace:number|null=null;
+casovac_animace:number|null=null; // časovač animace pro její opakování
+startTime:number|null=null; // proměnná hlídá kolik času animace uběhlo
 
 dia_zasady:Dialog_okno={
 // objekt s id pro dialogové okno: Zásady ochrany osobních údajů
@@ -1160,24 +1161,53 @@ const animace=document.getElementById(id_an); // HTML elemnt prvku s první anim
 
 if(animace instanceof SVGAnimateElement)
 {
+if(this.startTime===null)
+{
+// pokud není žádný počáteční čas animace
+animace.beginElement(); // pustí SVG animaci
+this.startTime=performance.now(); // začne měřit čas spuštění animace
+this.casovac_animace = setInterval(() => {
 animace.beginElement(); // pustí animaci
-this.casovac_animace=setInterval(()=>{
-animace.beginElement(); // pustí animaci
+this.startTime=performance.now();
 },4500); // spustí opakující se interval
+}
+else
+{
+// pokud je nějáký čas zahájení spuštění animace
+const begin=(performance.now()-this.startTime)|0; // zjistí kolik milisekund animace běžela a ořízne to na celé číslo
+setTimeout(()=>{
+animace.beginElement(); // pustí SVG animaci
+this.startTime=performance.now(); // začne měřit počátek běhu SVG animace
+this.casovac_animace = setInterval(()=>{
+animace.beginElement(); // pustí animaci
+this.startTime=performance.now(); // začne měřit počátek běhu SVG animace
+}, 4500); // spustí opakující se interval
+},4500-begin); // zpoždění odpovídající chybějícímu času do konce již spuštěné animace
+}
 }
 };
 
 wait_deactiv()
 {
 // metoda deaktivuje dialogové okno: Čekejte prosím! Zpracovává se požadavek ... 
-if(this.casovac_animace!=null)
-{
+if(this.casovac_animace != null){
 // pokud je časovač aktivován
 clearInterval(this.casovac_animace); // vynuluje časovač
 }
+
+if(this.startTime!==null)
+{
+// pokud byl zachycen čas spuštění SVG animace
+const begin=(performance.now()-this.startTime)|0; // zjistí kolik milisekund animace běžela a ořízne to na celé číslo
+setTimeout(()=>{
+this.startTime=null; // nastaví proměnnou na default
+},4400-begin); // spustí vynulování proměnné až v čase, kdy už animace proběhla
+}
+
 this.off(this.dia_waiting.id_okna); // zavře dialogové okno
 }
 };
+
 
 class Boss
 {

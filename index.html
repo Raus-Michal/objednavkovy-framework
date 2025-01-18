@@ -202,7 +202,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </div>
 
 
-<dialog id="zasady" class="dia-zasady">
+<dialog id="zasady" class="dia vyska90">
 <div id="top_kotva_zasady" class="dialog-kotva-top"> </div>
 <div class="dialog-content">
 <div>
@@ -228,17 +228,14 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 
 
 
-<dialog id="waiting">
-<div class="">
-<div class=""> </div>
-<p class=""></p>
-</div>
-<div class="">
-<p><span class="">Čekejte</span> prosím&nbsp;…</p>
-<p class="">Zpracovává&nbsp;se požadavek</p>
-<div class="">
-<div class="">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 40" fill="rgb(0,51,108)" stroke="rgb(0,158,107)" stroke-width="5">
+<dialog id="waiting" class="dia">
+
+<p class="n-dialog"><span class="">Čekejte</span> prosím&nbsp;…</p>
+
+<p class="tc">Zpracovává&nbsp;se požadavek!</p>
+
+<div class="svg-box"><div class="svg-width">
+<svg class="wait" xmlns="http://www.w3.org/2000/svg" width="190" height="40" viewBox="0 0 190 40" stroke="rgb(110,87,168)" fill="rgb(87,168,110)" stroke-width="5">
 <circle cx="20" cy="20" r="10" opacity="0">
 <animate id="cir_1" begin="indefined" attributeName="opacity" from="0" to="1" dur="500ms" fill="freeze" restart="whenNotActive" />
 <animate begin="cir_6.end + 500ms" attributeName="opacity" from="1" to="0" dur="500ms" fill="freeze" />
@@ -265,64 +262,65 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </circle>
 </svg>
 </div></div>
-</div>
-<div class=""> </div>
+
 </dialog>
 
 
-<dialog id="uspech">
-<p>Rezervace byla úspěšně dokončena!</p>
-<p>Do 30 minut bude na Váš email doručeno potvrzení rezervace.</p>
-<div>
-<button id="butt_uspech" type="button">Zavřít okno</button>
+<dialog id="uspech" class="dia">
+<p class="n-dialog">Rezervace byla úspěšně dokončena!</p>
+<p>Do&nbsp;30&#8239;minut bude na&nbsp;Váš email doručeno potvrzení rezervace.</p>
+<div class="butt-box">
+<button id="butt_uspech" type="button" title="Zavřít">Zavřít okno</button>
 </div>
 </dialog>
 
-<dialog id="neuspech">
-<p>Rezervace se nezdařila!</p>
-<p>Je nám líto rezervace se nezdařila. Zkuste to prosím později.</p>
-<p>Pokud se chyba opakuje, pro kontakt můžete použít <a  class="nw" href="https://www.boar-cz.info/kontakt/" target="_blank" rel="noopener noreferrer" title="Formulář pro zasílání emailů">&gt;&#8239;kontaktní formulář&#8239;&lt;</a>.</p>
-<div>
-<button id="butt_neuspech" type="button">Zavřít okno</button>
+<dialog id="neuspech" class="dia">
+<p class="n-dialog">Rezervace se&nbsp;nezdařila!</p>
+<p>Je&nbsp;nám líto rezervace se&nbsp;nezdařila. Zkuste&nbsp;to prosím později.</p>
+<p>Pokud&nbsp;se chyba opakuje, pro&nbsp;kontakt můžete použít <a  class="nw" href="https://www.boar-cz.info/kontakt/" target="_blank" rel="noopener noreferrer" title="Formulář pro zasílání emailů">&gt;&#8239;kontaktní formulář&#8239;&lt;</a>.</p>
+<div class="butt-box">
+<button id="butt_neuspech" type="button" title="Zavřít">Zavřít okno</button>
 </div>
 </dialog>
 
-<dialog id="zrusit_rezervaci">
-<p>Opravdu si přejete zrušit rezervaci?</p>
-<p><span id="slovne_den_rezervace2">Úterý</span>, <span id="ciselne_den_v_mesici_rezervace2">24</span>.&#8239;<span id="slone_mesic_rezervace2">prosince</span>&#8239;<span id="ciselne_rok_rezervace2">2024</span>, <span id="slovne_cas_rezervace2" class="nw">15:00-15:30&#8239;hod.</span></p>
-<form class="mb1" id="form_zruseni_rezervace" action="#" method="post">
-<div class="dabl">
+<dialog id="zrusit_rezervaci" class="dia">
+<p class="n-dialog">Zrušení rezervace</p>
+<p class="mb05">Potvrďte prosím zrušení rezervace.</p>
+<p class="n-dialog"><span id="slovne_den_rezervace2">Úterý</span>, <span id="ciselne_den_v_mesici_rezervace2">24</span>.&#8239;<span id="slone_mesic_rezervace2">prosince</span>&#8239;<span id="ciselne_rok_rezervace2">2024</span>, <span id="slovne_cas_rezervace2" class="nw">15:00-15:30&#8239;hod.</span></p>
+<form class="f-zruseni mb1" id="form_zruseni_rezervace" action="#" method="post">
+<fieldset class="butt-box jc">
+<button type="submit" class="mb1" title="Chci zrušit rezervaci">Zrušit rezervaci</button>
+</fieldset>
+<fieldset class="udaje">
+<div class="dabl mb1">
 <button id="butt_zavinac2" type="button" title="Napiš mi @">@</button>
-<input id="email2" type="email" placeholder="Váš email" title="zadejte vasi emailovou adresu" required>
-</div>
-<p>Na email bude zasláno potvrzrní o zrušení rezervace.</p>
-
-<input id="duvod" class="mb1" type="twxt" placeholder="Důvod zrušení" title="Napište prosím důvod proč rezervaci rušíte">
-
-<div>
-<button type="submit" title="Chci zrušit rezervaci">Zrušit rezervaci</button>
-</div>
+<input id="email2" type="email" maxlength="50" placeholder="Váš email" title="zadejte vasi emailovou adresu" required>
+</div></fieldset>
+<p>Na&nbsp;email obdržíte potvrzrní o&nbsp;zrušení rezervace.</p>
+<fieldset class="udaje">
+<input id="duvod" class="mb1" type="text" maxlength="50" placeholder="Důvod zrušení" title="Napište prosím důvod proč rezervaci rušíte">
+</fieldset>
 </form>
-<div>
+<div class="butt-box">
 <button id="butt_zrusit_rezervaci" type="button" title="Zavřít">Zavřít okno</button>
 </div>
 </dialog>
 
 
-<dialog id="zruseno">
-<p>Rezervace byla zrusena!</p>
-<p>Do 30 minut bude na uvedený email doručeno potvrzení o zrušení rezervace.</p>
-<div>
-<button id="butt_zruseno" type="button">Zavřít okno</button>
+<dialog id="zruseno" class="dia">
+<p class="n-dialog">Rezervace byla zrusena!</p>
+<p>Do&nbsp;30&#8239;minut bude na&nbsp;uvedený email doručeno potvrzení o&nbsp;zrušení rezervace.</p>
+<div class="butt-box">
+<button id="butt_zruseno" type="button" title="Zavřít">Zavřít okno</button>
 </div>
 </dialog>
 
-<dialog id="nezruseno">
-<p>Rezervaci se nepodařilo zrušit!</p>
-<p>Je nám líto nepodařilo se zrušit rezervaci. Zkuste to prosím později.</p>
-<p>Pokud se chyba opakuje, pro kontakt můžete použít <a  class="nw" href="https://www.boar-cz.info/kontakt/" target="_blank" rel="noopener noreferrer" title="Formulář pro zasílání emailů">&gt;&#8239;kontaktní formulář&#8239;&lt;</a>.</p>
-<div>
-<button id="butt_nezruseno" type="button">Zavřít okno</button>
+<dialog id="nezruseno" class="dia">
+<p class="n-dialog">Rezervaci se&nbsp;nepodařilo zrušit!</p>
+<p>Je nám líto nepodařilo&nbsp;se zrušit rezervaci. Zkuste to prosím později.</p>
+<p>Pokud&nbsp;se chyba opakuje, pro&nbsp;kontakt můžete použít <a  class="nw" href="https://www.boar-cz.info/kontakt/" target="_blank" rel="noopener noreferrer" title="Formulář pro zasílání emailů">&gt;&#8239;kontaktní formulář&#8239;&lt;</a>.</p>
+<div class="butt-box">
+<button id="butt_nezruseno" type="button" title="Zavřít">Zavřít okno</button>
 </div>
 </dialog>
 
