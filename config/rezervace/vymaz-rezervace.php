@@ -9,14 +9,38 @@ exit;
 
 $filename = "rezervace/rezervace.json"; // soubor, kde jsou rezervace
 
+// Funkce pro dešifrování tokenu pomocí hesla
+function decryptToken($encryptedToken, $code) {
+// Použitý šifrovací algoritmus
+$method = 'aes-256-ecb';
+    
+// Vytvoření šifrovacího klíče z hesla pomocí SHA-256 hash funkce
+$key = substr(hash('sha256', $code, true), 0, 32);
+
+// Dekódování šifrovaného tokenu z base64
+$encryptedToken = base64_decode($encryptedToken);
+    
+// Dešifrování tokenu pomocí klíče a algoritmu AES-256-ECB
+return openssl_decrypt($encryptedToken, $method, $key, OPENSSL_RAW_DATA);
+}
+
+
 // Funkce pro kontrolu tokenu a nalezení shody
-function check_token($zaznamy, $retezec, $encryption_key)
+function check_token($zaznamy, $retezec, $code)
 {
 foreach ($zaznamy["data"] as $index => $entry) {
-// Dekódujeme inicializační vektor (IV)
-$iv = base64_decode($entry["iv"]);
-// Dešifrujeme token
-$decrypted_token = openssl_decrypt($entry["encrypted_token"], "aes-256-cbc", $encryption_key, 0, $iv);
+// smyška projde všechny záznamy rezervací
+
+$decrypted_token=decryptToken($entry["encrypted_token"],$code); // Zavolání funkce pro dešifrování tokenu
+
+if(!$decrypted_token)
+{
+// pokud se nepodařilo dešifrovat token
+http_response_code(400); // Nastaví odpovídající HTTP kód
+echo json_encode(["status" => "error", "message" => "Není dešifrovaný token!" . $decrypted_token]); // Odesíláme chybovou odpověď
+exit;
+}
+
 // Porovnáme dešifrovaný token s textovým řetězcem
 if ($decrypted_token === $retezec) {
 // Vrátíme index záznamu a jeho data
@@ -54,7 +78,7 @@ exit; // Ukončíme skript
 // Zpracování POST požadavku
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["encrypted_token"])) { // Zkontrolujeme, zda byla použita metoda POST a zda je nastavena proměnná search
 
-$encrypted_token = $_POST["encrypted_token"]; // Uložíme hodnotu search
+$encrypted_token = $_POST["encrypted_token"]; // Uložíme hodnotu šifrovaného tokenu
 
 $data = load_json_file($filename); // Načteme existující data
 

@@ -1835,7 +1835,7 @@ console.log("obsah search bez?: "+search);
 
 
 // Asynchronní funkce pro odeslání textu na server
-const sendTextToServer=async(text:string):Promise<void>=>{
+const sendTextToServer=async(search:string):Promise<void>=>{
 try {
 // Vytvoření objektu pro odeslání POST požadavku
 const options = {
@@ -1843,14 +1843,14 @@ method: 'POST',
 headers: {
 'Content-Type': 'application/x-www-form-urlencoded'
 },
-body: `search=${encodeURIComponent(text)}` // Převod textu na URL-encoded formát
+body: `search=${encodeURIComponent(search)}` // Převod textu na URL-encoded formát
 };
 
 
 await new Promise(res => setTimeout(res, 0)); // Vytvoření čekacího úseku s Timeoutem 0 ms k zajištění asynchronního prostředí
 
 // Odeslání požadavku na PHP soubor
-const response = await fetch('config/overit-rezervaci.php', options); // soubor, který bude příjmat search
+const response = await fetch('config/over-rezervaci.php', options); // soubor, který bude příjmat search
 const result = await response.json(); // Převedení odpovědi na JSON
 
 // Kontrola stavu odpovědi a výpis příslušné zprávy do konzole

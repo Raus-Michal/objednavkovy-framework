@@ -8,7 +8,19 @@ echo json_encode(["status" => "error", "message" => "Heslo pro šifrování toke
 exit;
 }
 
-$encryption_key = hash("sha256", $password, true); // Vytvoření 256-bitového klíče
+// Funkce pro šifrování tokenu pomocí hesla
+function encryptToken($token, $password) {
+// Použitý šifrovací algoritmus
+$method = "aes-256-ecb";
+// Vytvoření šifrovacího klíče z hesla pomocí SHA-256 hash funkce
+$key = substr(hash("sha256", $password, true), 0, 32);
+    
+// Šifrování tokenu pomocí klíče a algoritmu AES-256-ECB
+$encryptedToken = openssl_encrypt($token, $method, $key, OPENSSL_RAW_DATA);
+    
+// Vrácení šifrovaného tokenu zakódovaného do base64
+return base64_encode($encryptedToken);
+}
 
 // Funkce pro načtení obsahu souboru
 function load_json_file($filename)
@@ -52,17 +64,15 @@ $cas_rezervace = (int)substr($received_data[3], 0, 2); // 2 znaky
 $token = substr($received_data[4], 0, 32); // Token omezen na 32 znaků
 
 
-$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length("aes-256-cbc")); // Generování inicializačního vektoru (IV)
 
-$encrypted_token = openssl_encrypt($token, "aes-256-cbc", $encryption_key, 0, $iv); // Šifrování tokenu
+$encrypted_token = encryptToken($token, $password); // Šifrování tokenu
 
 $new_entry = [
 "rok" => $rok,
 "mesic" => $mesic,
 "den" => $den,
 "cas_rezervace" => $cas_rezervace,
-"encrypted_token" => $encrypted_token,
-"iv" => base64_encode($iv) // Uložíme IV jako base64 kódovaný řetězec
+"encrypted_token" => $encrypted_token
 ];
 
 $data["data"][] = $new_entry; // Přidání nové hodnoty do existujících dat

@@ -10,19 +10,47 @@ exit;
 
 $filename = "rezervace/rezervace.json"; // soubor, kde jsou rezervace
 
-function check_token($zaznamy, $retezec, $encryption_key)
+
+// Funkce pro dešifrování tokenu pomocí hesla
+function decryptToken($encryptedToken, $code) {
+// Použitý šifrovací algoritmus
+$method = "aes-256-ecb";
+    
+// Vytvoření šifrovacího klíče z hesla pomocí SHA-256 hash funkce
+$key = substr(hash("sha256", $code, true), 0, 32);
+
+// Dekódování šifrovaného tokenu z base64
+$encryptedToken = base64_decode($encryptedToken);
+
+// Dešifrování tokenu pomocí klíče a algoritmu AES-256-ECB
+return openssl_decrypt($encryptedToken, $method, $key, OPENSSL_RAW_DATA);
+}
+
+
+
+
+function check_token($json, $hledany_token, $code)
 {
-foreach ($zaznamy["data"] as $entry){
-// Dekódujeme inicializační vektor (IV)
-$iv = base64_decode($entry["iv"]);
-// Dešifrujeme token
-$decrypted_token = openssl_decrypt($entry["encrypted_token"], "aes-256-cbc", $encryption_key, 0, $iv); // dešifrování uloženého tokenu v záznamu
-// Porovnáme dešifrovaný token s textovým řetězcem
-if ($decrypted_token === $retezec){
+
+foreach ($json["data"] as $entry){
+// smyška projde všechny záznamy rezervací
+
+$decrypted_token=decryptToken($entry["encrypted_token"],$code); // Zavolání funkce pro dešifrování tokenu
+
+if(!$decrypted_token)
+{
+// pokud se nepodařilo dešifrovat token
+http_response_code(400); // Nastaví odpovídající HTTP kód
+echo json_encode(["status" => "error", "message" => "Není dešifrovaný token!" . $decrypted_token]); // Odesíláme chybovou odpověď
+exit;
+}
+
+if ($decrypted_token === $hledany_token){
+// pokud došlo u některého ze záznamů ke shodě tokenů
 return [(int)$entry["rok"],(int)$entry["mesic"],(int)$entry["den"],(int)$entry["cas_rezervace"],$entry["encrypted_token"]]; // pole s rokem, mesíce 0-11, dne, číslo času 1-14 a zakódovaný token rezervace
 }
 }
-return false; // search se neshoduje se žádným záznamem
+return false; // Pokud nedojde ke shodě, vrátíme false
 }
 
 
@@ -51,13 +79,14 @@ $shoda = check_token($data,$search,$password); // projde všechny záznamy a bud
 if($shoda)
 {
 // pokud byl nalezen záznam, který se shoduje
-echo json_encode(["status" => "success", "message" => $shoda]); // OK - Odesíláme odpověď: pole s rokem, mesíce 0-11, dne, číslo času 1-14 a zakódovaný token rezervace= [(int)$entry["rok"],(int)$entry["mesic"],(int)$entry["den"],(int)$entry["cas_rezervace"],$entry["encrypted_token"]];
+echo json_encode(["status" => "success", "message" => "VŠE OK, hledaný záznam rezervace byl nalezen."]); // OK - Odesíláme odpověď: pole s rokem, mesíce 0-11, dne, číslo času 1-14 a zakódovaný token rezervace= [(int)$entry["rok"],(int)$entry["mesic"],(int)$entry["den"],(int)$entry["cas_rezervace"],$entry["encrypted_token"]];
 exit;
 }
 else
 {
 // pokud nebyl nalezen záznam, který se shoduje
-echo json_encode(["status" => "error", "message" => "Žádný ze záznamů se neshoduje s požadavkem z webu!"]); // Odesíláme chybovou odpověď
+http_response_code(400); // Nastaví odpovídající HTTP kód
+echo json_encode(["status" => "error", "message" => "Žádný z rezervovaných záznamů se neshoduje s požadavkem z webu!"]); // Odesíláme chybovou odpověď
 exit;
 }
 
@@ -65,6 +94,7 @@ exit;
 else
 {
 // pokud nedošly data od PHP
+http_response_code(400); // Nastaví odpovídající HTTP kód
 echo json_encode(["status" => "error", "message" => "Nedorazil search do PHP!"]); // Odesíláme chybovou odpověď
 exit;
 }
