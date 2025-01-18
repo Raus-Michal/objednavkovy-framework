@@ -57,15 +57,14 @@ body{font-family: Arial,sans-serif;}
 <div class="content">
 <p>Máte rezervaci telefonního hovoru s Michalem Rausem.</p>
 <p>Na den: <strong>{$datum_rezervace_slovne}</strong></p>
-<p>V čase: {$cas_rezervace_slovne}</p>
+<p>V čase: <strong>{$cas_rezervace_slovne}</strong></p>
 <h2>Vámi poskytnuté údaje</h2>
 <p>Jméno a příjmení: {$jmeno}</p>
 <p>Email: {$email}</p>
 <p>Telefon: {$phone}</p>
 <p>O čem bude hovor: {$predmet}</p>
 <h2>Zrušení rezervace</h2>
-<p>Pro zrušení této rezervace použijte odkaz níže:</p>
-<p><a href="{$cleanUrl}?{$token}" title="Chci zrušit tuto rezervaci">ZRUŠENÍ REZERVACE</a></p>
+<p>Pro zrušení této rezervace použijte tento odkaz: <a href="{$cleanUrl}?{$token}" title="Chci zrušit tuto rezervaci"><strong>ZRUŠENÍ REZERVACE</strong></a></p>
 </div>
 <div class="footer">
 <p>&copy;2025 Boar-cz</p>

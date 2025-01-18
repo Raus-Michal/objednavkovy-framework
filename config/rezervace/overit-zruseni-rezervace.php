@@ -79,7 +79,7 @@ $shoda = check_token($data,$search,$password); // projde všechny záznamy a bud
 if($shoda)
 {
 // pokud byl nalezen záznam, který se shoduje
-echo json_encode(["status" => "success", "message" => "VŠE OK, hledaný záznam rezervace byl nalezen."]); // OK - Odesíláme odpověď: pole s rokem, mesíce 0-11, dne, číslo času 1-14 a zakódovaný token rezervace= [(int)$entry["rok"],(int)$entry["mesic"],(int)$entry["den"],(int)$entry["cas_rezervace"],$entry["encrypted_token"]];
+echo json_encode(["status" => "success", "message" => $shoda]); // OK - Odesíláme odpověď: pole s rokem, mesíce 0-11, dne, číslo času 1-14 a zakódovaný token rezervace= [(int)$entry["rok"],(int)$entry["mesic"],(int)$entry["den"],(int)$entry["cas_rezervace"],$entry["encrypted_token"]];
 exit;
 }
 else

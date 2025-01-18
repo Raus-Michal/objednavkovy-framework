@@ -1,43 +1,21 @@
 <?php
-include "defense/sifrovaci-heslo.php"; // Načtení hesla - $password
-
-if(!$password)
-{
-echo json_encode(["status" => "error", "message" => "Heslo pro šifrování tokenu nebylo načteno!"]); // Odesíláme chybovou odpověď
-exit;
-}
-
 $filename = "rezervace/rezervace.json"; // soubor, kde jsou rezervace
 
-// Funkce pro dešifrování tokenu pomocí hesla
-function decryptToken($encryptedToken, $code) {
-// Použitý šifrovací algoritmus
-$method = 'aes-256-ecb';
-    
-// Vytvoření šifrovacího klíče z hesla pomocí SHA-256 hash funkce
-$key = substr(hash('sha256', $code, true), 0, 32);
-
-// Dekódování šifrovaného tokenu z base64
-$encryptedToken = base64_decode($encryptedToken);
-    
-// Dešifrování tokenu pomocí klíče a algoritmu AES-256-ECB
-return openssl_decrypt($encryptedToken, $method, $key, OPENSSL_RAW_DATA);
-}
-
-
 // Funkce pro kontrolu tokenu a nalezení shody
-function check_token($zaznamy, $retezec, $code)
+function check_token($zaznamy, $retezec)
 {
 foreach ($zaznamy["data"] as $index => $entry) {
 // smyška projde všechny záznamy rezervací
 
-$decrypted_token=decryptToken($entry["encrypted_token"],$code); // Zavolání funkce pro dešifrování tokenu
+$decrypted_token=$entry["encrypted_token"]; 
+
+// $decrypted_token=($entry["encrypted_token"],$code); // Zavolání funkce pro dešifrování tokenu
 
 if(!$decrypted_token)
 {
 // pokud se nepodařilo dešifrovat token
 http_response_code(400); // Nastaví odpovídající HTTP kód
-echo json_encode(["status" => "error", "message" => "Není dešifrovaný token!" . $decrypted_token]); // Odesíláme chybovou odpověď
+echo json_encode(["status" => "error", "message" => "Není dešifrovaný token!" . $decrypted_token . "Zaslaný token k porovnání: " . $retezec]); // Odesíláme chybovou odpověď
 exit;
 }
 
@@ -84,7 +62,9 @@ $encrypted_token = $_POST["encrypted_token"]; // Uložíme hodnotu šifrovaného
 
 $data = load_json_file($filename); // Načteme existující data
 
-$shoda = check_token($data, $encrypted_token, $password); // Projdeme všechny záznamy a hledáme shodu
+
+
+$shoda = check_token($data, $encrypted_token); // Projdeme všechny záznamy a hledáme shodu
 if($shoda)
 {
 // Pokud najdeme shodu
@@ -92,8 +72,6 @@ if($shoda)
 array_splice($data["data"], $shoda["index"], 1); // Odstraníme záznam z pole
 
 save_json_file($filename, $data); // Uložíme aktualizovaná data zpět do souboru
-
-echo json_encode(["status" => "success", "message" => "rezervace byla smazána"]); // Odesíláme úspěšnou odpověď
 
 exit; // Ukončíme skript
 }

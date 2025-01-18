@@ -1713,7 +1713,7 @@ class Zrusit_rezervaci{
 // třída se postará o všechny kroky potřebné pro zrušení rezervace
 zaznam_encrypted_token:string=""; // proměnná do sebe vloží zakódovaný token záznamu, který má být zrušen, pokud existuje
 den_a_cas_rezervace:string=""; // proměnná do sebe vloží informaci o dnu a času rezervace, toto bude následně zasláno emailem tomu kdo rezervaci zrušil a mně, text bude vypadat např.: Čtvrtek, 20. února 2025, 13:30-14:00 hod.
-readonly id_form:string="zrusit_rezervaci"; // id formuláře v dialogovém okně: Zrušit rezervaci?
+readonly id_form:string="form_zruseni_rezervace"; // id formuláře v dialogovém okně: Zrušit rezervaci?
 readonly id_butt:string="butt_zavinac2"; // id buttonů v dialogovém okně: Zrušit rezervaci? button @ a button Zrušit rezervaci
 readonly id_input:string[]=["email2","duvod"]; // id input Email a Důvod zrušení v dialogovém okně: Zrušit rezervaci?
 readonly id_span_cas_r:string[]=["slovne_den_rezervace2","ciselne_den_v_mesici_rezervace2","slone_mesic_rezervace2","ciselne_rok_rezervace2","slovne_cas_rezervace2"]; // id SPAN HTML elementů kde se uvádí termín rezervace, která má být zrušena např: Úterý, 24. prosince 2024, 15:00-15:30 hod.
@@ -1872,7 +1872,7 @@ vytvor_zadost_na_zruseni(rok:number,mesic:number,den:number,cislo_casu:number) /
 {
 // metoda zajistí zobrazení dialogového okna pro zrušení rezervace
 
-if(!rok||!mesic||!den||!cislo_casu)
+if((typeof rok !== "number")||(typeof mesic !== "number")||(typeof den !== "number")||(typeof cislo_casu !== "number"))
 {
 // pokud nebyly do metody dodány potřebné proměnné
 console.error("do metody zrusit_rezervaci.vytvor_zadost_na_zruseni nebyly dodány všechny potřebné proměnné"); // error výpis do konzole
