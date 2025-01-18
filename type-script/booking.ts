@@ -710,8 +710,10 @@ class Cas_rezervace
 {
 // objekt zajišťuje potřebné funkcionality pro volbu času rezervace
 readonly id_con="con_cas"; // ID hlavního kontejneru s časy rezervace
+readonly id_con_logo="logo-box"; // ID boxu v kterém je vloženo SVG logo Boar-cz
 readonly id_radio:string="cas"; // počátek ID input type radio cas1-cas14
 readonly id_li:string="lic"; // počátek ID li v kterém je input type radio lic1-lic14
+readonly class_nam:string[]=["zobraz_objekt","schovej_objekt"]; // názvy CSS tříd, které jsou používány pro animavce
 private vybrany_cas:number=0; // vybraný čas uživatelem, kde 0 znamená, že čas nebyl vybrán a 1 je první čas
 readonly casy:string[]=["9:00-9:30 hod.","9:30-10:00 hod.","10:00-10:30 hod.","10:30-11:00 hod.","11:00-11:30 hod.","11:30-12:00 hod.","12:00-12:30 hod.","12:30-13:00 hod.","13:00-13:30 hod.","13:30-14:00 hod.","14:00-14:30 hod.","14:30-15:00 hod.","15:00-15:30 hod.","15:30-16:00 hod."]; // všechny časy zadané slovně
 rezervace:number[][]=[]; // pole s rokem, měsíce, dnem a časem(1-14) rezervace
@@ -960,7 +962,20 @@ const hl_con=document.getElementById(this.id_con) as HTMLElement; // hlavní kon
 if(hl_con)
 {
 // Pokud HTML element existuje
-hl_con.classList.add("zobraz_objekt"); // přidá CSS třídu s animací opacity z 0 na 1
+hl_con.classList.add(this.class_nam[0]); // přidá CSS třídu s animací opacity z 0 na 1
+}
+
+const logo_box=document.getElementById(this.id_con_logo); // kontejner s logem Boar-cz
+if(logo_box){
+// Pokud HTML element existuje
+if(!logo_box.classList.contains(this.class_nam[1]))
+{
+// pokud box s logem neobsahuje tuto css třídu
+setTimeout(()=>{
+logo_box.style.zIndex="-5"; // schová hluboko box s logem
+},600); // 500 ms je transition opacity
+}
+logo_box.classList.add(this.class_nam[1]); // přidá CSS třídu s animací opacity z 1 na 0
 }
 
 };
