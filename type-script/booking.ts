@@ -1737,7 +1737,7 @@ readonly id_form:string="form_zruseni_rezervace"; // id formuláře v dialogové
 readonly id_butt:string="butt_zavinac2"; // id buttonů v dialogovém okně: Zrušit rezervaci? button @ a button Zrušit rezervaci
 readonly id_input:string[]=["email2","duvod"]; // id input Email a Důvod zrušení v dialogovém okně: Zrušit rezervaci?
 readonly id_span_cas_r:string[]=["slovne_den_rezervace2","ciselne_den_v_mesici_rezervace2","slone_mesic_rezervace2","ciselne_rok_rezervace2","slovne_cas_rezervace2"]; // id SPAN HTML elementů kde se uvádí termín rezervace, která má být zrušena např: Úterý, 24. prosince 2024, 15:00-15:30 hod.
-
+private readonly delka_tokenu:number=32; // délka tokenu, počet zbaků, který má token
 zaslat_zadost_na_zruseni()
 {
 // metoda zajistí pomocí fetch a PHP, vymazání rezervace z JSON souboru
@@ -1748,7 +1748,6 @@ let token=""; // v proměnné bude uložen token, který bude zároveň heslem k
 if(input_hidden)
 {
 token=input_hidden.value; // načte token z HTML elementu input type hidden
-console.log("TOKEN: "+token);
 }
 
 const encrypted_token=this.zaznam_encrypted_token; // načte zakódovaný token, který určuje o jakou rezervaci se jedná
@@ -1956,8 +1955,18 @@ console.log("délka pole search: "+location.search.length);
 
 if(location.search)
 {
-const search=location.search.slice(1); // proměnná načte location.search a odstraní z něj první znak, kterým je ? (otazník)
+let search=location.search.slice(1); // proměnná načte location.search a odstraní z něj první znak, kterým je ? (otazník)
 console.log("obsah search bez?: "+search);
+
+if(search.startsWith("rezervace")) {
+// Odříznutí slova "rezervace" z začátku řetězce search, toto slovo slouží k rozpoznání požadavku, že se jedná o rušení rezervace
+search=search.slice("rezervace".length); // odřízne slovo rezervace - zbyde jen token
+
+if(search.length!=this.delka_tokenu)
+{
+// v search by nyní měl být pouze token, který musí mít 32 znaků podle this.delka_tokenu
+return; // pokud nebude mít token 32 znaků, bude return - nejedná se o hledání záznamu s rezervací
+}}
 
 
 // Asynchronní funkce pro odeslání textu na server
@@ -1991,6 +2000,14 @@ this.vytvor_zadost_na_zruseni(zaznam_pro_odstraneni[0],zaznam_pro_odstraneni[1],
 
 } else {
 console.error('Error:', result.message); // Něco se pokazilo
+
+if(result.message==="Žádný z rezervovaných záznamů se neshoduje s požadavkem z webu!")
+{
+// pokud vrácená error odpověď odpovídá odpovědi ZPH, ktrá informuje o tom, že záznam nebyl nalezen
+dia.on(dia.dia_zruseno_driv.id_okna,dia.dia_zruseno_driv.id_buton_pro_zavreni); // otevře dialogové okno s tím, že záznam o rezervaci existoval, ale už byl zrušen
+
+}
+
 }
 } catch (error) {
 // Zachycení a výpis případné chyby

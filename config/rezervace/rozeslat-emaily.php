@@ -37,6 +37,7 @@ $adresat = "raus.michal@email.cz"; // emailová adresa, kam se má obsah zaslat
 
 // Odesílatelské údaje z přijatých dat
 $odesilatel_jmeno = $jmeno; // Získání jména odesílatele
+$search="rezervace"; // přídavné slovo, které slouží k inicializaci požadavku - s tímto se pracuje také v JS, když se search čte z adresy
 
 // Obsah e-mailu ve formátu HTML
 $celkovy_email = <<<OBSAH_EMAIL
@@ -64,7 +65,8 @@ body{font-family: Arial,sans-serif;}
 <p>Telefon: {$phone}</p>
 <p>O čem bude hovor: {$predmet}</p>
 <h2>Zrušení rezervace</h2>
-<p>Pro zrušení této rezervace použijte tento odkaz: <a href="{$cleanUrl}?{$token}" title="Chci zrušit tuto rezervaci"><strong>ZRUŠENÍ REZERVACE</strong></a></p>
+<p>Pro zrušení této rezervace použijte tento odkaz: <a href="{$cleanUrl}?{$search}{$token}" title="Chci zrušit tuto rezervaci"><strong>ZRUŠENÍ REZERVACE</strong></a></p>
+</div><p><a href="{$cleanUrl}"Rezervační systém této rezervace.</a></p><div>
 </div>
 <div class="footer">
 <p>&copy;2025 Boar-cz</p>
