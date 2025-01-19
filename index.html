@@ -312,6 +312,15 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </div>
 </dialog>
 
+<dialog id="prekrocen_limit" class="dia">
+<p class="n-dialog">Rezervace se&nbsp;nezdařila!</p>
+<p>Je&nbsp;nám líto překročili jste limit maximálních požadavků za&nbsp;24&#8239;hodin.</p>
+<p>Pokud&nbsp;se chyba opakuje i&nbsp;za&nbsp;24&#8239;hodin, pro&nbsp;kontakt můžete použít <a  class="nw" href="https://www.boar-cz.info/kontakt/" target="_blank" rel="noopener noreferrer" title="Formulář pro zasílání emailů">&gt;&#8239;kontaktní formulář&#8239;&lt;</a>.</p>
+<div class="butt-box">
+<button id="butt_prekrocen_limit" type="button" title="Zavřít">Zavřít okno</button>
+</div>
+</dialog>
+
 <dialog id="zrusit_rezervaci" class="dia">
 <p class="n-dialog">Zrušení rezervace</p>
 <p class="mb05">Potvrďte prosím zrušení rezervace.</p>
@@ -334,7 +343,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 
 <dialog id="zruseno_driv" class="dia">
 <p class="n-dialog">Rezervace byla ji dříve zrušena!</p>
-<p>Tato rezervace existovala, ale&nbsp;už byla zrušena. Bylo&nbsp;zaslámo potvrzení o&nbsp;zrušení rezervace na&nbsp;email, který&nbsp;byl zadán při&nbsp;jejím rušení.</p>
+<p>Tato rezervace existovala, ale&nbsp;už byla zrušena. Dříve&nbsp;bylo zasláno potvrzení o&nbsp;zrušení rezervace na&nbsp;email, který&nbsp;byl zadán při&nbsp;jejím rušení.</p>
 <div class="butt-box">
 <button id="butt_zruseno_driv" type="button" title="Zavřít">Zavřít okno</button>
 </div>
@@ -357,6 +366,6 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </div>
 </dialog>
 
-<script src="script/booking.js?v=9"></script>
+<script src="script/booking.js?v=16"></script>
 </body>
 </html>

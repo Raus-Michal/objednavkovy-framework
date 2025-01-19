@@ -910,7 +910,6 @@ if(!jsonData||!jsonData.data||!Array.isArray(jsonData.data))
 {
 jsonData={data:[]};  // Zajistíme, že data budou vždy pole
 }
-console.log("Načtená data (reálně):", jsonData);
 return jsonData; // vrací načtená data
 }catch(error) {
 console.error("Chyba při načítání JSON (reálně):", error);
@@ -931,7 +930,6 @@ jsonData.data.forEach((item:{rok:number,mesic:number,den:number,cas_rezervace:nu
 const dateArray:number[]=[item.rok,item.mesic,item.den,item.cas_rezervace];
 this.rezervace.push(dateArray); // vložení načtených dat z JSON do globálního pole
 });
-console.log(this.rezervace);
 }
 this.load_data_rezervace=true; // proměnná na true ukazuje, že data o dnech, které se mají blokovat, jsou z JSON souboru načtena
 },0);  // Použití setTimeout k oddělení asynchronní operace
@@ -1042,6 +1040,12 @@ dia_neuspech:Dialog_okno={
 // objekt s id pro dialogové okno: Rezervace byla NEúspěšně dokončena
 id_okna:"neuspech",
 id_buton_pro_zavreni:"butt_neuspech"
+};
+
+dia_prekrocen_limit:Dialog_okno={
+// objekt s id pro dialogové okno: Překročili jste limit za 24 hodin === překročen Rate Limit
+id_okna:"prekrocen_limit",
+id_buton_pro_zavreni:"butt_prekrocen_limit"
 };
 
 dia_dotaz_zruseni:Dialog_okno={
@@ -1302,6 +1306,7 @@ s_checked.checked=false; // zruší checked
 
 this.form_posun(this.id_form[1],this.id_form[0]);  // metoda zajistí posun formuláře z Dokončit Rezervaci na Rezervovat 
 
+kalendar.block_days=[]; // anuluje pole, kde se ukládají blokované dny
 kalendar.load_data_book_block_day=false; // proměnná na true ukazuje, že data o dnech, které se mají blokovat, jsou z JSON souboru načtena a false, že nejsou načtena
 
 kalendar.reset_book_den(); // metoda anuluje den, který si uživatel zabookoval
@@ -1317,10 +1322,10 @@ if(fake_checked)
 // pokud HTML element existuje
 fake_checked.checked=false; // odchecketuje tento fake checked
 }
-
+cas_rezervace.rezervace=[]; // vynuluje pole, kde se ukládají rezervované časy
+cas_rezervace.aktivace(); // aktivuje všechny radia a li na možnost zarezervování
 cas_rezervace.load_data_rezervace=false; // proměnná, která ukazuje, zda byly ze souboru JSON načteny rezervace, pokud ano===true, pokud ne===false
 cas_rezervace.load_rezervace(); // nahraje z JSON časy, které si už uživatelé zarezervovali
-cas_rezervace.aktivace(); // aktivuje všechny radia a li na možnost zarezervování
 cas_rezervace.zobrazit_casy(); // funkce hlavní kontejner s časy zobrazí z opacity:0; z-index:-1; na opacity:1; z-index:0;
 cas_rezervace.problik_casy(); // metoda provede probliknutí hlavního kontejneru s časy rezervace
 
@@ -1572,14 +1577,11 @@ let token=""; // v proměnné bude uložen token, který bude zároveň heslem k
 if(input_hidden)
 {
 token=input_hidden.value; // načte token z HTML elementu input type hidden
-console.log("TOKEN: "+token);
 }
 
 
 
 const data_pro_JSON:[number,number,number,number,string]=[...den_rezervace_uzivatel,cas_rezervace_uzivatel,token]; // spojí všechny potřebné proměnné a vytvoří pole, které se následně bude zapisovat do souboru JSON
-
-console.log(data_pro_JSON);
 
 const in_jmeno_uzivatel=document.getElementById(this.id_inputHost[0]) as HTMLInputElement; // input s jménem a příjmením uživatel
 const in_email_uzivatel=document.getElementById(this.id_inputHost[1]) as HTMLInputElement; // input s emailem uživatele
@@ -1681,7 +1683,17 @@ else
 // Server vrátil odpověď s chybou ('error')
 console.error("Chyba:", result.message); // Zobrazení chyby do konzole
 dia.wait_deactiv(); // vypne dialogové okno Čekejte prosím … Zpracovává se rezervace
+
+if(result.message==="Překročili jste limit požadavků. Zkuste to znovu za 24 hodin.")
+{
+// pokud je taková odpověď z PHP, byl překročen Rate limit
+dia.on(dia.dia_prekrocen_limit.id_okna,dia.dia_prekrocen_limit.id_buton_pro_zavreni); // otevře dialogové okno - Překročen limit rezervací za 24 hodin
+}
+else
+{
 dia.on(dia.dia_neuspech.id_okna,dia.dia_neuspech.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace proběhla NEúspěšně
+}
+
 }
 }
 else
@@ -1808,7 +1820,9 @@ this.zaznam_encrypted_token=""; // nastaví proměnnou na default
 this.den_a_cas_rezervace=""; // nastaví proměnnou na default
 window.history.replaceState({},document.title,window.location.pathname); // Tento příkaz odstraní search z adresy včetně otazníku
 dia.on(dia.dia_zruseno.id_okna,dia.dia_zruseno.id_buton_pro_zavreni); // otevře dialogové okno - Rezervace byla zrušena
+setTimeout(()=>{
 boss.reset_aplikace(); // provede resetování aplikace, jako by ji uživatel nikdy nepoužil, zde je to z důvodů, aby načetle aktuální data z JSON, kde už zrušená rezervace bude propsána
+},1000); // zpoždění umožní PHP zrušenou rezervaci zapsat, aby ho pak stihl Java Script přečíst
 }
 else
 {
@@ -1966,7 +1980,13 @@ if(search.length!=this.delka_tokenu)
 {
 // v search by nyní měl být pouze token, který musí mít 32 znaků podle this.delka_tokenu
 return; // pokud nebude mít token 32 znaků, bude return - nejedná se o hledání záznamu s rezervací
-}}
+}
+}
+else
+{
+window.history.replaceState({},document.title,window.location.pathname); // Tento příkaz odstraní search z adresy včetně otazníku
+return; // pokud search nezačíná slovem rezervace .. tedy ?rezervace, není požadavkem vůbec prověření zda existuje rezervace
+}
 
 
 // Asynchronní funkce pro odeslání textu na server
@@ -2005,7 +2025,7 @@ if(result.message==="Žádný z rezervovaných záznamů se neshoduje s požadav
 {
 // pokud vrácená error odpověď odpovídá odpovědi ZPH, ktrá informuje o tom, že záznam nebyl nalezen
 dia.on(dia.dia_zruseno_driv.id_okna,dia.dia_zruseno_driv.id_buton_pro_zavreni); // otevře dialogové okno s tím, že záznam o rezervaci existoval, ale už byl zrušen
-
+window.history.replaceState({},document.title,window.location.pathname); // Tento příkaz odstraní search z adresy včetně otazníku
 }
 
 }
@@ -2064,13 +2084,7 @@ boss.reset_aplikace("castecne"); // provede reset aplikace, jako by ji uživatel
 if(dia.open_dialog)
 {
 // pokud je otevřen sledovaný dialog dotaz na zrušení rezervace, musí dojít k jeho prověření, jestli je ještě aktuální
-dia.off(dia.dia_dotaz_zruseni.id_okna); // zavře dialogové okno s dotazem Zrušit rezervaci (dia.open_dialog===faůse)
-zrusit_rezervaci.inicializace(); // ověří jestli je dotaz: Zrušit rezervaci ještě aktuální, pokud ANO otevře dialogové okno s dotazem: Zrušit rezervaci, pokud záznam nenajde, neudělá nic (dia.open_dialog===true)
-if(!dia.open_dialog)
-{
-// pokud ve funkci zrusit_rezervaci.inicializace() byl nalezen záznam, otevře dialogové okno s dotazem: Zrušit rezervaci? , pokud ho neotevře dia.open_dialog===false, pokud ho otevře dia.open_dialog===true
-dia.on(dia.dia_zruseno_driv.id_okna,dia.dia_zruseno_driv.id_buton_pro_zavreni); // Otevře dialogové okno s informací, že Rezervace existovala, ale už je zrušena
-}
+location.reload(); // udělá refreš stránky což vyhodnotí aktuálnost dotazu na zrušení rezervace
 }
 
 
