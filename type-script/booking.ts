@@ -1013,7 +1013,7 @@ class Dia
 // CLASS slouží pro řízení otvírání a zavírání dialogových oken
 
 boundOffs:{[key:string]:any}={}; // objekt, který zajistí správný způsob je skutečně uložit bindovanou funkci do proměnné
-open_dialog:string[]=[]; // pole v sobě uloží id dialogového okna, pokud je otevřeno
+open_dialog=false; // proměnná, která sleduje jestli je otevřen dialogové okno s dotazem na zrušení rezervace, pokud ANO===TRUE, pokud NE===false
 casovac_animace:number|null=null; // časovač animace pro její opakování
 startTime:number|null=null; // proměnná hlídá kolik času animace uběhlo
 
@@ -1047,13 +1047,18 @@ id_buton_pro_zavreni:"butt_neuspech"
 dia_dotaz_zruseni:Dialog_okno={
 // objekt s id pro dialogové okno: Zrušit rezervaci?
 id_okna:"zrusit_rezervaci",
-id_buton_pro_zavreni:"butt_zrusit_rezervaci"
 };
 
 dia_zruseno:Dialog_okno={
 // objekt s id pro dialogové okno: Rezervace zrušena
 id_okna:"zruseno",
 id_buton_pro_zavreni:"butt_zruseno"
+};
+
+dia_zruseno_driv:Dialog_okno={
+// objekt s id pro dialogové okno: Rezervace existovala, ale už byla zrušena
+id_okna:"zruseno_driv",
+id_buton_pro_zavreni:"butt_zruseno_driv"
 };
 
 dia_nezruseno:Dialog_okno={
@@ -1077,7 +1082,14 @@ if(okno)
 {
 // pokud HTML objekt existuje
 okno.showModal(); // otevře dialogové okno
-this.open_dialog.push(id_dialog); // vloží do pole id dialogového okna, které je právě otevřené
+
+if(id_dialog===this.dia_dotaz_zruseni.id_okna)
+{
+// pokud se id otevřeného dialogu === id dialogu s dotazem: Zrušit rezervaci
+this.open_dialog=true; // proměnnou přepíše na TRUE === dialogové okno s dotazem na zrušení rezervace je otevřené
+}
+
+
 }
 
 if(id_button_z!=="")
@@ -1147,12 +1159,12 @@ okno.close(); // zavře dialogové okno
 okno.style.opacity="1"; // nastaví hodnotu na default
 okno.style.transform="scale(1)"; // nastaví hodnotu na default
 
-let index:number=this.open_dialog.indexOf(id_dialog); // Hledání indexu id dialogového okna v poli
-if(index !== -1)
+if(id_dialog===this.dia_dotaz_zruseni.id_okna)
 {
-// Pokud je řetězec nalezen, odstranit ho
-this.open_dialog.splice(index, 1);  // Odstraní id dialogového okna z pole (==na pozici "index")
+// pokud se id otevřeného dialogu === id dialogu s dotazem: Zrušit rezervaci
+this.open_dialog=false; // proměnnou přepíše na FALSE === dialogové okno s dotazem na zrušení rezervace není otevřené
 }
+
 },200); // zpoždění odpovídá transition 0.2s v CSS
 }
 
@@ -1772,7 +1784,7 @@ const data=`csrf_token=${encodeURIComponent(token)}&encrypted_token=${encodeURIC
 const sendRequest=async()=>{
 try{
 // Nastavení prodlevy před odesláním požadavku
-dia.off(dia.dia_dotaz_zruseni.id_okna, dia.dia_dotaz_zruseni.id_buton_pro_zavreni); // zavře dialogové okno s dotazem: Zrušit rezervaci?
+dia.off(dia.dia_dotaz_zruseni.id_okna); // zavře dialogové okno s dotazem: Zrušit rezervaci?
 dia.wait_activ(); // zapne dialogové okno Čekejte prosím … Zpracovává se rezervace
 setTimeout(async()=>{
 // Odeslání požadavku na server
@@ -1931,7 +1943,7 @@ if(s_cas){
 s_cas.innerText = cas_slovne; // přepíše spam času (slovně) , podle čísla času, který byl do funkce zaslán 
 }
 this.den_a_cas_rezervace = `${den_v_tydnu_slovne}, ${den_v_mesici_ciselne}.${mesic_v_roce_slovne} ${rok_to_string}, ${cas_slovne}`; // do proměnné zapíše celkový den a čas rezervace, toto se použije pro rozeslání emailu o zrušení rezervace, řetězec bude vypadat např takto: Čtvrtek, 20. února 2025, 13:30-14:00 hod.
-dia.on(dia.dia_dotaz_zruseni.id_okna, dia.dia_dotaz_zruseni.id_buton_pro_zavreni); // otevře dialogové okno s dotazem: Zrušit rezervaci?
+dia.on(dia.dia_dotaz_zruseni.id_okna); // otevře dialogové okno s dotazem: Zrušit rezervaci?
 
 };
 
@@ -2032,11 +2044,18 @@ boss.reset_aplikace("castecne"); // provede reset aplikace, jako by ji uživatel
 
 // Smyčka for pro procházení pole
 
-const open_dia_okno=dia.open_dialog; // vytáhne si data z pole, kde se zapisují otevřená dialogová okna
-const d=open_dia_okno.length; // délka pole
-for (let i=0;i<d;i++){
-dia.off(open_dia_okno[i]); // zavře dialogové okno --- POZOR - CHYBÝ ODEBRÁNÍ POSLUCHAČŮ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+if(dia.open_dialog)
+{
+// pokud je otevřen sledovaný dialog dotaz na zrušení rezervace, musí dojít k jeho prověření, jestli je ještě aktuální
+dia.off(dia.dia_dotaz_zruseni.id_okna); // zavře dialogové okno s dotazem Zrušit rezervaci (dia.open_dialog===faůse)
+zrusit_rezervaci.inicializace(); // ověří jestli je dotaz: Zrušit rezervaci ještě aktuální, pokud ANO otevře dialogové okno s dotazem: Zrušit rezervaci, pokud záznam nenajde, neudělá nic (dia.open_dialog===true)
+if(!dia.open_dialog)
+{
+// pokud ve funkci zrusit_rezervaci.inicializace() byl nalezen záznam, otevře dialogové okno s dotazem: Zrušit rezervaci? , pokud ho neotevře dia.open_dialog===false, pokud ho otevře dia.open_dialog===true
+dia.on(dia.dia_zruseno_driv.id_okna,dia.dia_zruseno_driv.id_buton_pro_zavreni); // Otevře dialogové okno s informací, že Rezervace existovala, ale už je zrušena
 }
+}
+
 
 }
 };

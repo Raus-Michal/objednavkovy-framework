@@ -330,14 +330,18 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <input id="duvod" class="mb1" type="text" maxlength="50" placeholder="Důvod zrušení" title="Napište prosím důvod proč rezervaci rušíte">
 </fieldset>
 </form>
+</dialog>
+
+<dialog id="zruseno_driv" class="dia">
+<p class="n-dialog">Rezervace byla ji dříve zrušena!</p>
+<p>Tato rezervace existovala, ale&nbsp;už byla zrušena. Bylo&nbsp;zaslámo potvrzení o&nbsp;zrušení rezervace na&nbsp;email, který&nbsp;byl zadán při&nbsp;jejím rušení.</p>
 <div class="butt-box">
-<button id="butt_zrusit_rezervaci" type="button" title="Zavřít">Zavřít okno</button>
+<button id="butt_zruseno_driv" type="button" title="Zavřít">Zavřít okno</button>
 </div>
 </dialog>
 
-
 <dialog id="zruseno" class="dia">
-<p class="n-dialog">Rezervace byla zrusena!</p>
+<p class="n-dialog">Rezervace byla zrušena!</p>
 <p>Do&nbsp;30&#8239;minut bude na&nbsp;uvedený email doručeno potvrzení o&nbsp;zrušení rezervace.</p>
 <div class="butt-box">
 <button id="butt_zruseno" type="button" title="Zavřít">Zavřít okno</button>
