@@ -65,6 +65,11 @@ line-height:1;
 margin:0;
 padding:0;
 background-color:var(--b5);
+min-height:100vh;
+min-height:100svh;
+min-height:100dvh;
+display:flex;
+align-items:center;
 }
 
 article
@@ -168,12 +173,13 @@ cursor:default;
 font-family:"nadpis",sans-serif;
 color:white;
 font-size:2.5rem;
+font-size:calc(2.25rem + 1vw);
 text-align:center;
 font-weight:900;
-line-height:1.25;
+line-height:1.15;
 margin-top:1.5rem;
 margin-bottom:1.5rem;
-letter-spacing:.12rem;
+letter-spacing:.15rem;
 word-spacing:.2rem;
 width:100%;
 }
@@ -782,6 +788,11 @@ hyphens:auto;
 .d-n
 {
 display:none;
+}
+
+.d-b
+{
+display:block;
 }
 
 .ma
