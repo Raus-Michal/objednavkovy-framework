@@ -11,7 +11,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 
 
-<link rel="stylesheet" href="css/css.css?v=11">
+<link rel="stylesheet" href="css/css.css?v=12">
 
 <!-- popis vebové stránky
 <meta name="description" content = " Popis o čem je www stránka ">
@@ -43,7 +43,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </div>
 
 <form id="rezervace_form" class="f-kon" action="#" method="post">
-<p class="p-n"><span class="d-b">Rezervovace</span> <span class="d-b">telefonního</span> <span class="d-b">hovoru</span></p>
+<p class="p-n"><span class="p-n-big">Rezervace</span> telefonního hovoru</p>
 <div class="spojovac">
 <fieldset class="b-mesic">
 <button id="m_minus" type="button" title="měsíc zpět">&lt;</button>
@@ -61,12 +61,12 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <p class="bw">So</p>
 <p class="bw">Ne</p>
 
-<p id="pb1" class="p-v d-n ma">X</p>
-<p id="pb2" class="p-v d-n ma">X</p>
-<p id="pb3" class="p-v d-n ma">X</p>
-<p id="pb4" class="p-v d-n ma">X</p>
-<p id="pb5" class="p-v d-n ma">X</p>
-<p id="pb6" class="p-v d-n ma">X</p>
+<button id="pb1" class="p-v d-n ma" type="button" title="X1">X</button>
+<button id="pb2" class="p-v d-n ma" type="button" title="X2">X</button>
+<button id="pb3" class="p-v d-n ma" type="button" title="X3">X</button>
+<button id="pb4" class="p-v d-n ma" type="button" title="X4">X</button>
+<button id="pb5" class="p-v d-n ma" type="button" title="X5">X</button>
+<button id="pb6" class="p-v d-n ma" type="button" title="X6">X</button>
 
 <button id="b1" type="button" title="1.">1</button>
 <button id="b2" type="button" title="2.">2</button>
@@ -357,6 +357,6 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </div>
 </dialog>
 
-<script src="script/booking.js?v=8"></script>
+<script src="script/booking.js?v=9"></script>
 </body>
 </html>

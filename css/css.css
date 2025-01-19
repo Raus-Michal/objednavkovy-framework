@@ -64,7 +64,7 @@ font-size:100%;
 line-height:1;
 margin:0;
 padding:0;
-background-color:var(--b5);
+background-color:white;
 min-height:100vh;
 min-height:100dvh;
 min-height:100svh;
@@ -183,6 +183,14 @@ letter-spacing:.15rem;
 word-spacing:.2rem;
 width:100%;
 }
+
+.p-n-big
+{
+display:block;
+font-size:3rem;
+font-size:calc(2.75rem + 1vw);
+}
+
 
 .f-zruseni
 {
@@ -788,11 +796,6 @@ hyphens:auto;
 .d-n
 {
 display:none;
-}
-
-.d-b
-{
-display:block;
 }
 
 .ma
