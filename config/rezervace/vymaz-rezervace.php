@@ -73,7 +73,6 @@ array_splice($data["data"], $shoda["index"], 1); // Odstraníme záznam z pole
 
 save_json_file($filename, $data); // Uložíme aktualizovaná data zpět do souboru
 
-exit; // Ukončíme skript
 }
 else
 {

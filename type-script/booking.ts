@@ -1013,7 +1013,7 @@ class Dia
 // CLASS slouží pro řízení otvírání a zavírání dialogových oken
 
 boundOffs:{[key:string]:any}={}; // objekt, který zajistí správný způsob je skutečně uložit bindovanou funkci do proměnné
-
+open_dialog:string[]=[]; // pole v sobě uloží id dialogového okna, pokud je otevřeno
 casovac_animace:number|null=null; // časovač animace pro její opakování
 startTime:number|null=null; // proměnná hlídá kolik času animace uběhlo
 
@@ -1077,6 +1077,7 @@ if(okno)
 {
 // pokud HTML objekt existuje
 okno.showModal(); // otevře dialogové okno
+this.open_dialog.push(id_dialog); // vloží do pole id dialogového okna, které je právě otevřené
 }
 
 if(id_button_z!=="")
@@ -1145,6 +1146,13 @@ setTimeout(()=>{
 okno.close(); // zavře dialogové okno
 okno.style.opacity="1"; // nastaví hodnotu na default
 okno.style.transform="scale(1)"; // nastaví hodnotu na default
+
+let index:number=this.open_dialog.indexOf(id_dialog); // Hledání indexu id dialogového okna v poli
+if(index !== -1)
+{
+// Pokud je řetězec nalezen, odstranit ho
+this.open_dialog.splice(index, 1);  // Odstraní id dialogového okna z pole (==na pozici "index")
+}
 },200); // zpoždění odpovídá transition 0.2s v CSS
 }
 
@@ -1764,6 +1772,7 @@ const data=`csrf_token=${encodeURIComponent(token)}&encrypted_token=${encodeURIC
 const sendRequest=async()=>{
 try{
 // Nastavení prodlevy před odesláním požadavku
+dia.off(dia.dia_dotaz_zruseni.id_okna, dia.dia_dotaz_zruseni.id_buton_pro_zavreni); // zavře dialogové okno s dotazem: Zrušit rezervaci?
 dia.wait_activ(); // zapne dialogové okno Čekejte prosím … Zpracovává se rezervace
 setTimeout(async()=>{
 // Odeslání požadavku na server
@@ -1894,41 +1903,35 @@ const s_cas=document.getElementById(this.id_span_cas_r[4]) as HTMLSpanElement; /
 const dny:string[]=boss.dny; // dny v týdnu splovně Neděle-Pondělí
 const mesice:string[]=boss.mesice; // měsíce v roce slovně Leden-Prosinec
 const casy:string[]=cas_rezervace.casy; // časy rezervací slovně (1-14)
+const den_v_tydnu_slovne=dny[new Date(rok, mesic, den).getDay()]; // provede výpočet z číselného dne zaslaného uživatelelem na číslo dne v týdnu, který na něj přiřadí a z pole dny[] k němu podle tohto čísla přidělí slovně den
+const den_v_mesici_ciselne=den.toString(); // den v měsíci, podle čísla dne, který byl do funkce zaslán
+const mesic_v_roce_slovne= mesice[mesic]; // měsíc (slovně) , podle čísla měsíce, který byl do funkce zaslán, vybírá se podle čísla měsíce z pole mesice[]
+const rok_to_string=rok.toString(); //  rok, podle čísla roku, který byl do funkce zaslán
+const cas_slovne=casy[cislo_casu - 1]; // podle čísla času 1-14 vybere z pole casy[] odpovídající čas slovně, (časy jsou číslovány 1-14, ale pole začíná od 0, proto cislo_casu-1)
 
-if(s_denS)
-{
+if(s_denS){
 // pokud HTML element existuje
-s_denS.innerText=dny[new Date(rok,mesic,den).getDay()]; // přepíše spam dnem v týdnu, datumu, který byl do metody zaslán
+s_denS.innerText=den_v_tydnu_slovne; // přepíše spam dnem v týdnu, datumu, který byl do metody zaslán
 }
 
-if(s_denC)
-{
+if(s_denC){
 // pokud HTML element existuje
-s_denC.innerText=den.toString(); // přepíše spam dnem v měsíci, podle čísla dne, který byl do funkce zaslán
+s_denC.innerText=den_v_mesici_ciselne; // přepíše spam dnem v měsíci, podle čísla dne, který byl do funkce zaslán
 }
-
-if(s_mesic)
-{
+if(s_mesic){
 // pokud HTML element existuje
-s_mesic.innerText=mesice[mesic]; // přepíše spam měsíce (slovně) , podle čísla měsíce, který byl do funkce zaslán
+s_mesic.innerText = mesic_v_roce_slovne; // přepíše spam měsíce (slovně) , podle čísla měsíce, který byl do funkce zaslán
 }
-
-if(s_rok)
-{
+if(s_rok){
 // pokud HTML element existuje
-s_rok.innerText=rok.toString(); // přepíše spam rok, podle čísla roku, který byl do funkce zaslán
+s_rok.innerText = rok_to_string; // přepíše spam rok, podle čísla roku, který byl do funkce zaslán
 }
-
-if(s_cas)
-{
+if(s_cas){
 // pokud HTML element existuje
-s_cas.innerText=casy[cislo_casu-1]; // přepíše spam času (slovně) , podle čísla času, který byl do funkce zaslán (časy jsou číslovány 1-14, ale pole začíná od 0, proto cislo_casu-1)
+s_cas.innerText = cas_slovne; // přepíše spam času (slovně) , podle čísla času, který byl do funkce zaslán 
 }
-
-this.den_a_cas_rezervace=`${s_denS}, ${s_denC}.${s_mesic} ${s_rok}, ${s_cas}`; // do proměnné zapíše celkový den a čas rezervace, toto se použije pro rozeslání emailu o zrušení rezervace, řetězec bude vypadat např takto: Čtvrtek, 20. února 2025, 13:30-14:00 hod.
-
-dia.on(dia.dia_dotaz_zruseni.id_okna,dia.dia_dotaz_zruseni.id_buton_pro_zavreni); // otevře dialogové okno s dotazem: Zrušit rezervaci?
-
+this.den_a_cas_rezervace = `${den_v_tydnu_slovne}, ${den_v_mesici_ciselne}.${mesic_v_roce_slovne} ${rok_to_string}, ${cas_slovne}`; // do proměnné zapíše celkový den a čas rezervace, toto se použije pro rozeslání emailu o zrušení rezervace, řetězec bude vypadat např takto: Čtvrtek, 20. února 2025, 13:30-14:00 hod.
+dia.on(dia.dia_dotaz_zruseni.id_okna, dia.dia_dotaz_zruseni.id_buton_pro_zavreni); // otevře dialogové okno s dotazem: Zrušit rezervaci?
 
 };
 
@@ -2026,6 +2029,15 @@ if(document.visibilityState !== "hidden") /* pokud www stránka přestane být v
 {
 // pokud začala být aplikace viditelná
 boss.reset_aplikace("castecne"); // provede reset aplikace, jako by ji uživatel nikdy nepoužil, ale pouze částečně, zachová případný vyplněný input uživatelem (jméno, email, telefon, důvod hovoru) a udělený souhlas
+
+// Smyčka for pro procházení pole
+
+const open_dia_okno=dia.open_dialog; // vytáhne si data z pole, kde se zapisují otevřená dialogová okna
+const d=open_dia_okno.length; // délka pole
+for (let i=0;i<d;i++){
+dia.off(open_dia_okno[i]); // zavře dialogové okno --- POZOR - CHYBÝ ODEBRÁNÍ POSLUCHAČŮ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+}
+
 }
 };
 
