@@ -167,12 +167,12 @@ cursor:default;
 {
 font-family:"nadpis",sans-serif;
 color:white;
-font-size:2rem;
+font-size:2.5rem;
 text-align:center;
 font-weight:900;
-line-height:1;
-margin-top:.5rem;
-margin-bottom:0;
+line-height:1.25;
+margin-top:1.5rem;
+margin-bottom:1.5rem;
 letter-spacing:.12rem;
 word-spacing:.2rem;
 width:100%;
@@ -207,17 +207,17 @@ max-width:calc(18rem + 1vw);
 .b-mesic
 {
 display:grid;
-grid-template-columns:auto 1fr auto;
+grid-template-columns:2rem 1fr 2rem;
 }
 
 .b-mesic button
 {
 width:2rem;
-height:2rem;
+height:2.5rem;
 max-width:2rem;
-max-height:2rem;
+max-height:2.5rem;
 min-width:2rem;
-min-height:2rem;
+min-height:2.5rem;
 line-height:1.9;
 font-weight:bold;
 color:black;
@@ -239,10 +239,11 @@ border-radius:0 10px 10px 0;
 
 .b-mesic input
 {
-height:2rem;
-max-height:2rem;
+height:2.5rem;
+max-height:2.5rem;
 padding:.5rem .5rem .25rem .15rem;
 text-align:center;
+font-size:1.25rem;
 font-weight:bold;
 border:none;
 border-top:1px solid black;
@@ -251,6 +252,7 @@ border-radius:0px;
 box-shadow:none;
 background-color:var(--b4);
 cursor:default;
+width:100%;
 }
 
 .b-mesic input:focus
@@ -458,11 +460,11 @@ to{opacity:0;}
 
 .box-ap-logo
 {
-width:100%;
+width:90%;
 height:auto;
 position:absolute;
-left:0;
-top:-1rem;
+left:5%;
+top:1rem;
 z-index:2;
 transition:opacity 500ms;
 }
@@ -498,6 +500,7 @@ border:2px solid var(--b4);
 background-color:white;
 color:black;
 margin-bottom:1rem;
+margin-top:1.5rem;
 }
 
 .potvrzeni button.normal-font
