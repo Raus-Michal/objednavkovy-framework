@@ -295,6 +295,7 @@ outline:none;
 border-color:initial;
 }
 
+
 .b-dny
 {
 display:grid;
@@ -341,7 +342,7 @@ text-align:center;
 {
 display:grid;
 justify-items:center;
-align-content:stretch;
+align-content:center;
 -webkit-box-align:center;
 align-items:center;
 border-radius:50%;
@@ -363,6 +364,7 @@ color:grey;
 opacity:.7;
 cursor:no-drop;
 }
+
 
 .kryt
 {
