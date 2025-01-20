@@ -303,7 +303,8 @@ const p_b=document.getElementById(`${this.z_posun_id}${i+1}`) as HTMLElement; //
 if(p_b)
 {
 // pokud HTML Element existuje
-p_b.style.display="flex"; // zobrazí vyplňovací HTML P element
+p_b.style.display="grid"; // zobrazí vyplňovací HTML P element
+p_b.style.alignContent="center"; // vycentruje X v kontejneru grid
 }
 }
 };
@@ -1138,6 +1139,12 @@ butt_kotva.addEventListener("click",boundOff_k); // přidá posluchač události
 off(id_dialog:string,id_button_z:string="",id_button_scroll:string="")
 {
 // metoda zavře dialogové okno
+
+if(id_dialog===this.dia_zruseno.id_okna)
+{
+// pokud se právě zavírá dialogové okno s informací: Rezervace byla zrušena
+location.reload(); // udělá refreš stránky (její nové načtení), což znovu načte aplikace a udělá její kompletní reset
+}
 
 if(id_button_z!=="")
 {
@@ -2074,18 +2081,19 @@ document.addEventListener(udalos_viditelnost,this,false); // aktivuje posluchač
 }};
 
 handleEvent(){
-if(document.visibilityState !== "hidden") /* pokud www stránka přestane být viditelná */
+if(document.visibilityState !== "hidden")
 {
-// pokud začala být aplikace viditelná
-boss.reset_aplikace("castecne"); // provede reset aplikace, jako by ji uživatel nikdy nepoužil, ale pouze částečně, zachová případný vyplněný input uživatelem (jméno, email, telefon, důvod hovoru) a udělený souhlas
-
-// Smyčka for pro procházení pole
+// pokud www stránka je viditelná
 
 if(dia.open_dialog)
 {
 // pokud je otevřen sledovaný dialog dotaz na zrušení rezervace, musí dojít k jeho prověření, jestli je ještě aktuální
-location.reload(); // udělá refreš stránky což vyhodnotí aktuálnost dotazu na zrušení rezervace
+location.reload(); // udělá refreš stránky (její nové načtení), což vyhodnotí aktuálnost dotazu na zrušení rezervace
 }
+
+// pokud začala být aplikace viditelná
+boss.reset_aplikace("castecne"); // provede reset aplikace, jako by ji uživatel nikdy nepoužil, ale pouze částečně, zachová případný vyplněný input uživatelem (jméno, email, telefon, důvod hovoru) a udělený souhlas
+
 
 
 }
