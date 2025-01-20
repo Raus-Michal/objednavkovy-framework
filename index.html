@@ -11,7 +11,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 
 
-<link rel="stylesheet" href="css/css.css?v=14">
+<link rel="stylesheet" href="css/css.css?v=16">
 
 <!-- popis vebové stránky
 <meta name="description" content = " Popis o čem je www stránka ">
@@ -61,12 +61,12 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <p class="bw">So</p>
 <p class="bw">Ne</p>
 
-<button id="pb1" class="p-v d-n ma" type="button" title="X1">X</button>
-<button id="pb2" class="p-v d-n ma" type="button" title="X2">X</button>
-<button id="pb3" class="p-v d-n ma" type="button" title="X3">X</button>
-<button id="pb4" class="p-v d-n ma" type="button" title="X4">X</button>
-<button id="pb5" class="p-v d-n ma" type="button" title="X5">X</button>
-<button id="pb6" class="p-v d-n ma" type="button" title="X6">X</button>
+<button id="pb1" class="p-v d-n" type="button" title="X1">X</button>
+<button id="pb2" class="p-v d-n" type="button" title="X2">X</button>
+<button id="pb3" class="p-v d-n" type="button" title="X3">X</button>
+<button id="pb4" class="p-v d-n" type="button" title="X4">X</button>
+<button id="pb5" class="p-v d-n" type="button" title="X5">X</button>
+<button id="pb6" class="p-v d-n" type="button" title="X6">X</button>
 
 <button id="b1" type="button" title="1.">1</button>
 <button id="b2" type="button" title="2.">2</button>
@@ -343,7 +343,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 
 <dialog id="zruseno_driv" class="dia">
 <p class="n-dialog">Rezervace byla ji dříve zrušena!</p>
-<p>Tato rezervace existovala, ale&nbsp;už byla zrušena. Dříve&nbsp;bylo zasláno potvrzení o&nbsp;zrušení rezervace na&nbsp;email, který&nbsp;byl zadán při&nbsp;jejím rušení.</p>
+<p>Tato rezervace existovala, ale&nbsp;už byla zrušena. Při&nbsp;jejím rušení&nbsp;bylo zasláno potvrzení o&nbsp;zrušení rezervace na&nbsp;email, který&nbsp;byl zadán při&nbsp;samotném rušení rezervace.</p>
 <div class="butt-box">
 <button id="butt_zruseno_driv" type="button" title="Zavřít">Zavřít okno</button>
 </div>
@@ -366,6 +366,6 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </div>
 </dialog>
 
-<script src="script/booking.js?v=20"></script>
+<script src="script/booking.js?v=22"></script>
 </body>
 </html>

@@ -66,7 +66,8 @@ body{font-family: Arial,sans-serif;}
 <p>O čem bude hovor: {$predmet}</p>
 <h2>Zrušení rezervace</h2>
 <p>Pro zrušení této rezervace použijte tento odkaz: <a href="{$cleanUrl}?{$search}{$token}" title="Chci zrušit tuto rezervaci"><strong>ZRUŠENÍ REZERVACE</strong></a></p>
-<div><p><a href="{$cleanUrl}" title="Chci videt rezervační systém">Rezervační systém této rezervace.</a></p></div>
+<h2>Odkud je rezervace?</h2>
+<p>Rezervace byla provedena z: <a href="{$cleanUrl}" title="Chci vidět rezervační systém">Rezervační systém.</a></p>
 </div>
 <div class="footer">
 <p>&copy;2025 Boar-cz</p>
