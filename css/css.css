@@ -121,8 +121,11 @@ height:auto;
 .h-kon
 {
 width:100%;
+display:-webkit-box;
 display:flex;
+-webkit-box-align:center;
 align-items:center;
+-webkit-box-pack:center;
 justify-content:center;
 overflow:auto;
 background-color:var(--b5);
@@ -133,21 +136,31 @@ border-radius:24px;
 
 .f-kon
 {
+display:-webkit-box;
 display:flex;
+-webkit-box-orient:horizontal;
+-webkit-box-direction:normal;
 flex-direction:row;
 flex-wrap:wrap;
+-webkit-box-pack:center;
 justify-content:center;
+-webkit-box-align:end;
 align-items:flex-end;
 gap:1.5rem;
 width:100%;
 max-width:58rem; /* 928px */
+-webkit-transition:250ms opacity;
+-o-transition:250ms opacity;
 transition:250ms opacity;
 }
 
 .no-script,.no-version-script
 {
+display:-webkit-box;
 display:flex;
+-webkit-box-align:center;
 align-items:center;
+-webkit-box-pack:center;
 justify-content:center;
 position:absolute;
 left:0;
@@ -194,8 +207,12 @@ font-size:calc(2.75rem + 1vw);
 
 .f-zruseni
 {
+display:-webkit-box;
 display:flex;
+-webkit-box-orient:vertical;
+-webkit-box-direction:normal;
 flex-direction:column;
+-webkit-box-align:center;
 align-items:center;
 }
 
@@ -263,7 +280,8 @@ border:none;
 border-top:1px solid black;
 border-bottom:1px solid black;
 border-radius:0px;
-box-shadow:none;
+-webkit-box-shadow:none;
+        box-shadow:none;
 background-color:var(--b4);
 cursor:default;
 width:100%;
@@ -272,7 +290,8 @@ width:100%;
 .b-mesic input:focus
 {
 outline:none;
-box-shadow:none;
+-webkit-box-shadow:none;
+        box-shadow:none;
 border-color:initial;
 }
 
@@ -282,14 +301,21 @@ display:grid;
 grid-template-columns:repeat(7,minmax(1.8rem,1fr));
 grid-auto-rows:auto;
 gap:.5rem;
+-webkit-box-pack:center;
 justify-content:center;
 justify-items:stretch;
+-webkit-box-align:start;
 align-items:start;
 align-content:start;
 min-height:18rem; /* zajistí, že roržení nebude poskakovat při posunech buttonu a jejich počtu */
 position:relative;
+-webkit-filter:blur(2px);
 filter:blur(2px);
+-webkit-transition:250ms opacity,250ms -webkit-filter;
+transition:250ms opacity,250ms -webkit-filter;
+-o-transition:250ms opacity,250ms filter;
 transition:250ms opacity,250ms filter;
+transition:250ms opacity,250ms filter,250ms -webkit-filter;
 will-change:opacity,filter;
 }
 
@@ -316,6 +342,7 @@ text-align:center;
 display:grid;
 justify-items:center;
 align-content:stretch;
+-webkit-box-align:center;
 align-items:center;
 border-radius:50%;
 border:1px solid var(--b4);
@@ -377,7 +404,11 @@ list-style-type:none;
 opacity:0;
 position:relative;
 z-index:-1;
+-webkit-transition:250ms opacity,250ms -webkit-transform ease-out,250ms -webkit-filter ease-out;
+transition:250ms opacity,250ms -webkit-transform ease-out,250ms -webkit-filter ease-out;
+-o-transition:250ms opacity,250ms transform ease-out,250ms filter ease-out;
 transition:250ms opacity,250ms transform ease-out,250ms filter ease-out;
+transition:250ms opacity,250ms transform ease-out,250ms filter ease-out,250ms -webkit-transform ease-out,250ms -webkit-filter ease-out;
 will-change:filter,opacity,transform;
 }
 
@@ -392,7 +423,9 @@ grid-template-columns:1fr 1fr;
 
 .b-hod li
 {
+display:-webkit-box;
 display:flex;
+-webkit-box-align:center;
 align-items:center;
 gap:.5rem;
 padding:.75rem .75rem .5rem .75rem;
@@ -434,6 +467,7 @@ border-radius:50%;
 position: absolute;
 top:50%;
 left:50%;
+-webkit-transform:translate(-50%,-50%);
 transform:translate(-50%,-50%);
 }
 
@@ -446,8 +480,15 @@ cursor:not-allowed; /* Změna kurzoru */
 
 .zobraz_objekt /* používá se v Java Scriptu */
 {
-animation:zobraz .5s linear forwards;
+-webkit-animation:zobraz .5s linear forwards;
+        animation:zobraz .5s linear forwards;
 z-index:0;
+}
+
+@-webkit-keyframes zobraz
+{
+from{opacity:0;}
+to{opacity:1;}
 }
 
 @keyframes zobraz
@@ -458,8 +499,15 @@ to{opacity:1;}
 
 .schovej_objekt /* používá se v Java Scriptu */
 {
-animation:schovej .5s linear forwards;
+-webkit-animation:schovej .5s linear forwards;
+        animation:schovej .5s linear forwards;
 z-index:0;
+}
+
+@-webkit-keyframes schovej
+{
+from{opacity:1;}
+to{opacity:0;}
 }
 
 @keyframes schovej
@@ -476,6 +524,8 @@ position:absolute;
 left:5%;
 top:1rem;
 z-index:2;
+-webkit-transition:opacity 500ms;
+-o-transition:opacity 500ms;
 transition:opacity 500ms;
 }
 
@@ -483,6 +533,7 @@ transition:opacity 500ms;
 {
 width:100%;
 height:auto;
+background:-o-radial-gradient(circle,white 10%,transparent 50%);
 background:radial-gradient(circle,white 10%,transparent 50%);
 }
 
@@ -490,7 +541,9 @@ background:radial-gradient(circle,white 10%,transparent 50%);
 .potvrzeni
 {
 width:100%;
+display:-webkit-box;
 display:flex;
+-webkit-box-pack:center;
 justify-content:center;
 }
 
@@ -543,6 +596,7 @@ font-weight:normal;
 {
 display:grid;
 gap:1rem;
+-webkit-box-pack:center;
 justify-content:center;
 grid-template-columns:1fr;
 }
@@ -576,6 +630,7 @@ caret-color:var(--b5);
 
 .dabl
 {
+display:-webkit-box;
 display:flex;
 }
 
@@ -595,11 +650,13 @@ border-radius:0 10px  10px 0;
 .souhlas
 {
 color:white;
+display:-webkit-box;
 display:flex;
 gap:1rem;
 line-height:1.5;
 margin-bottom:1rem;
 text-align:justify;
+-webkit-hyphens:auto;
 hyphens:auto;
 }
 
@@ -621,6 +678,8 @@ max-width:40rem; /* 640px */
 border:none;
 border-radius:16px;
 padding:1rem;
+-webkit-transition:.2s opacity,.2s transform;
+-o-transition:.2s opacity,.2s transform;
 transition:.2s opacity,.2s transform;
 }
 
@@ -634,6 +693,12 @@ max-height:31.25rem; /* 500px */
 }
 
 
+dialog.dia::-webkit-backdrop
+{
+background-color:rgba(0,0,0,.5); /* Nastaví poloprůhledné černé pozadí */ 
+}
+
+
 dialog.dia::backdrop
 {
 background-color:rgba(0,0,0,.5); /* Nastaví poloprůhledné černé pozadí */ 
@@ -641,13 +706,20 @@ background-color:rgba(0,0,0,.5); /* Nastaví poloprůhledné černé pozadí */
 
 dialog.dia[open]
 {
-animation:fadeIn .3s ease-in-out;
+-webkit-animation:fadeIn .3s ease-in-out;
+        animation:fadeIn .3s ease-in-out;
+}
+
+@-webkit-keyframes fadeIn
+{
+from{opacity:0;-webkit-transform:translateY(-30px);transform:translateY(-30px);}
+to{opacity:1;-webkit-transform:translateY(0);transform:translateY(0);}
 }
 
 @keyframes fadeIn
 {
-from{opacity:0;transform:translateY(-30px);}
-to{opacity:1;transform:translateY(0);}
+from{opacity:0;-webkit-transform:translateY(-30px);transform:translateY(-30px);}
+to{opacity:1;-webkit-transform:translateY(0);transform:translateY(0);}
 }
 
 dialog.dia::-webkit-scrollbar{display:none;}
@@ -681,7 +753,6 @@ font-weight:500;
 
 .absol-box
 {
-position:-webkit-sticky;
 position:sticky;
 bottom:-1rem;
 right:0;
@@ -690,8 +761,11 @@ height:auto;
 width:100%;
 z-index:3;
 background-color:var(--b2);
+display:-webkit-box;
 display:flex;
+-webkit-box-pack:end;
 justify-content:flex-end;
+-webkit-box-align:center;
 align-items:center;
 border-top:1px dotted black;
 }
@@ -711,7 +785,9 @@ color:black;
 
 .butt-box
 {
+display:-webkit-box;
 display:flex;
+-webkit-box-pack:end;
 justify-content:flex-end;
 width:100%;
 margin-top:1rem;
@@ -730,19 +806,25 @@ background-color:white;
 color:black;
 }
 
+@-webkit-keyframes growShrink
+{
+0%,100%{-webkit-transform:rotateZ(90deg) scale(1);transform:rotateZ(90deg) scale(1);} /* počáteční a konečná velikost */ 
+50%{-webkit-transform:rotateZ(90deg) scale(0.95);transform:rotateZ(90deg) scale(0.95);} /* zvětšení o 2% ve středu animace */ 
+}
+
 @keyframes growShrink
 {
-0%,100%{transform:rotateZ(90deg) scale(1);} /* počáteční a konečná velikost */ 
-50%{transform:rotateZ(90deg) scale(0.95);} /* zvětšení o 2% ve středu animace */ 
+0%,100%{-webkit-transform:rotateZ(90deg) scale(1);transform:rotateZ(90deg) scale(1);} /* počáteční a konečná velikost */ 
+50%{-webkit-transform:rotateZ(90deg) scale(0.95);transform:rotateZ(90deg) scale(0.95);} /* zvětšení o 2% ve středu animace */ 
 }
 
 .scroll-butt
 {
-position:-webkit-sticky;
 position:sticky;
 bottom:5rem;
 width:2rem;
 height:2rem;
+-webkit-transform:rotateZ(90deg);
 transform:rotateZ(90deg);
 left:calc(100% - 2rem);
 border-radius:50%;
@@ -754,7 +836,8 @@ padding:0;
 padding-left:.5rem;
 font-size:1.25rem;
 z-index:2;
-animation:growShrink 1s infinite; /* animace trvá 2 sekundy a opakuje se donekonečna */
+-webkit-animation:growShrink 1s infinite;
+        animation:growShrink 1s infinite; /* animace trvá 2 sekundy a opakuje se donekonečna */
 }
 
 .scroll-kryt
@@ -766,12 +849,15 @@ width:100%;
 position:relative;
 z-index:3;
 background-color:var(--b2);
-box-shadow:-1px -13px 10px 4px var(--b2);
+-webkit-box-shadow:-1px -13px 10px 4px var(--b2);
+        box-shadow:-1px -13px 10px 4px var(--b2);
 }
 
 .svg-box-wait
 {
+display:-webkit-box;
 display:flex;
+-webkit-box-pack:center;
 justify-content:center;
 width:100%;
 }
@@ -786,6 +872,7 @@ max-width:10rem;
 .ods
 {
 text-align:justify;
+-webkit-hyphens:auto;
 hyphens:auto;
 }
 
@@ -811,6 +898,7 @@ white-space:nowrap;
 
 .jc
 {
+-webkit-box-pack:center;
 justify-content:center;
 }
 
