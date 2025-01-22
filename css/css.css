@@ -225,6 +225,11 @@ width:100%;
 max-width:28rem; /* 448 px */
 }
 
+.spojovac
+{
+height:100%;
+}
+
 /* > 448px */
 @media only screen and (min-width:28em)
 {
@@ -243,47 +248,55 @@ grid-template-columns:2rem 1fr 2rem;
 
 .b-mesic button
 {
-width:2rem;
-height:2.5rem;
-max-width:2rem;
-max-height:2.5rem;
-min-width:2rem;
-min-height:2.5rem;
+aspect-ratio:1/1;
 line-height:1.9;
 font-weight:bold;
 color:black;
 background-color:white;
-border:1px solid black;
-margin-bottom:1rem;
+border:none;
 text-align:center;
+border-radius:50%;
+transition: transform 250ms ease;
+}
+
+
+.b-mesic button:first-child:active {
+-webkit-transform:perspective(5px) rotateY(357deg) scale(1.15);
+transform:perspective(5px) rotateY(357deg) scale(1.15); /* Zvětší o 15% při aktivaci */
+}
+
+.b-mesic button:last-child:active {
+-webkit-transform:perspective(5px) rotateY(3deg) scale(1.15);
+transform:perspective(5px) rotateY(3deg) scale(1.15); /* Zvětší o 15% při aktivaci */
 }
 
 .b-mesic button:first-child
 {
-border-radius:10px 0 0 10px;
+-webkit-transform:perspective(5px) rotateY(357deg);
+transform:perspective(5px) rotateY(357deg);
+box-shadow: 0px 0px 6px 1px white;
 }
 
 .b-mesic button:last-child
 {
-border-radius:0 10px 10px 0;
+-webkit-transform:perspective(5px) rotateY(3deg);
+transform:perspective(5px) rotateY(3deg);
+box-shadow: 0px 0px 6px 1px white;
 }
 
 .b-mesic input
 {
-height:2.5rem;
-max-height:2.5rem;
+color:white;
 padding:.5rem .5rem .25rem .15rem;
 text-align:center;
 font-size:1.25rem;
 font-weight:bold;
 border:none;
-border-top:1px solid black;
-border-bottom:1px solid black;
-border-radius:0px;
 -webkit-box-shadow:none;
-        box-shadow:none;
-background-color:var(--b4);
+box-shadow:none;
+background-color:transparent;
 cursor:default;
+margin-bottom:1rem;
 width:100%;
 }
 
@@ -291,7 +304,7 @@ width:100%;
 {
 outline:none;
 -webkit-box-shadow:none;
-        box-shadow:none;
+box-shadow:none;
 border-color:initial;
 }
 
@@ -318,6 +331,7 @@ transition:250ms opacity,250ms -webkit-filter;
 transition:250ms opacity,250ms filter;
 transition:250ms opacity,250ms filter,250ms -webkit-filter;
 will-change:opacity,filter;
+min-height:24rem;
 }
 
 .b-dny p
