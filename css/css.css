@@ -321,7 +321,6 @@ justify-items:stretch;
 -webkit-box-align:start;
 align-items:start;
 align-content:start;
-min-height:18rem; /* zajistí, že roržení nebude poskakovat při posunech buttonu a jejich počtu */
 position:relative;
 -webkit-filter:blur(2px);
 filter:blur(2px);
