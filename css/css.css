@@ -225,10 +225,12 @@ width:100%;
 max-width:28rem; /* 448 px */
 }
 
+/*
 .spojovac
 {
 height:100%;
 }
+/*
 
 /* > 448px */
 @media only screen and (min-width:28em)
@@ -330,7 +332,7 @@ transition:250ms opacity,250ms -webkit-filter;
 transition:250ms opacity,250ms filter;
 transition:250ms opacity,250ms filter,250ms -webkit-filter;
 will-change:opacity,filter;
-min-height:24rem;
+min-height:19rem;
 }
 
 .b-dny p
