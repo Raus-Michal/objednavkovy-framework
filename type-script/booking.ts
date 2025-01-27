@@ -491,8 +491,8 @@ this.book_block_day(); // jakmile budou načtena data, metoda provede faktickou 
 
 handleEvent(e:any){
 // klik na den v měsíci 1-31
-const k:string=e.target.id;
-const cislo_dne:number=parseInt(`${k[1]}${k[2]}`);
+const k:string=e.target.closest("button").id; // načte id buttonu na který bylo kliknuto
+const cislo_dne:number=parseInt(`${k[1]}${k[2]}`); // z id buttonu odstraní pomocí parseTnt veškerý text a získá číslo dne jako integer
 
 let a_m=datum.mesic_v_roce+this.poloha; // datum.mesic_v_roce je gettter, kde návratová hodnota je aktuální měsíc v roce, kde leden je 0 a prosinec 11 + this.poloha určuje aktuální polohu uživatele v kalendáři
 let a_r=datum.aktualni_rok; // datum.aktualni_rok je getter, kde návratová hodnota je aktuální rok: 2024,2025 ...

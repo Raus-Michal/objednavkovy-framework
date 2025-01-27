@@ -11,7 +11,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 
 
-<link rel="stylesheet" href="css/css.css?v=22">
+<link rel="stylesheet" href="css/css.css?n=1">
 
 <!-- popis vebové stránky
 <meta name="description" content = " Popis o čem je www stránka ">
@@ -26,7 +26,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </head>
 <body>
 
-<div id="boss_con" class="h-kon">
+<div id="boss_con" class="app-h-kon">
 
 <noscript>
 <div class="no-script"> 
@@ -46,9 +46,9 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <p class="p-n"><span class="p-n-big">Rezervace</span> telefonního hovoru</p>
 <div class="spojovac">
 <fieldset class="b-mesic">
-<button id="m_minus" type="button" title="měsíc zpět">&lt;</button>
+<button id="m_minus" type="button" title="měsíc zpět"><span class="i-app1">&lt;</span></button>
 <input id="mesic_a_rok" type="text" title="měsíc a rok" readonly>
-<button id="m_plus" type="button" title="měsíc vpřed">&gt;</button>
+<button id="m_plus" type="button" title="měsíc vpřed"><span class="i-app2">&gt;</span></button>
 </fieldset>
 
 <fieldset id="plocha_kalendar" class="b-dny">
@@ -61,46 +61,47 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <p class="bw">So</p>
 <p class="bw">Ne</p>
 
-<button id="pb1" class="p-v d-n" type="button" title="X1">X</button>
-<button id="pb2" class="p-v d-n" type="button" title="X2">X</button>
-<button id="pb3" class="p-v d-n" type="button" title="X3">X</button>
-<button id="pb4" class="p-v d-n" type="button" title="X4">X</button>
-<button id="pb5" class="p-v d-n" type="button" title="X5">X</button>
-<button id="pb6" class="p-v d-n" type="button" title="X6">X</button>
+<button id="pb1" class="p-v d-n" type="button" title="X1"><span>X</span></button>
+<button id="pb2" class="p-v d-n" type="button" title="X2"><span>X</span></button>
+<button id="pb3" class="p-v d-n" type="button" title="X3"><span>X</span></button>
+<button id="pb4" class="p-v d-n" type="button" title="X4"><span>X</span></button>
+<button id="pb5" class="p-v d-n" type="button" title="X5"><span>X</span></button>
+<button id="pb6" class="p-v d-n" type="button" title="X6"><span>X</span></button>
 
-<button id="b1" type="button" title="1.">1</button>
-<button id="b2" type="button" title="2.">2</button>
-<button id="b3" type="button" title="3.">3</button>
-<button id="b4" type="button" title="4.">4</button>
-<button id="b5" type="button" title="5.">5</button>
-<button id="b6" type="button" title="6.">6</button>
-<button id="b7" type="button" title="7.">7</button>
-<button id="b8" type="button" title="8.">8</button>
-<button id="b9" type="button" title="9.">9</button>
-<button id="b10" type="button" title="10.">10</button>
+<button id="b1" type="button" title="1."><span>1</span></button>
+<button id="b2" type="button" title="2."><span>2</span></button>
+<button id="b3" type="button" title="3."><span>3</span></button>
+<button id="b4" type="button" title="4."><span>4</span></button>
+<button id="b5" type="button" title="5."><span>5</span></button>
+<button id="b6" type="button" title="6."><span>6</span></button>
+<button id="b7" type="button" title="7."><span>7</span></button>
+<button id="b8" type="button" title="8."><span>8</span></button>
+<button id="b9" type="button" title="9."><span>9</span></button>
+<button id="b10" type="button" title="10."><span>10</span></button>
 
-<button id="b11" type="button" title="11.">11</button>
-<button id="b12" type="button" title="12.">12</button>
-<button id="b13" type="button" title="13.">13</button>
-<button id="b14" type="button" title="14.">14</button>
-<button id="b15" type="button" title="15.">15</button>
-<button id="b16" type="button" title="16.">16</button>
-<button id="b17" type="button" title="17.">17</button>
-<button id="b18" type="button" title="18.">18</button>
-<button id="b19" type="button" title="19.">19</button>
-<button id="b20" type="button" title="20.">20</button>
+<button id="b11" type="button" title="11."><span>11</span></button>
+<button id="b12" type="button" title="12."><span>12</span></button>
+<button id="b13" type="button" title="13."><span>13</span></button>
+<button id="b14" type="button" title="14."><span>14</span></button>
+<button id="b15" type="button" title="15."><span>15</span></button>
+<button id="b16" type="button" title="16."><span>16</span></button>
+<button id="b17" type="button" title="17."><span>17</span></button>
+<button id="b18" type="button" title="18."><span>18</span></button>
+<button id="b19" type="button" title="19."><span>19</span></button>
+<button id="b20" type="button" title="20."><span>20</span></button>
 
-<button id="b21" type="button" title="21.">21</button>
-<button id="b22" type="button" title="22.">22</button>
-<button id="b23" type="button" title="23.">23</button>
-<button id="b24" type="button" title="24.">24</button>
-<button id="b25" type="button" title="25.">25</button>
-<button id="b26" type="button" title="26.">26</button>
-<button id="b27" type="button" title="27.">27</button>
-<button id="b28" type="button" title="28.">28</button>
-<button id="b29" type="button" title="29.">29</button>
-<button id="b30" type="button" title="30.">30</button>
-<button id="b31" type="button" title="31.">31</button>
+<button id="b21" type="button" title="21."><span>21</span></button>
+<button id="b22" type="button" title="22."><span>22</span></button>
+<button id="b23" type="button" title="23."><span>23</span></button>
+<button id="b24" type="button" title="24."><span>24</span></button>
+<button id="b25" type="button" title="25."><span>25</span></button>
+<button id="b26" type="button" title="26."><span>26</span></button>
+<button id="b27" type="button" title="27."><span>27</span></button>
+<button id="b28" type="button" title="28."><span>28</span></button>
+<button id="b29" type="button" title="29."><span>29</span></button>
+<button id="b30" type="button" title="30."><span>30</span></button>
+<button id="b31" type="button" title="31."><span>31</span></button>
+
 <div class="fake-kon"><input id="fake-checked" type="checkbox" title="Určete den rezervace" required></div>
 </fieldset>
 </div>
@@ -169,7 +170,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 
 </fieldset>
 <fieldset class="potvrzeni">
-<button id="rezervovat" type="submit">Rezervovat</button>
+<button id="rezervovat" type="submit"><span class="i-app4"> </span>Rezervovat</button>
 </fieldset>
 </form>
 
@@ -183,7 +184,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <p>Vaše rezervace telefonního hovoru</p>
 <p><span id="slovne_den_rezervace">Úterý</span>, <span id="ciselne_den_v_mesici_rezervace">24</span>.&#8239;<span id="slone_mesic_rezervace">prosince</span>&#8239;<span id="ciselne_rok_rezervace">2024</span>, <span id="slovne_cas_rezervace" class="nw">15:00-15:30&#8239;hod.</span></p>
 <div class="potvrzeni">
-<button id="zmenit" type="button" title="Změnit tuto rezervaci">Změnit rezervaci</button>
+<button id="zmenit" type="button" title="Změnit tuto rezervaci"><span class="i-app5"> </span>Změnit rezervaci</button>
 </div>
 </fieldset>
 
@@ -205,7 +206,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 
 <fieldset>
 <div class="potvrzeni">
-<button id="ukaz_zasady" class="normal-font" type="button" title="Ukázat Zásady ochrany osobních údajů">Zásady ochrany osobních údajů</button>
+<button id="ukaz_zasady" class="normal-font" type="button" title="Ukázat Zásady ochrany osobních údajů">Zásady ochrany osobních&nbsp;údajů</button>
 </div>
 <div class="souhlas">
 <input id="checken_souhlas" type="checkbox" required><label for="checken_souhlas">Souhlasím se zpracováním osobních údajů podle Zásad ochrany osobních údajů.</label> 
@@ -213,21 +214,10 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </fieldset>
 
 <fieldset class="potvrzeni">
-<button id="dokoncit" type="submit">Dokončit rezervaci</button>
+<button id="dokoncit" type="submit"><span class="i-app4"> </span>Dokončit rezervaci</button>
 </fieldset>
 <input id="token" type="hidden" value="<?php echo $_SESSION['csrf_token']; ?>" title="token">
-
 </form>
-
-
-
-
-
-
-
-
-
-
 </div>
 
 
@@ -235,7 +225,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <div id="top_kotva_zasady" class="dialog-kotva-top"> </div>
 <div class="dialog-content">
 <div>
-<p class="n-dialog">Zásady ochrany osobních&nbsp;údajů</p>
+<p class="n-dialog-flex"><span class="i-app6 i-app6-b"> </span>Zásady ochrany osobních&nbsp;údajů</p>
 <p class="ods">Uděluji souhlas se&nbsp;zpracováním svých osobních údajů (jméno a&nbsp;příjmení, telefonní číslo, e-mail), které&nbsp;poskytuji prostřednictvím tohoto formuláře, Mgr.&nbsp;Bc. Michalu Rausovi, jakožto správci osobních údajů, za&nbsp;účelem sjednání telefonního hovoru a&nbsp;zaslání potvrzení nebo&nbsp;dalších souvisejících informací.</p>
 <p class="ods">Tento souhlas uděluji na&nbsp;dobu nezbytně nutnou (to&nbsp;je: do&nbsp;uskutečnění hovoru nebo&nbsp;vypršení termínu), pro&nbsp;výše uvedený účel, případně do&nbsp;jeho odvolání. Beru na&nbsp;vědomí, že&nbsp;správce zpracovává mé osobní údaje v&nbsp;souladu s&nbsp;Nařízením Evropského parlamentu a&nbsp;Rady&#8239;(EU) č.&#8239;2016/679&#8239;(GDPR).</p>
 <p class="ods">Jsem&nbsp;si vědom/a svých práv, zejména práva na&nbsp;přístup k&nbsp;mým osobním údajům, jejich opravu, výmaz nebo omezení zpracování, a&nbsp;práva vznést námitku proti zpracování či&nbsp;odvolat souhlas. Pro&nbsp;uplatnění těchto práv mohu správce osobních údajů kontaktovat prostřednictvím <a href="https://www.boar-cz.info/kontakt/" target="_blank" rel="noopener noreferrer" title="Formulář pro zasílání emailů">&gt;&#8239;kontaktního formuláře&#8239;&lt;</a>.</p>
@@ -248,7 +238,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <button id="butt_zasady" type="button" title="Zavřít Zásady ochrany osobních údajů">Zavřít</button>
 </div>
 
-<button id="scroll_butt_zasady" class="scroll-butt" type="button" title="scroll bottom">&gt;</button>
+<button id="scroll_butt_zasady" class="scroll-butt" type="button" title="scroll bottom"><span class="i-app3">&gt;</span></button>
 
 <div id="bottom_kotva_zasady" class="dialog-kotva-bottom"></div>
 
@@ -326,9 +316,6 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <p class="mb05">Potvrďte prosím zrušení rezervace.</p>
 <p class="n-dialog"><span id="slovne_den_rezervace2">Úterý</span>, <span id="ciselne_den_v_mesici_rezervace2">24</span>.&#8239;<span id="slone_mesic_rezervace2">prosince</span>&#8239;<span id="ciselne_rok_rezervace2">2024</span>, <span id="slovne_cas_rezervace2" class="nw">15:00-15:30&#8239;hod.</span></p>
 <form class="f-zruseni mb1" id="form_zruseni_rezervace" action="#" method="post">
-<fieldset class="butt-box jc">
-<button type="submit" class="mb1" title="Chci zrušit rezervaci">Zrušit rezervaci</button>
-</fieldset>
 <fieldset class="udaje">
 <div class="dabl mb1">
 <button id="butt_zavinac2" type="button" title="Napiš mi @">@</button>
@@ -337,6 +324,9 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <p>Na&nbsp;email obdržíte potvrzrní o&nbsp;zrušení rezervace.</p>
 <fieldset class="udaje">
 <input id="duvod" class="mb1" type="text" maxlength="50" placeholder="Důvod zrušení" title="Napište prosím důvod proč rezervaci rušíte">
+</fieldset>
+<fieldset class="butt-box">
+<button type="submit" class="mb1" title="Chci zrušit rezervaci">Zrušit rezervaci</button>
 </fieldset>
 </form>
 </dialog>
@@ -366,6 +356,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </div>
 </dialog>
 
-<script src="script/booking.js?v=23"></script>
+
+<script src="script/booking.js?n=1"></script>
 </body>
 </html>
