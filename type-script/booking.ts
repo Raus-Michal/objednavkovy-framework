@@ -13,7 +13,7 @@ readonly z_posun_id:string="pb"; // začátek id vyplňovacích bloků pro posun
 block_days:number[][]=[]; // pole s blokovanými datumy pro booking dne
 load_data_book_block_day:boolean=false; // proměnná na true ukazuje, že data o dnech, které se mají blokovat, jsou z JSON souboru načtena a false, že nejsou načtena
 load_data_time_out:number|null=null; // časovač pro REKLUZI funkce data_book_block_day()
-
+readonly error_load_element:string[]=["errror_load","flex","retry_load","errror_load_offline"]; // pole zahrnuje prvky,pro zobrazení errro okna - Potřebná data, nebyla ze serveru načtena. [0=id div, 1=display div, 2=id button Opakovat načtení, 3= element p v tomto okně upozorňující, že byl uživatel offline]
 get rezervovane_datum()
 {
 // getter vrací pole s vybraným datumem od uživatele [rok, měsíc(0-11), den]:number[]
@@ -308,25 +308,38 @@ p_b.style.display="flex"; // zobrazí vyplňovací HTML P element
 }
 };
 
-odemkni_dny()
-{
-// metoda odstraní rozmazání volby dnů v klaendáři a změní DIV kryt, který ho překrývá na z-index="-1", tímto umožní klikání uživatele do dnů v kalendáři a jejich volbu
-
+dny_klikat(povolit:boolean){
+// zamezuje anebo umožňuje uživateli klikat na dny 1-31, pokud je do funkce zasláno TRUE=klikání, je umožněno; pokud FALSE=klikání je zamezeno
 
 const plocha_dny=document.getElementById(mesic_a_rok.id_kalendar); // načte HTML element v kterém jsou zobrazení dny v měsíci 1-31
-   
-
 if(plocha_dny)
 {
 // pokud HTML element existuje
-plocha_dny.style.filter="blur(0px)"; // odstraní blur, který je HTML elementu udělen v CSS
+if(povolit)
+{
+// pokud má být povoleno klikání na buttony 1-31
+plocha_dny.style.filter="blur(0px)"; // nastaví blur kontejneru bez rozmazání
 }
-
-const kryt=document.getElementById(this.kryt_id) as HTMLElement; // načte HTML DIV element krytu, který má z-index:5 a je přes celou šířku a výšku dnů v kalendáři 1-31, má background-color:transparent
+else
+{
+// pokud nemá být povoleno klikání na buttony 1-31
+plocha_dny.style.filter="blur(2px)"; // nastaví blur kontejneru na rozmazání
+}
+}
+const kryt=document.getElementById(this.kryt_id); // načte HTML DIV element krytu, který má z-index:5 a je přes celou šířku a výšku dnů v kalendáři 1-31, má background-color:transparent
 if(kryt)
 {
 // pokud HTML element existuje
-kryt.style.zIndex="-1"; // nastaví KRYT na z-index:-1, tímto umožní uživateli klikat do dnů v měsíci 1-31
+if(povolit)
+{
+// pokud má být povoleno klikání na buttony 1-31
+kryt.style.zIndex = "-5"; // nastaví KRYT na z-index:-5, tímto umožní uživateli klikat do dnů v měsíci 1-31
+}
+else
+{
+// pokud nemá být povoleno klikání na buttony 1-31
+kryt.style.zIndex = "5"; // nastaví KRYT na z-index:5, tímto znemožní uživateli klikat do dnů v měsíci 1-31
+}
 }
 };
 
@@ -394,7 +407,11 @@ button_i.removeEventListener("click",this); // odebere posluchač buttonu
 button_i.removeAttribute('data-has-listener'); // Odebere atribut 'data-has-listener' pokud ho má
 }}}
 
-this.odemkni_dny(); // metoda odstraní rozmazání volby dnů v klaendáři a změní DIV kryt, který ho překrývá na z-index="-1", tímto umožní klikání uživatele do dnů v kalendáři a jejich volbu
+if(cas_rezervace.load_data_rezervace)
+{
+// pokud již budou vpořádku načtena data rezervace časů od uživatelů
+this.dny_klikat(true); // metoda zamezuje anebo umožňuje uživateli klikat na dny 1-31, pokud je do funkce zasláno TRUE=klikání, je umožněno; pokud FALSE=klikání je zamezeno
+}
 
 };
 
@@ -402,6 +419,7 @@ load_book_block_day()
 {
 // načtení z JSON dnů, které mají být blokovány - nepřístupné k bookingu
 
+kalendar.dny_klikat(false); // metoda zamezuje anebo umožňuje uživateli klikat na dny 1-31, pokud je do funkce zasláno TRUE=klikání, je umožněno; pokud FALSE=klikání je zamezeno
 
 // ZAČÁTEK SIMULACE
 
@@ -441,7 +459,7 @@ load_book_block_day()
 // }
 
 // KONEC SIMLACE
-  
+
 // Asynchronní funkce pro načtení JSON souboru pomocí fetch
 const fetchJSON=async():Promise<any> =>{
 const jsonFilePath ="config/cti-blok-days.php"; // cesta k PHP souboru, který zajistí čtení JSON souboru, číst JSON může kdokli, ale musí být chráněn proti zápisu
@@ -452,12 +470,13 @@ if(!response.ok)
 throw new Error('Síťová odpověď nebyla v pořádku'); // chyba při načítání
 }
 const jsonData=await response.json(); // převzetí dat do proměnné
-console.log('Načtená data (reálně):',jsonData);
+
 return jsonData; // vrací načtená data
 }
 catch(error)
 {
-console.error('Chyba při načítání JSON (reálně):', error);
+console.error("Chyba při načítání JSON block-days:", error);
+this.error_load_data(); // v kontejneru kde jsou dny 1-31 otevře okno s infornmací: Potřebná data, nebyla ze serveru načtena.
 return null;
 }
 }
@@ -476,9 +495,6 @@ jsonData.data.forEach((item:{rok:number,mesic:number,den:number})=>{
 const dateArray:number[]=[item.rok,item.mesic,item.den];
 this.block_days.push(dateArray);
 });
-  
-console.log(this.block_days);
-
 }
 
 this.load_data_book_block_day=true; // proměnná na true ukazuje, že data o dnech, které se mají blokovat, jsou z JSON souboru načtena
@@ -488,10 +504,82 @@ this.book_block_day(); // jakmile budou načtena data, metoda provede faktickou 
 
 };
 
+error_load_data(){
+// metoda zobrazí v kontejneru kde jsou dny 1-31 okno s informací: Potřebná data, nebyla ze serveru načtena.
+
+this.dny_klikat(true); // metoda zamezuje anebo umožňuje uživateli klikat na dny 1-31, pokud je do funkce zasláno TRUE=klikání, je umožněno; pokud FALSE=klikání je zamezeno
+
+const kontajner=document.getElementById(this.error_load_element[0]) as HTMLElement; // kontajner s informací: Potřebná data, nebyla ze serveru načtena.
+const k_button=document.getElementById(this.error_load_element[2]) as HTMLButtonElement; // buton kontajneru: Opakovat načtení
+const p_offline=document.getElementById(this.error_load_element[3]) as HTMLElement; // P element s informací: Byl jste offline
+
+if(kontajner)
+{
+// pokud html Element existuje
+kontajner.style.display=this.error_load_element[1]; // zviditelní blok s informací: Potřebná data, nebyla ze serveru načtena.
+}
+
+if(k_button)
+{
+// pokud html Element existuje
+k_button.addEventListener("click",this); // přidá posluchač click na button: Opakovat načtení
+}
+
+if(p_offline)
+{
+// pokud html Element existuje
+if(navigator.onLine)
+{
+// uživatel je on-line
+p_offline.style.display="none"; // zneviditelní P element s informací byl jste offline
+}
+else
+{
+// uživatel je off-line
+p_offline.style.display="block"; // ukáže P element s informací byl jste offline (block je default nastavení P elementu)
+}
+}
+
+};
+
+error_load_data_close(load:boolean=false)
+{
+// metoda zavře v kontejneru kde jsou dny 1-31 okno s informací: Potřebná data, nebyla ze serveru načtena., pokud do funkce zašleme hodnotu: true, bude zavření doprovázet nové načtení dat ze serveru
+
+const kontajner=document.getElementById(this.error_load_element[0]) as HTMLElement; // kontajner s informací: Potřebná data, nebyla ze serveru načtena.
+const k_button=document.getElementById(this.error_load_element[2]) as HTMLButtonElement; // buton kontajneru: Opakovat načtení
+
+if(kontajner)
+{
+// pokud html Element existuje
+kontajner.style.display="none"; // zneviditelní blok s informací: Potřebná data, nebyla ze serveru načtena.
+}
+
+if(k_button)
+{
+// pokud html Element existuje
+k_button.removeEventListener("click",this); // odebere posluchač click na button: Opakovat načtení
+}
+
+if(load===true)
+{
+// pokud bude do funkce zasláno true
+boss.reset_aplikace("častečne"); // provede částečné resetnutí aplikace
+}
+
+};
 
 handleEvent(e:any){
 // klik na den v měsíci 1-31
 const k:string=e.target.closest("button").id; // načte id buttonu na který bylo kliknuto
+
+if(k===this.error_load_element[2])
+{
+// pokud bylo kliknuto na button error okna: Potřebná data, nebyla ze serveru načtena - Opakovat načtení
+this.error_load_data_close(true); // metoda zavře toto okno a hodnota TRUE zajistí nové načtení dat z JSON
+return; // ukončí funkci
+}
+
 const cislo_dne:number=parseInt(`${k[1]}${k[2]}`); // z id buttonu odstraní pomocí parseTnt veškerý text a získá číslo dne jako integer
 
 let a_m=datum.mesic_v_roce+this.poloha; // datum.mesic_v_roce je gettter, kde návratová hodnota je aktuální měsíc v roce, kde leden je 0 a prosinec 11 + this.poloha určuje aktuální polohu uživatele v kalendáři
@@ -583,7 +671,8 @@ if(butt_2)
 // pokud existuhe HTML objekt button šipka vpřed
 butt_2.addEventListener("click",this); // posluchač click pro šipku vpřed
 }
-const plocha_dny=document.getElementById(this.id_kalendar) as HTMLFieldSetElement; // Fielset - plocha kalendáře
+
+const plocha_dny=document.getElementById(this.id_kalendar) as HTMLElement; // Fielset - plocha kalendáře
 
 if(plocha_dny)
 {
@@ -603,6 +692,7 @@ this.touchEndY=e.touches[0].clientY; // konečné souřadnice pohybu po ose Y
 plocha_dny.addEventListener("touchend",(e)=>{
 this.handleGesture(e); // funkce vyhodnotí zda uživatel udělal pohyb prstem na obrazovce vpravo nebo vlevo
 },{passive:true});} // Pokud je event listener označen jako pasivní ({ passive: true }), znamená to, že prohlížeč ví, že event handler nebude volat preventDefault(). To umožňuje prohlížeči optimalizovat chování stránky, což může vést ke zvýšení výkonu, zejména při posouvání na dotykových zařízeních. Jinými slovy, pasivní event listener říká prohlížeči: "Nebudu měnit výchozí chování této události, můžeš ji tedy zpracovat okamžitě."
+
 };
 handleGesture(e:any){
  // funkce vyhodnotí zda uživatel udělal pohyb prstem na obrazovce vpravo nebo vlevo
@@ -710,7 +800,7 @@ class Cas_rezervace
 {
 // objekt zajišťuje potřebné funkcionality pro volbu času rezervace
 readonly id_con="con_cas"; // ID hlavního kontejneru s časy rezervace
-readonly id_con_logo="logo-box"; // ID boxu v kterém je vloženo SVG logo Boar-cz
+readonly id_logo=["app_logo_box","app_logo_svg","app_logo_text"]; // id k SVG logu [0=ID boxu v kterém je vloženo SVG logo Boar-cz, 1=ID samotného HTML SVG v kterém je logo, 2=ID contajneru textu pod logem]
 readonly id_radio:string="cas"; // počátek ID input type radio cas1-cas14
 readonly id_li:string="lic"; // počátek ID li v kterém je input type radio lic1-lic14
 readonly class_nam:string[]=["zobraz_objekt","schovej_objekt"]; // názvy CSS tříd, které jsou používány pro animavce
@@ -845,6 +935,7 @@ load_rezervace()
 {
 // načtení z JSON časy, které jsou již rezervované
 
+kalendar.dny_klikat(false); // metoda zamezuje anebo umožňuje uživateli klikat na dny 1-31, pokud je do funkce zasláno TRUE=klikání, je umožněno; pokud FALSE=klikání je zamezeno
 
 // ZAČÁTEK SIMULACE
 
@@ -901,6 +992,7 @@ const jsonFilePath="config/cti-rezervace.php"; // cesta k PHP souboru
 try{
 const response=await fetch(jsonFilePath); // načítání dat ze souboru JSON
 if(!response.ok){
+kalendar.error_load_data(); // v kontejneru kde jsou dny 1-31 otevře okno s infornmací: Potřebná data, nebyla ze serveru načtena.
 throw new Error("Síťová odpověď nebyla v pořádku"); // chyba při načítání
 }
 let jsonData=await response.json(); // převzetí dat do proměnné
@@ -912,7 +1004,8 @@ jsonData={data:[]};  // Zajistíme, že data budou vždy pole
 }
 return jsonData; // vrací načtená data
 }catch(error) {
-console.error("Chyba při načítání JSON (reálně):", error);
+console.error("Chyba při načítání JSON data rezervací od uživatelů block-time:", error);
+kalendar.error_load_data(); // v kontejneru kde jsou dny 1-31 otevře okno s infornmací: Potřebná data, nebyla ze serveru načtena.
 return {data:[]}; // Vrátí prázdný objekt, pokud dojde k chybě
 }
 };
@@ -932,6 +1025,13 @@ this.rezervace.push(dateArray); // vložení načtených dat z JSON do globáln�
 });
 }
 this.load_data_rezervace=true; // proměnná na true ukazuje, že data o dnech, které se mají blokovat, jsou z JSON souboru načtena
+
+if(kalendar.load_data_book_block_day)
+{
+// pokud budou vpořádku načtena data block-days - blokované dny
+kalendar.dny_klikat(true); // metoda zamezuje anebo umožňuje uživateli klikat na dny 1-31, pokud je do funkce zasláno TRUE=klikání, je umožněno; pokud FALSE=klikání je zamezeno
+}
+
 },0);  // Použití setTimeout k oddělení asynchronní operace
 
 };
@@ -955,7 +1055,7 @@ this.vybrany_cas=number; // do proměnné uloží informaci s číslem, podle kt
 
 zobrazit_casy(){
 // funkce hlavní kontejner s časy zobrazí z opacity:0; z-index:-1; na opacity:1; z-index:0;
-const hl_con=document.getElementById(this.id_con) as HTMLElement; // hlavní kontejner, kde jsou chronologicky seřazeny časy
+const hl_con=document.getElementById(this.id_con); // hlavní kontejner, kde jsou chronologicky seřazeny časy
 
 if(hl_con)
 {
@@ -963,14 +1063,19 @@ if(hl_con)
 hl_con.classList.add(this.class_nam[0]); // přidá CSS třídu s animací opacity z 0 na 1
 }
 
-const logo_box=document.getElementById(this.id_con_logo); // kontejner s logem Boar-cz
-if(logo_box){
-// Pokud HTML element existuje
+const logo_box=document.getElementById(this.id_logo[0]) as HTMLElement; // kontejner s logem Boar-cz
+const logo_svg=document.getElementById(this.id_logo[1]) as HTMLElement; // SVG kontajner pro samotné SVG logo
+const logo_text=document.getElementById(this.id_logo[2]) as HTMLElement; // SVG kontajner pro samotné SVG logo
+
+if(logo_box&&logo_svg&&logo_text){
+// Pokud HTML elementy existují
 if(!logo_box.classList.contains(this.class_nam[1]))
 {
 // pokud box s logem neobsahuje tuto css třídu
 setTimeout(()=>{
 logo_box.style.zIndex="-5"; // schová hluboko box s logem
+logo_svg.style.opacity="0"; // sníží průhlednost SVG loga na 0
+logo_text.style.opacity="0"; // sníží průhlednost textu pod SVG logem na 0
 },600); // 500 ms je transition opacity
 }
 logo_box.classList.add(this.class_nam[1]); // přidá CSS třídu s animací opacity z 1 na 0
@@ -2134,11 +2239,9 @@ if(dia.open_dialog)
 // pokud je otevřen sledovaný dialog dotaz na zrušení rezervace, musí dojít k jeho prověření, jestli je ještě aktuální
 location.reload(); // udělá refreš stránky (její nové načtení), což vyhodnotí aktuálnost dotazu na zrušení rezervace
 }
-
-// pokud začala být aplikace viditelná
+kalendar.dny_klikat(false); // metoda zamezuje anebo umožňuje uživateli klikat na dny 1-31, pokud je do funkce zasláno TRUE=klikání, je umožněno; pokud FALSE=klikání je zamezeno
+kalendar.error_load_data_close(false); // uzavře okno s chybou načtení, pokud je otevřeno; FALSE= nebude načítat znovu data z JSON
 boss.reset_aplikace("castecne"); // provede reset aplikace, jako by ji uživatel nikdy nepoužil, ale pouze částečně, zachová případný vyplněný input uživatelem (jméno, email, telefon, důvod hovoru) a udělený souhlas
-
-
 
 }
 };

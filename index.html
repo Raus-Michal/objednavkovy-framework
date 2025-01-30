@@ -103,6 +103,15 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <button id="b31" type="button" title="31."><span>31</span></button>
 
 <div class="fake-kon"><input id="fake-checked" type="checkbox" title="Určete den rezervace" required></div>
+
+<div id="errror_load" class="error-kon">
+<div>
+<p>Potřebná data, nebyla ze&nbsp;serveru načtena.</p>
+<p id="errror_load_offline"><strong>Zařízení&nbsp;je anebo&nbsp;bylo offline!</strong></p>
+<button id="retry_load" type="button"><span class="i-app5"> </span><span>Opakovat načtení</span></button>
+</div>
+</div>
+
 </fieldset>
 </div>
 
@@ -125,9 +134,9 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <li id="lic14"><input id="cas14" type="radio" name="cas" title="v čase 15:30-16:00 hod.">15:30-16:00&#8239;h</li>
 </ol>
 
-<div id="logo-box" class="box-ap-logo">
+<div id="app_logo_box" class="box-ap-logo">
 
-<svg width="400" height="400" viewBox="0 0 400 400" stroke-width="10" stroke-linejoin="round" stroke="rgb(110,87,168)" fill="none">
+<svg id="app_logo_svg" width="400" height="400" viewBox="0 0 400 400" stroke-width="10" stroke-linejoin="round" stroke="rgb(110,87,168)" fill="none">
 <defs>
 <filter id="fil1" filterUnits="userSpaceOnUse" x="0" y="0" width="400" height="400">
 <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
@@ -144,7 +153,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </filter>
 </defs>
 <g>
-<g filter="url(#fil1)" >
+<g filter="url(#fil1)">
 <g stroke="black" fill="black" stroke-width="1">
 <path d="M 94,91 C 55,84 46,65 37,27 27,76 23,101 57,143 Z" />
 <path d="m 303,91 c 39,-7 48,-26 57,-64 10,49 14,74 -20,116 z" />
@@ -164,7 +173,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </g>
 </svg>
 <div class="tc">
-<p class="f-log">&copy;&#8239;2025 Boar-cz</p>
+<p id="app_logo_text" class="f-log">&copy;&#8239;2025 Boar-cz</p>
 </div>
 </div>
 
