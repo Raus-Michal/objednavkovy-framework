@@ -1046,6 +1046,41 @@ min-height:2.5rem;
 }
 
 
+.app-svg-no-yes
+{
+width:5rem;
+width:calc(5rem + 1vw);
+max-width:100%;
+height:auto;
+}
+
+.anim_o
+{
+display:-webkit-box;
+display:-moz-box;
+display:-webkit-flex;
+display:flex;
+-webkit-box-pack:center;
+-moz-box-pack:center;
+-webkit-justify-content:center;
+justify-content:center;
+margin-bottom:1rem;
+-webkit-animation: zobraz 1s 1s both;
+animation: zobraz 1s 1s both;
+}
+
+@-webkit-keyframes zobraz
+{
+0%{ opacity:.2;}
+100%{ opacity:1;}
+}
+
+@keyframes zobraz
+{
+0%{ opacity:.2;}
+100%{ opacity:1;}
+}
+
 .ods
 {
 text-align:justify;

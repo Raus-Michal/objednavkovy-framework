@@ -11,7 +11,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 
 
-<link rel="stylesheet" href="css/css.css?n=1">
+<link rel="stylesheet" href="css/css.css?n=3">
 
 <!-- popis vebové stránky
 <meta name="description" content = " Popis o čem je www stránka ">
@@ -23,6 +23,32 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 
 <meta name="author" content="Boar-cz">
 <title>Objednávkový framework</title>
+<script type="application/ld+json">
+{
+"@context": "https://schema.org",
+"@type": "WebApplication",
+"@id": "WebApplication",
+"dateCreated": "2025-01-20",
+"dateModified": "2025-01-30",
+"datePublished": "2025-01-30",
+"version": "[1,0]",
+"mainEntityOfPage": "https://www.boar-cz.info",
+"description": "Rezervační systém od Boar-cz umožňuje jednoduchou rezervaci telefonních hovorů, schůzek, návštěv lékaře a dalších událostí. S naším systémem máte vše pod kontrolou a ušetříte čas sobě i svým klientům.",
+"abstract": "Naše rezervační systém vám umožní snadno a rychle rezervovat telefonní hovory, schůzky, návštěvy lékaře a další události. Systém nabízí flexibilitu pro provozovatele, kteří mohou upravit časy rezervací a vyblokovat určité dny. Rezervaci může zrušit jak uživatel, tak provozovatel, a potvrzení obdržíte na e-mail. Tento systém, postavený na frameworku Rype Script, lze upravit a použít na jakýkoli web.",
+"name": "Rezervační systém | Boar-cz",
+"operatingSystem": "Windows 7, OSX 10.6, Android 1.6",
+"applicationCategory": "Safety",
+"aggregateRating": {
+"@type": "AggregateRating",
+"ratingValue": "5.0",
+"ratingCount": "9999"
+},
+"offers": {
+"@type": "Offer",
+"price": "10000",
+"priceCurrency": "CZK"
+}}
+</script>
 </head>
 <body>
 
@@ -295,7 +321,15 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 
 
 <dialog id="uspech" class="dia">
-<p class="n-dialog">Rezervace byla úspěšně dokončena!</p>
+<p class="n-dialog tc">Rezervace byla úspěšně dokončena!</p>
+<div class="anim_o">
+<svg class="app-svg-no-yes" width="200" height="200" viewBox="0 0 200 200" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="green">
+<circle cx="100" cy="100" r="90" stroke-width="10" />
+<path d="M 50,130 50,130 50,130" />
+<path d="M 50,130 85,160 85,160" />
+<path d="M 50,130 85,160 145,60" />
+</svg>
+</div>
 <p>Do&nbsp;30&#8239;minut bude na&nbsp;Váš email doručeno potvrzení rezervace.</p>
 <div class="butt-box">
 <button id="butt_uspech" type="button" title="Zavřít">Zavřít okno</button>
@@ -303,18 +337,31 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </dialog>
 
 <dialog id="neuspech" class="dia">
-<p class="n-dialog">Rezervace se&nbsp;nezdařila!</p>
-<p>Je&nbsp;nám líto rezervace se&nbsp;nezdařila. Zkuste&nbsp;to prosím později.</p>
-<p>Pokud&nbsp;se chyba opakuje, pro&nbsp;kontakt můžete použít <a  class="nw" href="https://www.boar-cz.info/kontakt/" target="_blank" rel="noopener noreferrer" title="Formulář pro zasílání emailů">&gt;&#8239;kontaktní formulář&#8239;&lt;</a>.</p>
+<p class="n-dialog tc">Rezervace se&nbsp;nezdařila!</p>
+<div class="anim_o">
+<svg class="app-svg-no-yes" width="50" height="50" viewBox="0 0 50 50" stroke="red" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none">
+<line x1="5" y1="5" x2="45" y2="45" />
+<line x1="45" y1="5" x2="5" y2="45" />
+</svg>
+</div>
+<p class="tc">Je&nbsp;nám líto rezervace se&nbsp;nezdařila.</p>
+<p class="tc">Zkuste&nbsp;to prosím později.</p>
+<p class="tc">Pokud&nbsp;se chyba opakuje, pro&nbsp;kontakt můžete použít <a  class="nw" href="https://www.boar-cz.info/kontakt/" target="_blank" rel="noopener noreferrer" title="Formulář pro zasílání emailů">&gt;&#8239;kontaktní formulář&#8239;&lt;</a>.</p>
 <div class="butt-box">
 <button id="butt_neuspech" type="button" title="Zavřít">Zavřít okno</button>
 </div>
 </dialog>
 
 <dialog id="prekrocen_limit" class="dia">
-<p class="n-dialog">Rezervace se&nbsp;nezdařila!</p>
-<p>Je&nbsp;nám líto překročili jste limit maximálních požadavků za&nbsp;24&#8239;hodin.</p>
-<p>Pokud&nbsp;se chyba opakuje i&nbsp;za&nbsp;24&#8239;hodin, pro&nbsp;kontakt můžete použít <a  class="nw" href="https://www.boar-cz.info/kontakt/" target="_blank" rel="noopener noreferrer" title="Formulář pro zasílání emailů">&gt;&#8239;kontaktní formulář&#8239;&lt;</a>.</p>
+<p class="n-dialog tc">Rezervace se&nbsp;nezdařila!</p>
+<div class="anim_o">
+<svg class="app-svg-no-yes" width="50" height="50" viewBox="0 0 50 50" stroke="red" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none">
+<line x1="5" y1="5" x2="45" y2="45" />
+<line x1="45" y1="5" x2="5" y2="45" />
+</svg>
+</div>
+<p class="tc">Je&nbsp;nám líto překročili jste limit maximálních požadavků za&nbsp;24&#8239;hodin.</p>
+<p class="tc">Pokud&nbsp;se chyba opakuje i&nbsp;za&nbsp;24&#8239;hodin, pro&nbsp;kontakt můžete použít <a  class="nw" href="https://www.boar-cz.info/kontakt/" target="_blank" rel="noopener noreferrer" title="Formulář pro zasílání emailů">&gt;&#8239;kontaktní formulář&#8239;&lt;</a>.</p>
 <div class="butt-box">
 <button id="butt_prekrocen_limit" type="button" title="Zavřít">Zavřít okno</button>
 </div>
@@ -341,15 +388,30 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </dialog>
 
 <dialog id="zruseno_driv" class="dia">
-<p class="n-dialog">Rezervace byla ji dříve zrušena!</p>
-<p>Tato rezervace existovala, ale&nbsp;už byla zrušena. Při&nbsp;jejím rušení&nbsp;bylo zasláno potvrzení o&nbsp;zrušení rezervace na&nbsp;email, který&nbsp;byl zadán při&nbsp;samotném rušení rezervace.</p>
+<p class="n-dialog tc">Rezervace byla ji dříve zrušena!</p>
+<div class="anim_o">
+<svg class="app-svg-no-yes" width="50" height="50" viewBox="0 0 50 50" stroke="red" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none">
+<line x1="5" y1="5" x2="45" y2="45" />
+<line x1="45" y1="5" x2="5" y2="45" />
+</svg>
+</div>
+<p class="tc">Tato rezervace existovala, ale&nbsp;už byla zrušena.</p>
+<p>Při&nbsp;jejím rušení&nbsp;bylo zasláno potvrzení o&nbsp;zrušení rezervace na&nbsp;email, který&nbsp;byl zadán při&nbsp;samotném rušení rezervace.</p>
 <div class="butt-box">
 <button id="butt_zruseno_driv" type="button" title="Zavřít">Zavřít okno</button>
 </div>
 </dialog>
 
 <dialog id="zruseno" class="dia">
-<p class="n-dialog">Rezervace byla zrušena!</p>
+<p class="n-dialog tc">Rezervace byla zrušena!</p>
+<div class="anim_o">
+<svg class="app-svg-no-yes" width="200" height="200" viewBox="0 0 200 200" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="green">
+<circle cx="100" cy="100" r="90" stroke-width="10" />
+<path d="M 50,130 50,130 50,130" />
+<path d="M 50,130 85,160 85,160" />
+<path d="M 50,130 85,160 145,60" />
+</svg>
+</div>
 <p>Do&nbsp;30&#8239;minut bude na&nbsp;uvedený email doručeno potvrzení o&nbsp;zrušení rezervace.</p>
 <div class="butt-box">
 <button id="butt_zruseno" type="button" title="Zavřít">Zavřít okno</button>
@@ -357,8 +419,15 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </dialog>
 
 <dialog id="nezruseno" class="dia">
-<p class="n-dialog">Rezervaci se&nbsp;nepodařilo zrušit!</p>
-<p>Je nám líto nepodařilo&nbsp;se zrušit rezervaci. Zkuste to prosím později.</p>
+<p class="n-dialog tc">Rezervaci se&nbsp;nepodařilo zrušit!</p>
+<div class="anim_o">
+<svg class="app-svg-no-yes" width="50" height="50" viewBox="0 0 50 50" stroke="red" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none">
+<line x1="5" y1="5" x2="45" y2="45" />
+<line x1="45" y1="5" x2="5" y2="45" />
+</svg>
+</div>
+<p class="tc">Je nám líto nepodařilo&nbsp;se zrušit rezervaci.</p>
+<p class="tc">Zkuste to prosím později.</p>
 <p>Pokud&nbsp;se chyba opakuje, pro&nbsp;kontakt můžete použít <a  class="nw" href="https://www.boar-cz.info/kontakt/" target="_blank" rel="noopener noreferrer" title="Formulář pro zasílání emailů">&gt;&#8239;kontaktní formulář&#8239;&lt;</a>.</p>
 <div class="butt-box">
 <button id="butt_nezruseno" type="button" title="Zavřít">Zavřít okno</button>
@@ -366,6 +435,6 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </dialog>
 
 
-<script src="script/booking.js?n=1"></script>
+<script src="script/booking.js?n=2"></script>
 </body>
 </html>
