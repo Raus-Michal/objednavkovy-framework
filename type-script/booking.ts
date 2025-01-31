@@ -1606,18 +1606,18 @@ input_email.focus(); // přehodí uživatele hbytě za vepsaný @ v inputu s ema
 
 handleEvent(e:any)
 {
-const k=e.target.id; // id buttonu na který bylo kliknuto
+const k:string=e.target.id; // id HTMLelementu na který bylo kliknuto
 
 
 if(k===this.id_form[0]||k===this.id_form[1])
 {
-// pokud jde požadavek od některého z formulářů
+// pokud jde požadavek od některého z formulářů zablokuje výchozí provedení submit
 e.preventDefault(); // Zabrání výchozímu chování (odeslání formuláře)
 }
 
 if(k===this.id_form[0])
 {
-// pokud byl požadavek uživatele klik na button Rezervovat
+// pokud byl požadavek uživatele klik na button Rezervovat - spustí se submit formuláře 1
 if(cas_rezervace.byl_vybran_cas&&kalendar.byl_vybran_datum)
 {
 // pokud byl vybrán datum a čas rezervace
@@ -1625,33 +1625,35 @@ this.form_posun(this.id_form[0],this.id_form[1]); // metoda zajistí posun formu
 this.zobrazeni_casu(); // funkce zajistí správné zobrazení času rezervace ve formuláři Dokončit rezervaci
 this.zobrazeni_datumu(); // funkce zajistí správné zobrazení datumu rezervace ve formuláři Dokončit rezervaci
 }
-
+}
+else if(k===this.id_form[1])
+{
+// pokud byl požadavek uživatele klik na button Dokončit rezervaci - spustí se submit formuláře 2
+this.rezervovat(); // metoda zajistí plné dokončení rezervace
 }
 
-else if(k===this.id_button[0])
+if(e.target.closest("button") && e.target.closest("button").id)
+{
+// pokud bylo kliknuto na button a existuje jeho ID
+const k_b:string=e.target.closest("button").id; // načte id buttonu na který bylo kliknuto
+if(k_b===this.id_button[0])
 {
 // pokud byl požadavek uživatele klik na button Změnit rezervaci
 this.form_posun(this.id_form[1],this.id_form[0]);  // metoda zajistí posun formuláře z Rezervovat na Dokončit Rezervaci
 }
 
-else if(k===this.id_button[1])
+if(k_b===this.id_button[1])
 {
 // kliknuto na button Zásady ochrany osobních údajů
 dia.on(...dia.addDia_zasady); // otevře dialogové okno Zásady ochrany osobních údajů
 }
 
-else if(k===this.id_form[1])
-{
-// pokud byl požadavek uživatele klik na button Dokončit rezervaci
-this.rezervovat(); // metoda zajistí plné dokončení rezervace
-}
-
-else if(k===this.id_button[2])
+else if(k_b===this.id_button[2])
 {
 // pokud byl požadavek uživatele klik na button @
 this.napis_zavinac(); // metoda zajistí přidání @ do input pro email
 }
-
+}
 
 };
 
