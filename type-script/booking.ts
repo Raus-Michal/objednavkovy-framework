@@ -1778,10 +1778,10 @@ const in_phone_uzivatel=document.getElementById(this.id_inputHost[2]) as HTMLInp
 const in_predmet_uzivatel=document.getElementById(this.id_inputHost[3]) as HTMLInputElement; // input s předmětem uživatele (O čem bude hovor?)
 
 
-const data_pro_Email:[string,string,string,string,string,string,string,string,string]=["","","","","","","","",""]; // do pole budou zapsána všechna data, která jsou pro odesílání emailu
+const data_pro_Email:[string,string,number,string,string,string,string,string,string]=["","",0,"","","","","",""]; // do pole budou zapsána všechna data, která jsou pro odesílání emailu
 let jmeno:string="", // jméno uživatele
 email:string="", // email uživatele
-predvolba:string="", // předvolba telefonní
+predvolba:number=420, // předvolba telefonní
 phone:string="", // telefon uživatele
 predmet:string=""; // předmět uživatele (O čem bude hovor)
 
@@ -1806,8 +1806,9 @@ data_pro_Email[1]=email;
 if(in_predvolba)
 {
 // pokud HTML element existuje
-predvolba=in_predvolba.value.trim(); // z input načte předvolbu
-data_pro_Email[2]=predvolba;
+const value=in_predvolba.value.trim(); // z input načte předvolbu
+predvolba=parseInt(value); // odebere z ní znak + tento se dopíše v PHP, protože jeho převodem se po cestě ztrácí a stejně tam bude
+data_pro_Email[2]=predvolba; // přidáno do pole, které se odešle do PHP
 }
 
 if(in_phone_uzivatel)

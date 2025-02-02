@@ -63,7 +63,7 @@ body{font-family: Arial,sans-serif;}
 <h2>Vámi poskytnuté údaje</h2>
 <p>Jméno a příjmení: {$jmeno}</p>
 <p>Email: {$email}</p>
-<p>Telefon: {$predvolba}{$phone}</p>
+<p>Telefon: +{$predvolba}{$phone}</p>
 <p>O čem bude hovor: {$predmet}</p>
 <h2>Zrušení rezervace</h2>
 <p>Pro zrušení této rezervace použijte tento odkaz: <a href="{$cleanUrl}?{$search}{$token}" title="Chci zrušit tuto rezervaci"><strong>ZRUŠENÍ REZERVACE</strong></a></p>
