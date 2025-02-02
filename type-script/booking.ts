@@ -1153,6 +1153,12 @@ id_okna:"prekrocen_limit",
 id_buton_pro_zavreni:"butt_prekrocen_limit"
 };
 
+dia_duplicita:Dialog_okno={
+// objekt s id pro dialogové okno: Duplicitní termín - tento termín, již byl zabrán v jiné rezervaci
+id_okna:"duplicitni_termin",
+id_buton_pro_zavreni:"butt_duplicitni_termin"
+};
+
 dia_dotaz_zruseni:Dialog_okno={
 // objekt s id pro dialogové okno: Zrušit rezervaci?
 id_okna:"zrusit_rezervaci",
@@ -1884,6 +1890,12 @@ if(result.message==="Překročili jste limit požadavků. Zkuste to znovu za 24 
 {
 // pokud je taková odpověď z PHP, byl překročen Rate limit
 dia.on(dia.dia_prekrocen_limit.id_okna,dia.dia_prekrocen_limit.id_buton_pro_zavreni); // otevře dialogové okno - Překročen limit rezervací za 24 hodin
+}
+else if(result.message==="Data již existují.")
+{
+// pokud je taková odpověď z PHP, byl pokus o zápis rezervace, na stejný den, měsíc, rok a hodinu, který už je v JSON zapsán = duplicitní zápis
+this.reset_aplikace("castecne"); // provede reset aplikace, jako by ji uživatel nikdy nepoužil, ale pouze částečně, zachová případný vyplněný input uživatelem (jméno, email, telefon, důvod hovoru) a udělený souhlas
+dia.on(dia.dia_duplicita.id_okna,dia.dia_duplicita.id_buton_pro_zavreni); // otevře dialogové okno - Duplicitní požadavek, tento termín je již zarezervován
 }
 else
 {

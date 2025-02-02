@@ -1,5 +1,4 @@
 <?php
-
 include "defense/sifrovaci-heslo.php"; // Načtení hesla - $password
 
 if(!$password)
@@ -14,10 +13,10 @@ function encryptToken($token, $password) {
 $method = "aes-256-ecb";
 // Vytvoření šifrovacího klíče z hesla pomocí SHA-256 hash funkce
 $key = substr(hash("sha256", $password, true), 0, 32);
-    
+
 // Šifrování tokenu pomocí klíče a algoritmu AES-256-ECB
 $encryptedToken = openssl_encrypt($token, $method, $key, OPENSSL_RAW_DATA);
-    
+
 // Vrácení šifrovaného tokenu zakódovaného do base64
 return base64_encode($encryptedToken);
 }
@@ -42,16 +41,13 @@ $output = ["data" => $data]; // Data jsou obalena do objektu s klíčem "data"
 file_put_contents($filename, json_encode($output, JSON_PRETTY_PRINT)); // uloží data do JSON souboru
 }
 
-
 $filename = "rezervace/rezervace.json"; // Název souboru JSON
-
 
 $data = load_json_file($filename); // Načtení existujících dat
 
 // Příjem dat z POST požadavku
 if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["data_json"]))
 {
-
 $received_data = json_decode(urldecode($_POST["data_json"]), true); // dekódování přijatých dat type JSON
 
 if($received_data && count($received_data) === 5)
@@ -63,7 +59,25 @@ $den = (int)substr($received_data[2], 0, 2); // 2 znaky
 $cas_rezervace = (int)substr($received_data[3], 0, 2); // 2 znaky
 $token = substr($received_data[4], 0, 32); // Token omezen na 32 znaků
 
+// Zkontrolujte, zda data již existují
+$duplicate = false;
+foreach($data["data"] as $entry)
+{
+if($entry["rok"] === $rok && $entry["mesic"] === $mesic && $entry["den"] === $den && $entry["cas_rezervace"] === $cas_rezervace)
+{
+$duplicate = true;
+break;
+}
+}
 
+if ($duplicate)
+{
+// Pokud duplikát existuje, vrátit chybovou hlášku, kterou odchytí Java Script
+$status = "error";
+$message = "Data již existují.";
+}
+else
+{
 
 $encrypted_token = encryptToken($token, $password); // Šifrování tokenu
 
@@ -79,6 +93,7 @@ $data["data"][] = $new_entry; // Přidání nové hodnoty do existujících dat
 
 // Uložení dat do souboru s obalem "data"
 save_json_file($filename, $data["data"]); // Předáváme pouze obsah pole "data"
+}
 }
 else
 {
@@ -103,5 +118,4 @@ http_response_code($httpCode); // Nastaví odpovídající HTTP kód
 echo json_encode(["status" => $status, "message" => $message]); // Odesíláme chybovou odpověď
 exit; // Ukončí skript
 }
-
 ?>

@@ -11,7 +11,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 
 
-<link rel="stylesheet" href="css/css.css?n=4">
+<link rel="stylesheet" href="css/css.css?n=5">
 
 <!-- popis vebové stránky
 <meta name="description" content = " Popis o čem je www stránka ">
@@ -232,7 +232,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <input id="email" type="email" placeholder="Váš email" title="zadejte vasi emailovou adresu" required>
 </div>
 <div class="dabl">
-<input id="predvolba" type="text" value="+420" title="telefonní předvolba" maxlength="4" minlength="4" inputmode="numeric" required>
+<input id="predvolba" type="text" value="+420" title="telefonní předvolba" minlength="4" inputmode="numeric" required>
 <input id="phone" type="tel"  pattern="[0-9]{9}" maxlength="9" placeholder="Telefon (např.: 999000222)" title="zadejte Vaše telefonní číslo bez předvolby" required>
 </div>
 <input id="predmet" type="text" placeholder="O čem bude hovor?" title="O čem budeme mluvit?">
@@ -364,6 +364,22 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <p class="tc">Pokud&nbsp;se chyba opakuje i&nbsp;za&nbsp;24&#8239;hodin, pro&nbsp;kontakt můžete použít <a  class="nw" href="https://www.boar-cz.info/kontakt/" target="_blank" rel="noopener noreferrer" title="Formulář pro zasílání emailů">&gt;&#8239;kontaktní formulář&#8239;&lt;</a>.</p>
 <div class="butt-box">
 <button id="butt_prekrocen_limit" type="button" title="Zavřít">Zavřít okno</button>
+</div>
+</dialog>
+
+<dialog id="duplicitni_termin" class="dia">
+<p class="n-dialog tc">Rezervace se&nbsp;nezdařila!</p>
+<div class="anim_o">
+<svg class="app-svg-no-yes" width="50" height="50" viewBox="0 0 50 50" stroke="red" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none">
+<line x1="5" y1="5" x2="45" y2="45" />
+<line x1="45" y1="5" x2="5" y2="45" />
+</svg>
+</div>
+<p class="tc">Je&nbsp;nám líto, termín, který požadujete rezervovat, již&nbsp;si stihl dříve, něž&nbsp;jste požádal o&nbsp;rezervaci, někdo zarezervovat.</p>
+<p class="tc"><strong>Vyberte&nbsp;si prosím jiný termín rezervace.</strong></p>
+<p class="tc">Pokud&nbsp;se chyba opakuje, pro&nbsp;kontakt můžete použít <a  class="nw" href="https://www.boar-cz.info/kontakt/" target="_blank" rel="noopener noreferrer" title="Formulář pro zasílání emailů">&gt;&#8239;kontaktní formulář&#8239;&lt;</a>.</p>
+<div class="butt-box">
+<button id="butt_duplicitni_termin" type="button" title="Zavřít">Zavřít okno</button>
 </div>
 </dialog>
 
