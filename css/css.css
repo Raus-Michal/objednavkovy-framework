@@ -315,6 +315,7 @@ justify-items:stretch;
 align-items:start;
 align-content:start;
 position:relative;
+z-index:1;
 -webkit-filter:blur(2px);
 filter:blur(2px);
 -webkit-transition:250ms opacity,250ms -webkit-filter;
