@@ -717,14 +717,14 @@ display:flex;
 
 .dabl input:first-child,.dabl button:first-child
 {
-width:6ch;
+width:6.5ch;
 border-radius:10px 0 0 10px;
 border-right:none;
 }
 
 .dabl input:last-child
 {
-width:calc(100% - 6ch);
+width:calc(100% - 6.5ch);
 border-radius:0 10px  10px 0;
 }
 

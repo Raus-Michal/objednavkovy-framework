@@ -7,17 +7,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["data_email"]))
 
 $received_data = json_decode(urldecode($_POST["data_email"]), true); // dekóduje data, která byla zaslána jako JSON
 
-if ($received_data && count($received_data) === 8)
+if ($received_data && count($received_data) === 9)
 {
 // Zkrácení všech stringů na 100 znaků
 $jmeno = substr($received_data[0], 0, 100);
 $email = substr($received_data[1], 0, 100);
-$phone = substr($received_data[2], 0, 100);
-$predmet = substr($received_data[3], 0, 100);
-$datum_rezervace_slovne = substr($received_data[4], 0, 100);
-$cas_rezervace_slovne = substr($received_data[5], 0, 100);
-$cleanUrl = substr($received_data[6], 0, 100);
-$token = substr($received_data[7], 0, 100);
+$predvolba = substr($received_data[2], 0, 5);
+$phone = substr($received_data[3], 0, 100);
+$predmet = substr($received_data[4], 0, 100);
+$datum_rezervace_slovne = substr($received_data[5], 0, 100);
+$cas_rezervace_slovne = substr($received_data[6], 0, 100);
+$cleanUrl = substr($received_data[7], 0, 100);
+$token = substr($received_data[8], 0, 100);
 } else {
 $status = "error";
 $message = "Chybné data pro edesílání emailu. Nejsou všechna! ";
@@ -62,7 +63,7 @@ body{font-family: Arial,sans-serif;}
 <h2>Vámi poskytnuté údaje</h2>
 <p>Jméno a příjmení: {$jmeno}</p>
 <p>Email: {$email}</p>
-<p>Telefon: {$phone}</p>
+<p>Telefon: {$predvolba}{$phone}</p>
 <p>O čem bude hovor: {$predmet}</p>
 <h2>Zrušení rezervace</h2>
 <p>Pro zrušení této rezervace použijte tento odkaz: <a href="{$cleanUrl}?{$search}{$token}" title="Chci zrušit tuto rezervaci"><strong>ZRUŠENÍ REZERVACE</strong></a></p>

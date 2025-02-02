@@ -11,7 +11,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 
 
-<link rel="stylesheet" href="css/css.css?n=3">
+<link rel="stylesheet" href="css/css.css?n=4">
 
 <!-- popis vebové stránky
 <meta name="description" content = " Popis o čem je www stránka ">
@@ -232,7 +232,7 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 <input id="email" type="email" placeholder="Váš email" title="zadejte vasi emailovou adresu" required>
 </div>
 <div class="dabl">
-<input id="predvolba" type="text" value="+420" title="telefonní předvolba ČR" readonly>
+<input id="predvolba" type="text" value="+420" title="telefonní předvolba" maxlength="4" minlength="4" inputmode="numeric" required>
 <input id="phone" type="tel"  pattern="[0-9]{9}" maxlength="9" placeholder="Telefon (např.: 999000222)" title="zadejte Vaše telefonní číslo bez předvolby" required>
 </div>
 <input id="predmet" type="text" placeholder="O čem bude hovor?" title="O čem budeme mluvit?">
@@ -435,6 +435,6 @@ $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? bin2hex(random_bytes(16));
 </dialog>
 
 
-<script src="script/booking.js?n=9"></script>
+<script src="script/booking.js?n=10"></script>
 </body>
 </html>

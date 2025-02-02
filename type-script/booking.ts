@@ -1452,7 +1452,13 @@ if(input)
 input.value=""; // anuluje jeho value
 }
 }
-      
+
+const predvolba=document.getElementById(this.id_predvolba_phone) as HTMLInputElement; // načte HTML input s předvolbou telefoního čísla
+if(predvolba)
+{
+predvolba.value="+420"; // nastaví default předvolbu +420
+}
+
 const s_checked=document.getElementById(this.id_checked) as HTMLInputElement; // checked Souhlasím se zpracováním osobních údajů
 if(s_checked)
 {
@@ -1514,16 +1520,35 @@ button.addEventListener("click",this); // přiřadí posluchač click k buttonu 
 const input_predvolba=document.getElementById(this.id_predvolba_phone) as HTMLInputElement; // HTML input s předvolbou telefoního čísla +420
 if(input_predvolba)
 {
-// pokud HTML element existuje
-input_predvolba.addEventListener("focus",()=>{
-const input_telefon=document.getElementById(this.id_inputHost[2]) as HTMLInputElement; // načte HTML input s telefoním číslem
-if(input_telefon)
+// Přidání události 'input' pro vstupní pole
+input_predvolba.addEventListener("input",()=>{
+// Pokud je vstup prázdný nebo první znak není '+', přidáme '+' na začátek
+if(input_predvolba.value===""||input_predvolba.value.charAt(0)!=="+")
 {
-input_telefon.focus(); // focus na input zadání telefonního čísla
-}
-}); // přidá posluchač focus - pokud někdo focusne předvolbu +420 hned ho to focusne na zadání telefoního čísla, předvolba +420 je readonly
+input_predvolba.value=`+${input_predvolba.value.replace(/[^\d]/g, '')}`;  // Odstraní všechny nečíselné znaky
 }
 
+// Regulární výraz pro kontrolu platných znaků (pouze '+ a číslice')
+const validChars=/^\+\d*$/;
+if(!validChars.test(input_predvolba.value))
+{
+input_predvolba.value=input_predvolba.value.slice(0,-1);  // Odstraní poslední neplatný znak
+}
+
+  // Omezení délky vstupu na 4 znaky
+if(input_predvolba.value.length>4)
+{
+input_predvolba.value=input_predvolba.value.slice(0,4);
+}
+});
+
+// Přidání události 'focus' pro vstupní pole
+input_predvolba.addEventListener("focus", (e:any) => {
+// Při zaměření označí všechny znaky kromě prvního '+'
+setTimeout(()=>{
+e.target.setSelectionRange(1,e.target.value.length);  // Nastaví výběr od druhého znaku do konce textu
+},0);
+});}
 };
 
 zobrazeni_datumu(){
@@ -1742,13 +1767,15 @@ const data_pro_JSON:[number,number,number,number,string]=[...den_rezervace_uziva
 
 const in_jmeno_uzivatel=document.getElementById(this.id_inputHost[0]) as HTMLInputElement; // input s jménem a příjmením uživatel
 const in_email_uzivatel=document.getElementById(this.id_inputHost[1]) as HTMLInputElement; // input s emailem uživatele
+const in_predvolba=document.getElementById(this.id_predvolba_phone) as HTMLInputElement; // načte HTML input s předvolbou telefoního čísla
 const in_phone_uzivatel=document.getElementById(this.id_inputHost[2]) as HTMLInputElement; // input s telefonem uživatele
 const in_predmet_uzivatel=document.getElementById(this.id_inputHost[3]) as HTMLInputElement; // input s předmětem uživatele (O čem bude hovor?)
 
 
-const data_pro_Email:[string,string,string,string,string,string,string,string]=["","","","","","","",""]; // do pole budou zapsána všechna data, která jsou pro odesílání emailu
+const data_pro_Email:[string,string,string,string,string,string,string,string,string]=["","","","","","","","",""]; // do pole budou zapsána všechna data, která jsou pro odesílání emailu
 let jmeno:string="", // jméno uživatele
 email:string="", // email uživatele
+predvolba:string="", // předvolba telefonní
 phone:string="", // telefon uživatele
 predmet:string=""; // předmět uživatele (O čem bude hovor)
 
@@ -1770,28 +1797,40 @@ email=in_email_uzivatel.value.trim(); // z input načte email
 data_pro_Email[1]=email;
 }
 
+if(in_predvolba)
+{
+// pokud HTML element existuje
+predvolba=in_predvolba.value.trim(); // z input načte předvolbu
+data_pro_Email[2]=predvolba;
+}
+
 if(in_phone_uzivatel)
 {
 // pokud HTML element existuje
 phone=in_phone_uzivatel.value.trim(); // z input načte telefon
-data_pro_Email[2]=phone;
+data_pro_Email[3]=phone;
 }
 
 if(in_predmet_uzivatel)
 {
 // pokud HTML element existuje
 predmet=in_predmet_uzivatel.value.trim(); // z input načte O čem bude hovor
-data_pro_Email[3]=predmet;
+if(predmet==="")
+{
+// pokud nebyl uživatelem vyplněn input Důvod hovoru - O čem bude hovbor
+predmet="Nebylo uvedeno"
+}
+data_pro_Email[4]=predmet;
 }
 
 const datum_rezervace_slovne:string=this.slovne_datum; // slovně zapsaný celé datum rezervace pro zaslání emalem (např.: Úterý, 1. dubna 2025)
-data_pro_Email[4]=datum_rezervace_slovne;
+data_pro_Email[5]=datum_rezervace_slovne;
 const cas_rezervace_slovne:string=this.slovne_cas; // slovně zapsaný čas rezervace pro rozesílání emailem (např.:9:00-9:30 hod.)
-data_pro_Email[5]=cas_rezervace_slovne;
+data_pro_Email[6]=cas_rezervace_slovne;
 const currentUrl:string=window.location.href; // Tento kód uloží aktuální URL do proměnné
 const cleanUrl:string=currentUrl.split("#")[0].split("?")[0]; // očistí url adresu, kdyby obsahovala hash # anebo honotu za ?
-data_pro_Email[6]=cleanUrl;
-data_pro_Email[7]=token; // bude na poslední pole vložen token
+data_pro_Email[7]=cleanUrl;
+data_pro_Email[8]=token; // bude na poslední pole vložen token
 
 // console.log("token: " + token);
 // console.log("den_rezervace_uzivatel: " + den_rezervace_uzivatel);
