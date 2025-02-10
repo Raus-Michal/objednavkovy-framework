@@ -59,26 +59,6 @@ $den = (int)substr($received_data[2], 0, 2); // 2 znaky
 $cas_rezervace = (int)substr($received_data[3], 0, 2); // 2 znaky
 $token = substr($received_data[4], 0, 32); // Token omezen na 32 znaků
 
-// Zkontrolujte, zda data již existují
-$duplicate = false;
-foreach($data["data"] as $entry)
-{
-if($entry["rok"] === $rok && $entry["mesic"] === $mesic && $entry["den"] === $den && $entry["cas_rezervace"] === $cas_rezervace)
-{
-$duplicate = true;
-break;
-}
-}
-
-if ($duplicate)
-{
-// Pokud duplikát existuje, vrátit chybovou hlášku, kterou odchytí Java Script
-$status = "error";
-$message = "Data již existují.";
-}
-else
-{
-
 $encrypted_token = encryptToken($token, $password); // Šifrování tokenu
 
 $new_entry = [
@@ -93,7 +73,6 @@ $data["data"][] = $new_entry; // Přidání nové hodnoty do existujících dat
 
 // Uložení dat do souboru s obalem "data"
 save_json_file($filename, $data["data"]); // Předáváme pouze obsah pole "data"
-}
 }
 else
 {
