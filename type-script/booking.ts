@@ -95,10 +95,18 @@ upravit(){
 // funkce zablokuje pro booking dny které v měsíci už uběhly a den následující
 
 let a_d=datum.den_v_mesici; // aktuální den v měsíci 1-31,1-30,1-28 ...
+const button_a = document.getElementById(`${this.p_id}${a_d}`); // button aktuálního dne v měsíci
 
 if(this.poloha===0)
 {
 // pokud bude poloha uživatel v kalendáři nezměněna
+
+if(button_a)
+{
+// pokud HTML element existuje
+button_a.style.outline="2px solid red"; // udělá vnitřní okraj buttonu aktuálního dne v měsíci červeně
+}
+
 if(a_d!==1)
 {
 // pokud se právě aktuální den v měsíci !== 1 (tedy to není první den v měsící), budou se odebírat buttony pro objenání do tohoto dne v měsíci
@@ -147,6 +155,12 @@ button_i2.removeAttribute('data-has-listener'); // Odebere atribut 'data-has-lis
 else
 {
 // pokud nebude kalendář v poloze===0
+
+if(button_a)
+{
+// pokud HTML element existuje
+button_a.style.outline="none"; // odstraní vnitřní okraj buttonu aktuálního dne v měsíci červeně, protože kalendář není v poloze 0
+}
 
 if(this.poloha===1)
 {
